@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Gameplay">
+      <UniqueIdentifier>{960b6e9d-ce87-4f51-97f1-2e293af9bfc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Document">
+      <UniqueIdentifier>{8f6262e8-8950-43f3-a0f7-ee09a9ca5217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Gameplay\Entities">
+      <UniqueIdentifier>{17f1b630-4dc8-48d2-9820-8092afd189e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gameplay\Handlers">
+      <UniqueIdentifier>{bf09b564-88f5-4f9d-866d-0a217036dd29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gameplay\Data">
+      <UniqueIdentifier>{5bcc3ca2-39f9-46fd-bb33-30ad15e89c5f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommon.cpp">
+      <Filter>Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="Datas\LevelData.cpp">
+      <Filter>Gameplay\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Asteroid.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Beetle.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Box.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Bullet.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Debris.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Entity.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\PlayerShip.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Wasp.cpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Handlers\UIHandler.cpp">
+      <Filter>Gameplay\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Framework\App.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Framework\Main_Windows.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="EventHandler.cpp">
+      <Filter>Gameplay\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="Handlers\ScoreBoardHandler.cpp">
+      <Filter>Gameplay\Handlers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.hpp">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommon.hpp">
+      <Filter>Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="Datas\LevelData.hpp">
+      <Filter>Gameplay\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Asteroid.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Beetle.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Box.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Bullet.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Debris.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Entity.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\PlayerShip.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Wasp.hpp">
+      <Filter>Gameplay\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\UIHandler.hpp">
+      <Filter>Gameplay\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Framework\App.hpp">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Framework\EngineBuildPreferences.hpp">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="EventHandler.hpp">
+      <Filter>Gameplay\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="Handlers\ScoreBoardHandler.hpp">
+      <Filter>Gameplay\Handlers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Docs\README.md">
+      <Filter>Document</Filter>
+    </None>
+  </ItemGroup>
+</Project>
