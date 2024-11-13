@@ -13,8 +13,8 @@
 Box::Box(Game* game, const Vec2& position, float orientationDegrees)
 	: Entity(game, position, orientationDegrees, Rgba8(255.f, 255.f, 255.f,200.f)),
 	  m_boxCollider(position, position + Vec2(BOX_SIDE_LENGTH, BOX_SIDE_LENGTH)),
-	  accumulatedTime(0.f),
-	  targetPosition(position - Vec2(BOX_SIDE_LENGTH * 1.1f, 0.0f))
+	  m_accumulatedTime(0.f),
+	  m_targetPosition(position - Vec2(BOX_SIDE_LENGTH * 1.1f, 0.0f))
 {
 	m_health = 5;
 	m_boxCollider.SetCenter(position + Vec2(BOX_SIDE_LENGTH / 2.f, BOX_SIDE_LENGTH / 2.f));
@@ -42,25 +42,25 @@ void Box::Update(float deltaSeconds)
 	if (m_isDead)
 		return;
 
-	accumulatedTime += deltaSeconds;
+	m_accumulatedTime += deltaSeconds;
 
 
-	float t = accumulatedTime / 0.5f;
+	float t = m_accumulatedTime / 0.5f;
 	t       = GetClamped(t, 0.f, 1.f);
 
 
-	m_position.x = Interpolate(m_position.x, targetPosition.x, t);
+	m_position.x = Interpolate(m_position.x, m_targetPosition.x, t);
 
 
 	m_boxCollider.SetCenter(m_position + Vec2(BOX_SIDE_LENGTH / 2.f, BOX_SIDE_LENGTH / 2.f));
 
 
-	if (accumulatedTime >= 1.0f)
+	if (m_accumulatedTime >= 1.0f)
 	{
-		accumulatedTime = 0.0f;
+		m_accumulatedTime = 0.0f;
 
 
-		targetPosition = m_position - Vec2(BOX_SIDE_LENGTH * 1.1f, 0.0f);
+		m_targetPosition = m_position - Vec2(BOX_SIDE_LENGTH * 1.1f, 0.0f);
 	}
 
 	// WrapPosition();

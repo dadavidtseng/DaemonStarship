@@ -28,6 +28,6 @@ private:
 	Vertex_PCU m_localVerts[BOX_VERTS_NUM];
 
 	AABB2 m_boxCollider;
-	float accumulatedTime;
-	Vec2 targetPosition;
+	float m_accumulatedTime;
+	Vec2 m_targetPosition;
 };
