@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------------------------
 #pragma once
 #include "Game/GameCommon.hpp"
-#include "Game/Entities/Entity.hpp"
+#include "Game/Entity.hpp"
 #include "Engine/Math/AABB2.hpp"
 
 class Box : public Entity

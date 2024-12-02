@@ -1,6 +1,6 @@
 #pragma once
 #include "Game/GameCommon.hpp"
-#include "Game/Entities/Entity.hpp"
+#include "Game/Entity.hpp"
 
 class Wasp : public Entity
 {

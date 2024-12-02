@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Engine/Core/EngineCommon.hpp"
 #include "Game/GameCommon.hpp"
-#include "Framework/App.hpp"
+#include "Game/App.hpp"
 
 //-----------------------------------------------------------------------------------------------
 int WINAPI WinMain(const HINSTANCE applicationInstanceHandle, HINSTANCE, const LPSTR commandLineString, int)

@@ -3,7 +3,7 @@
 //
 
 //-----------------------------------------------------------------------------------------------
-#include "Game/Handlers/UIHandler.hpp"
+#include "Game/UIHandler.hpp"
 #include "Game/Game.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"

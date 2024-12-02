@@ -1,4 +1,4 @@
-#include "Game/Entities/Entity.hpp"
+#include "Game/Entity.hpp"
 #include "Game/GameCommon.hpp"
 
 //-----------------------------------------------------------------------------------------------

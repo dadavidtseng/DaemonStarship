@@ -7,13 +7,13 @@
 #include <Engine/Math/Vec2.hpp>
 #include "EventHandler.hpp"
 #include "Game/GameCommon.hpp"
-#include "Game/Entities/Asteroid.hpp"
-#include "Game/Entities/Beetle.hpp"
-#include "Game/Entities/Box.hpp"
-#include "Game/Entities/Bullet.hpp"
-#include "Game/Entities/Debris.hpp"
-#include "Game/Entities/PlayerShip.hpp"
-#include "Game/Entities/Wasp.hpp"
+#include "Game/Asteroid.hpp"
+#include "Game/Beetle.hpp"
+#include "Game/Box.hpp"
+#include "Game/Bullet.hpp"
+#include "Game/Debris.hpp"
+#include "Game/PlayerShip.hpp"
+#include "Game/Wasp.hpp"
 
 //-----------------------------------------------------------------------------------------------
 class Camera;

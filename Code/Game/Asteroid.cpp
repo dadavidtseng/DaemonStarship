@@ -1,4 +1,4 @@
-#include "Game/Entities/Asteroid.hpp"
+#include "Game/Asteroid.hpp"
 #include "Game/Game.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"

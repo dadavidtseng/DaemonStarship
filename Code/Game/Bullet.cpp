@@ -3,7 +3,7 @@
 //
 
 //-----------------------------------------------------------------------------------------------
-#include "Game/Entities/Bullet.hpp"
+#include "Game/Bullet.hpp"
 #include "Game/Game.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"

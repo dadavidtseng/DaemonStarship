@@ -3,7 +3,7 @@
 //
 
 //-----------------------------------------------------------------------------------------------
-#include "Game/Entities/PlayerShip.hpp"
+#include "Game/PlayerShip.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"

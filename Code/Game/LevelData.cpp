@@ -1,4 +1,4 @@
-#include "Game/Datas/LevelData.hpp"
+#include "Game/LevelData.hpp"
 
 LevelData const LEVEL_DATA[5] =
 {

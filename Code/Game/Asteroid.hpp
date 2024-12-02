@@ -1,13 +1,15 @@
 #pragma once
 #include "Game/GameCommon.hpp"
-#include "Game/Entities/Entity.hpp"
+#include "Game/Entity.hpp"
+
+class Game;
 
 //-----------------------------------------------------------------------------------------------
-class Bullet : public Entity
+class Asteroid : public Entity
 {
 public:
-	Bullet(Game* game, const Vec2& position, float orientationDegrees);
-	~Bullet() override;
+	Asteroid(Game* game, const Vec2& position, float orientationDegrees);
+	~Asteroid() override;
 
 	void Update(float deltaSeconds) override;
 	void Render() const override;
@@ -16,5 +18,5 @@ public:
 private:
 	void InitializeLocalVerts() override;
 
-	Vertex_PCU m_localVerts[BULLET_VERTS_NUM];
+	Vertex_PCU m_localVerts[ASTEROID_VERTS_NUM];
 };

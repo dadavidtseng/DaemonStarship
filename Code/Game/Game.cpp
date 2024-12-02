@@ -13,10 +13,10 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Datas/LevelData.hpp"
+#include "Game/LevelData.hpp"
 
-#include "Game/Handlers/ScoreBoardHandler.hpp"
-#include "Game/Handlers/UIHandler.hpp"
+#include "Game/ScoreBoardHandler.hpp"
+#include "Game/UIHandler.hpp"
 
 //-----------------------------------------------------------------------------------------------
 Game::Game()

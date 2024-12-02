@@ -3,7 +3,7 @@
 //
 
 //-----------------------------------------------------------------------------------------------
-#include "Game/Entities/Box.hpp"
+#include "Game/Box.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"

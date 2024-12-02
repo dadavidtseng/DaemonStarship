@@ -1,4 +1,4 @@
-#include "Game/Entities/Wasp.hpp"
+#include "Game/Wasp.hpp"
 
 #include <cstdio>
 

@@ -1,4 +1,4 @@
-#include "Game/Entities/Beetle.hpp"
+#include "Game/Beetle.hpp"
 #include "Game/Game.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"

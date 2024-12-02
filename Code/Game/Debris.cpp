@@ -3,7 +3,7 @@
 //
 
 //-----------------------------------------------------------------------------------------------
-#include "Game/Entities/Debris.hpp"
+#include "Game/Debris.hpp"
 #include "Game/Game.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
