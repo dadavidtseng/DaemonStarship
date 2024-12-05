@@ -22,7 +22,7 @@ Debris::Debris(Game* game, Vec2 const& position, Vec2 const& velocity, float rad
 	m_velocity        = velocity;
 	m_angularVelocity = g_theRNG->RollRandomFloatInRange(-200.f, 200.f);
 
-	m_color.a = 127.f;
+	m_color.a = 127;
 
 	Debris::InitializeLocalVerts();
 }
@@ -31,7 +31,7 @@ Debris::Debris(Game* game, Vec2 const& position, Vec2 const& velocity, float rad
 Debris::~Debris() = default;
 
 //-----------------------------------------------------------------------------------------------
-void Debris::Update(float deltaSeconds)
+void Debris::Update(float const deltaSeconds)
 {
 	if (m_isDead)
 		return;

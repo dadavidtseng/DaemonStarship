@@ -12,23 +12,23 @@
 //-----------------------------------------------------------------------------------------------
 // Entity color-related
 //
-Rgba8 const PLAYER_SHIP_COLOR      = Rgba8(102.f, 153.f, 204.f);
+Rgba8 const PLAYER_SHIP_COLOR      = Rgba8(102, 153, 204);
 Rgba8 const BULLET_YELLOW_OPAQUE   = Rgba8(255, 255, 0, 255);
 Rgba8 const BULLET_RED_OPAQUE      = Rgba8(255, 0, 0, 255);
 Rgba8 const BULLET_RED_TRANSPARENT = Rgba8(255, 0, 0, 0);
-Rgba8 const BEETLE_COLOR           = Rgba8(100.f, 160.f, 60.f);
-Rgba8 const WASP_COLOR             = Rgba8(255.f, 255.f, 60.f);
-Rgba8 const ASTEROID_COLOR         = Rgba8(100.f, 100.f, 100.f);
+Rgba8 const BEETLE_COLOR           = Rgba8(100, 160, 60);
+Rgba8 const WASP_COLOR             = Rgba8(255, 255, 60);
+Rgba8 const ASTEROID_COLOR         = Rgba8(100, 100, 100);
 
 //-----------------------------------------------------------------------------------------------
 // DebugRender color-related
 //
-Rgba8 const DEBUG_RENDER_GREY    = Rgba8(50.f, 50.f, 50.f);
-Rgba8 const DEBUG_RENDER_RED     = Rgba8(255.f, 0.f, 0.f);
-Rgba8 const DEBUG_RENDER_GREEN   = Rgba8(0.f, 255.f, 0.f);
-Rgba8 const DEBUG_RENDER_MAGENTA = Rgba8(255.f, 0.f, 255.f);
-Rgba8 const DEBUG_RENDER_CYAN    = Rgba8(0.f, 255.f, 255.f);
-Rgba8 const DEBUG_RENDER_YELLOW  = Rgba8(255.f, 255.f, 0.f);
+Rgba8 const DEBUG_RENDER_GREY    = Rgba8(50, 50, 50);
+Rgba8 const DEBUG_RENDER_RED     = Rgba8(255, 0, 0);
+Rgba8 const DEBUG_RENDER_GREEN   = Rgba8(0, 255, 0);
+Rgba8 const DEBUG_RENDER_MAGENTA = Rgba8(255, 0, 255);
+Rgba8 const DEBUG_RENDER_CYAN    = Rgba8(0, 255, 255);
+Rgba8 const DEBUG_RENDER_YELLOW  = Rgba8(255, 255, 0);
 
 
 //-----------------------------------------------------------------------------------------------

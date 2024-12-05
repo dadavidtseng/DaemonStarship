@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------------------------
 Entity::Entity(Game* game, const Vec2& position, const float orientationDegrees, const Rgba8 color)
 	: m_position(position),
-	  m_velocity(Vec2(0.f, 0.f)),
+	  m_velocity(Vec2::ZERO),
 	  m_orientationDegrees(orientationDegrees),
 	  m_angularVelocity(0.f),
 	  m_physicsRadius(5.f),

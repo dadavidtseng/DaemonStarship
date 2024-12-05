@@ -151,7 +151,7 @@ void UIHandler::DrawAttractModeUI() const
 			float distanceToHighlight = fabsf(static_cast<float>(col) - highlightIndex);
 			float gradientEffect      = GetClamped(1.f - distanceToHighlight / 2.f, 0.f, 1.f);
 
-			Rgba8 drawColor = Rgba8(102.f, 153.f, 204.f, static_cast<unsigned char>(255 * gradientEffect));
+			Rgba8 drawColor = Rgba8(102, 153, 204, static_cast<unsigned char>(255 * gradientEffect));
 
 			DrawPlayerShip(Vec2(deltaX, deltaY), drawColor, 40.f);
 		}
@@ -159,7 +159,7 @@ void UIHandler::DrawAttractModeUI() const
 		std::vector<Vertex_PCU> titleShadowVerts;
 		AddVertsForTextTriangles2D(titleShadowVerts,
 		                           "STARSHIP",
-		                           Vec2(155, 395.f),
+		                           Vec2(155.f, 395.f),
 		                           128.f,
 		                           Rgba8(255, 255, 255, 100),
 		                           1.f,
@@ -168,7 +168,7 @@ void UIHandler::DrawAttractModeUI() const
 
 		AddVertsForTextTriangles2D(titleShadowVerts,
 		                           "'S",
-		                           Vec2(650, 545.f),
+		                           Vec2(650.f, 545.f),
 		                           128.f,
 		                           Rgba8(255, 255, 255, 100),
 		                           1.f,
@@ -180,7 +180,7 @@ void UIHandler::DrawAttractModeUI() const
 		std::vector<Vertex_PCU> titleVerts;
 		AddVertsForTextTriangles2D(titleVerts,
 		                           "STARSHIP",
-		                           Vec2(150, 400.f),
+		                           Vec2(150.f, 400.f),
 		                           128.f,
 		                           WASP_COLOR,
 		                           1.f,
@@ -188,7 +188,7 @@ void UIHandler::DrawAttractModeUI() const
 		                           0.3f);
 		AddVertsForTextTriangles2D(titleVerts,
 		                           "'S",
-		                           Vec2(645, 550.f),
+		                           Vec2(645.f, 550.f),
 		                           128.f,
 		                           WASP_COLOR,
 		                           1.f,
@@ -249,7 +249,7 @@ void UIHandler::DrawInGameUI(int currentPlayerShipHealth) const
 	AddVertsForTextTriangles2D(titleVerts,
 	                           m_playerShipName + "/SCORE:" + std::to_string(m_game->GetPlayerShip()->GetPlayerScore()) +
 	                           "/HI:" + std::to_string(m_game->GetHighScore()),
-	                           Vec2(50, 0.f),
+	                           Vec2(50.f, 0.f),
 	                           50.f,
 	                           Rgba8(255, 255, 255),
 	                           1.f,
@@ -338,7 +338,7 @@ void UIHandler::InitializeAttractModeButtons() const
 void UIHandler::DrawPlayerNameInput() const
 {
 	std::vector<Vertex_PCU> textVerts;
-	AddVertsForTextTriangles2D(textVerts, m_playerShipName, Vec2(150, 600.f), 100.f, WASP_COLOR, 1.f,
+	AddVertsForTextTriangles2D(textVerts, m_playerShipName, Vec2(150.f, 600.f), 100.f, WASP_COLOR, 1.f,
 	                           true, 0.3f);
 	g_theRenderer->DrawVertexArray(static_cast<int>(textVerts.size()), textVerts.data());
 }

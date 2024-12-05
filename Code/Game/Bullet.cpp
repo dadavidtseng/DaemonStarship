@@ -10,7 +10,7 @@
 
 //-----------------------------------------------------------------------------------------------
 Bullet::Bullet(Game* game, const Vec2& position, const float orientationDegrees)
-	: Entity(game, position, orientationDegrees, Rgba8(255.f, 255.f, 0.f, 255.f))
+	: Entity(game, position, orientationDegrees, Rgba8(255, 255, 0, 255))
 {
 	m_physicsRadius  = BULLET_PHYSICS_RADIUS;
 	m_cosmeticRadius = BULLET_COSMETIC_RADIUS;

@@ -1,6 +1,6 @@
 #pragma once
 
-using event_callback = void(*)(void* sender, void* args);
+typedef void (*event_callback)(void* sender, void* args);
 
 class EventHandler
 {
