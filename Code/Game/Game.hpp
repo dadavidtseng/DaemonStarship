@@ -85,27 +85,27 @@ private:
 
 	// #TODO: Entity* Lists / dynamic_cast<Asteroid*>(m_asteroid[asteroidIndex])
 	PlayerShip*        m_playerShip                   = nullptr; // Just one player ship (for now...)
-	Bullet*            m_bullets[MAX_BULLETS_NUM]     = {};      // Fixed number of asteroid “slots”; nullptr if unused.
-	Asteroid*          m_asteroids[MAX_ASTEROIDS_NUM] = {};      // The “= {};” syntax initializes the array to zeros.
+	Bullet*            m_bullets[MAX_BULLETS_NUM]     = {};      // Fixed number of asteroid ï¿½slotsï¿½; nullptr if unused.
+	Asteroid*          m_asteroids[MAX_ASTEROIDS_NUM] = {};      // The ï¿½= {};ï¿½ syntax initializes the array to zeros.
 	Beetle*            m_beetle[MAX_BEETLE_NUM]       = {};
 	Wasp*              m_wasp[MAX_WASP_NUM]           = {};
 	Debris*            m_debris[MAX_DEBRIS_NUM]       = {};
 	Box*               m_boxes[MAX_BOX_NUM]           = {};
-	Camera*            m_worldCamera;
-	Camera*            m_screenCamera;
-	int                m_currentWave;
-	float              m_timeSinceDeath;
-	int                m_playerShipHealth;
-	bool               m_isAttractMode;
-	bool               m_isPlayerNameInputMode;
-	bool               m_isHighScoreboardMode;
-	bool               m_isDebugRendering;
-	UIHandler*         m_theUIHandler;
-	float              m_shakeIntensity; // Current intensity of the shake
-	float              m_shakeDuration;  // Time remaining for the shake
-	Vec2               m_baseCameraPos;
-	float              m_accumulatedTime;
-	ScoreBoardHandler* m_theScoreBoardHandler;
-	float              m_debrisVelocityRate;
-	int                m_highScore;
+	Camera*            m_worldCamera                  = nullptr;
+	Camera*            m_screenCamera                 = nullptr;
+	int                m_currentWave                  = 0;
+	float              m_timeSinceDeath               = 0.f;
+	int                m_playerShipHealth             = MAX_PLAYER_SHIP_HEALTH;
+	bool               m_isAttractMode                = true;
+	bool               m_isPlayerNameInputMode        = false;
+	bool               m_isHighScoreboardMode         = false;
+	bool               m_isDebugRendering             = false;
+	UIHandler*         m_theUIHandler                 = nullptr;
+	float              m_shakeIntensity               = 5.f; // Current intensity of the shake
+	float              m_shakeDuration                = 20.f;  // Time remaining for the shake
+	Vec2               m_baseCameraPos                = Vec2::ZERO;
+	float              m_accumulatedTime              = 0.f;
+	ScoreBoardHandler* m_theScoreBoardHandler         = nullptr;
+	float              m_debrisVelocityRate = 0.5f;
+	int                m_highScore = 0;
 };

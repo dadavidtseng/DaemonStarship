@@ -1,8 +1,9 @@
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 // Game.cpp
-//
+//----------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
 #include "Engine/Audio/AudioSystem.hpp"
@@ -16,25 +17,8 @@
 #include "Game/ScoreBoardHandler.hpp"
 #include "Game/UIHandler.hpp"
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 Game::Game()
-    : m_worldCamera(nullptr),
-      m_screenCamera(nullptr),
-      m_currentWave(0),
-      m_timeSinceDeath(0.f),
-      m_playerShipHealth(MAX_PLAYER_SHIP_HEALTH),
-      m_isAttractMode(true),
-      m_isPlayerNameInputMode(false),
-      m_isHighScoreboardMode(false),
-      m_isDebugRendering(false),
-      m_theUIHandler(nullptr),
-      m_shakeIntensity(5.f),
-      m_shakeDuration(20.f),
-      m_baseCameraPos(Vec2::ZERO),
-      m_accumulatedTime(0.f),
-      m_theScoreBoardHandler(nullptr),
-      m_debrisVelocityRate(0.5f),
-      m_highScore(0)
 {
     m_worldCamera          = new Camera();
     m_screenCamera         = new Camera();
@@ -45,15 +29,15 @@ Game::Game()
     SpawnBoxCluster();
     SpawnEnemiesForCurrentWave();
 
-    Vec2 const  bottomLeft     = Vec2::ZERO;
-    Vec2 const  worldTopRight  = Vec2(WORLD_SIZE_X, WORLD_SIZE_Y);
-    Vec2 const  screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
+    Vec2 const bottomLeft     = Vec2::ZERO;
+    Vec2 const worldTopRight  = Vec2(WORLD_SIZE_X, WORLD_SIZE_Y);
+    Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
     m_worldCamera->SetOrthoView(bottomLeft, worldTopRight);
     m_screenCamera->SetOrthoView(bottomLeft, screenTopRight);
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
     delete m_theUIHandler;
@@ -120,7 +104,7 @@ Game::~Game()
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::Update(const float deltaSeconds)
 {
     if (m_isAttractMode)
@@ -179,7 +163,7 @@ void Game::Update(const float deltaSeconds)
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::Render()
 {
     if (!m_isAttractMode)
@@ -207,10 +191,10 @@ void Game::Render()
 
     if (m_isAttractMode)
     {
-         Rgba8 const clearColor = Rgba8(0, 0, 0);
+        Rgba8 const clearColor = Rgba8(0, 0, 0);
 
-         Vec2 const bottomLeft = Vec2::ZERO;
-         Vec2 const topRight   = Vec2(1600.f, 800.f);
+        Vec2 const bottomLeft = Vec2::ZERO;
+        Vec2 const topRight   = Vec2(1600.f, 800.f);
 
         m_screenCamera->SetOrthoView(bottomLeft, topRight);
         g_theRenderer->ClearScreen(clearColor);
@@ -261,7 +245,7 @@ void Game::ResetData()
     SetPlayerShipIsReadyToSpawnBullet(true);
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnBullet(Vec2 const& position, const float orientationDegrees)
 {
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
@@ -277,13 +261,13 @@ void Game::SpawnBullet(Vec2 const& position, const float orientationDegrees)
     ERROR_RECOVERABLE("Cannot spawn a new asteroid; all slots are full")
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 PlayerShip* Game::GetPlayerShip() const
 {
     return m_playerShip;
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::MarkAllEntityAsDeadAndGarbage()
 {
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
@@ -346,7 +330,7 @@ void Game::MarkAllEntityAsDeadAndGarbage()
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SetAttractMode(const bool isAttractMode)
 {
     m_isAttractMode = isAttractMode;
@@ -379,13 +363,13 @@ int Game::GetHighScore() const
     return m_highScore;
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnPlayerShip()
 {
     m_playerShip = new PlayerShip(this, Vec2(20.f, WORLD_CENTER_Y), 0.f, m_playerShipHealth, false);
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnBeetle(Vec2 const& position)
 {
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
@@ -401,7 +385,7 @@ void Game::SpawnBeetle(Vec2 const& position)
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnWasp(Vec2 const& position)
 {
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
@@ -417,7 +401,7 @@ void Game::SpawnWasp(Vec2 const& position)
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnAsteroid(Vec2 const& position)
 {
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
@@ -435,7 +419,7 @@ void Game::SpawnAsteroid(Vec2 const& position)
     ERROR_RECOVERABLE("Cannot spawn a new bullet; all slots are full")
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnDebris(Vec2 const& position, Vec2 const& velocity, float radius, Rgba8 color)
 {
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
@@ -449,7 +433,7 @@ void Game::SpawnDebris(Vec2 const& position, Vec2 const& velocity, float radius,
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::SpawnDebrisCluster(Vec2 const& position, Vec2 const& velocity, int numDebris, float radius, Rgba8 color)
 {
     for (int debrisIndex = 0; debrisIndex < numDebris; debrisIndex++)
@@ -499,7 +483,7 @@ void Game::SpawnBoxCluster()
 }
 
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::UpdateEntities(float deltaSeconds)
 {
     if (m_isAttractMode)
@@ -571,7 +555,7 @@ void Game::UpdateEntities(float deltaSeconds)
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
     if (!m_isAttractMode &&
@@ -605,7 +589,7 @@ void Game::UpdateFromKeyBoard()
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::UpdateFromController()
 {
     XboxController const& controller = g_theInput->GetController(0);
@@ -633,7 +617,7 @@ void Game::UpdateFromController()
         SpawnPlayerShip();
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::RenderEntities() const
 {
     if (m_playerShip)
@@ -689,7 +673,7 @@ void Game::RenderEntities() const
     }
 }
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::DebugRenderEntities() const
 {
     if (!m_isDebugRendering)
@@ -766,7 +750,7 @@ void Game::SpawnRandomEnemy(int boxIndex)
 }
 
 // #TODO: fix debris velocity
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 void Game::HandleEntityCollision()
 {
     // PlayerShip vs. Asteroid

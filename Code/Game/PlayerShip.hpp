@@ -33,10 +33,10 @@ private:
 
     Vertex_PCU m_localVerts[PLAYER_SHIP_VERTS_NUM];
 
-    bool  m_isTurningLeft;
-    bool  m_isTurningRight;
-    bool  m_isThrusting;
-    bool  m_isReadyToSpawnBullet;
-    float m_thrustRate;
-    int   m_playerScore;
+    bool  m_isTurningLeft        = false;
+    bool  m_isTurningRight       = false;
+    bool  m_isThrusting          = false;
+    bool  m_isReadyToSpawnBullet = false;
+    float m_thrustRate           = 0.f;
+    int   m_playerScore          = 0;
 };

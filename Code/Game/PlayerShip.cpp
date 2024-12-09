@@ -11,13 +11,7 @@
 
 //----------------------------------------------------------------------------------------------------
 PlayerShip::PlayerShip(Game* game, Vec2 const& position, float const orientationDegrees, int const health, bool const isReadyToSpawnBullet)
-    : Entity(game, position, orientationDegrees, PLAYER_SHIP_COLOR),
-      m_isTurningLeft(false),
-      m_isTurningRight(false),
-      m_isThrusting(false),
-      m_isReadyToSpawnBullet(false),
-      m_thrustRate(0.f),
-      m_playerScore(0)
+    : Entity(game, position, orientationDegrees, PLAYER_SHIP_COLOR)
 {
     m_health               = health;
     m_physicsRadius        = PLAYER_SHIP_PHYSICS_RADIUS;
