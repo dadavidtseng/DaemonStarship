@@ -14,8 +14,6 @@ public:
 
 private:
 	void InitializeLocalVerts() override;
-	void SubscribeToEvent(Game* a);
-	static void OnEventReceived(void* sender, void* args);
 
 	Vertex_PCU m_localVerts[WASP_VERTS_NUM];
 };

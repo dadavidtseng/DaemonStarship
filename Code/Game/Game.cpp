@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
 
-#include "EventHandler.hpp"
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
@@ -1169,11 +1168,6 @@ void Game::HandleEntityIsOffScreen() const
 
         m_bullets[bulletIndex]->MarkAsDead();
         m_bullets[bulletIndex]->MarkAsGarbage();
-
-        // INVOKE
-        EventArgs args = { 10 };
-        printf("XXX");
-        OnCustomEvent.Invoke(&args);
     }
 }
 

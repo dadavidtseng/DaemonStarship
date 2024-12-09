@@ -66,9 +66,6 @@
     <ClCompile Include="UIHandler.cpp">
       <Filter>Gameplay\Handlers</Filter>
     </ClCompile>
-    <ClCompile Include="EventHandler.cpp">
-      <Filter>Gameplay\Handlers</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Gameplay</Filter>
     </ClCompile>
@@ -108,9 +105,6 @@
       <Filter>Gameplay\Handlers</Filter>
     </ClInclude>
     <ClInclude Include="UIHandler.hpp">
-      <Filter>Gameplay\Handlers</Filter>
-    </ClInclude>
-    <ClInclude Include="EventHandler.hpp">
       <Filter>Gameplay\Handlers</Filter>
     </ClInclude>
     <ClInclude Include="App.hpp">

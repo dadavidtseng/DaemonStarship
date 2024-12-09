@@ -19,22 +19,10 @@ Box::Box(Game* game, Vec2 const& position, float const orientationDegrees)
     m_health = 5;
     m_boxCollider.SetCenter(position + Vec2(BOX_SIDE_LENGTH / 2.f, BOX_SIDE_LENGTH / 2.f));
     Box::InitializeLocalVerts();
-    SubscribeToEvent(game);
 }
 
 //-----------------------------------------------------------------------------------------------
 Box::~Box() = default;
-
-void Box::SubscribeToEvent(Game* a)
-{
-    a->OnCustomEvent.Subscribe(OnEventReceived, this);
-}
-
-void Box::OnEventReceived(void* sender, void* args)
-{
-    const EventArgs* eventArgs = static_cast<EventArgs*>(args);
-    printf("Box received event with value: %d\n", eventArgs->value);
-}
 
 //-----------------------------------------------------------------------------------------------
 void Box::Update(float deltaSeconds)

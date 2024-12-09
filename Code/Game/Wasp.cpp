@@ -1,7 +1,5 @@
 #include "Game/Wasp.hpp"
 
-#include <cstdio>
-
 #include "Game/Game.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -14,20 +12,7 @@ Wasp::Wasp(Game* game, const Vec2& position, float orientationDegrees)
 	m_cosmeticRadius = WASP_COSMETIC_RADIUS;
 
 	Wasp::InitializeLocalVerts();
-	SubscribeToEvent(game);
 }
-
-void Wasp::SubscribeToEvent(Game* a)
-{
-	a->OnCustomEvent.Subscribe(OnEventReceived, this);
-}
-
-void Wasp::OnEventReceived(void* sender, void* args)
-{
-	const EventArgs* eventArgs = static_cast<EventArgs*>(args);
-	printf("Wasp received event with value: %d\n", eventArgs->value);
-}
-
 
 Wasp::~Wasp() = default;
 

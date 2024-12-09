@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------------------------------
 #pragma once
 #include <Engine/Math/Vec2.hpp>
-#include "EventHandler.hpp"
 #include "Game/GameCommon.hpp"
 #include "Game/Asteroid.hpp"
 #include "Game/Beetle.hpp"
@@ -49,7 +48,6 @@ public:
 	void         SetPlayerShipIsReadyToSpawnBullet(bool isReadyToSpawnBullet) const;
 	bool         IsPlayerNameInputMode() const;
 	int          GetHighScore() const;
-	EventHandler OnCustomEvent;
 
 private:
 	void SpawnPlayerShip();

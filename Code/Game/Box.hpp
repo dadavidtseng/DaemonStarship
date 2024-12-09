@@ -13,8 +13,6 @@ class Box : public Entity
 public:
 	Box(Game* game, const Vec2& position, float orientationDegrees);
 	~Box() override;
-	void SubscribeToEvent(Game* a);
-	static void OnEventReceived(void* sender, void* args);
 
 	void  Update(float deltaSeconds) override;
 	void  Render() const override;
