@@ -124,3 +124,5 @@ extern Rgba8 const DEBUG_RENDER_GREEN;
 extern Rgba8 const DEBUG_RENDER_MAGENTA;
 extern Rgba8 const DEBUG_RENDER_CYAN;
 extern Rgba8 const DEBUG_RENDER_YELLOW;
+
+extern char const* const IN_GAME_BGM;

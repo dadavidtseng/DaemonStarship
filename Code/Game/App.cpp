@@ -31,33 +31,34 @@ App::~App() = default;
 //-----------------------------------------------------------------------------------------------
 void App::Startup()
 {
-	// Create All Engine Subsystems
-	InputSystemConfig inputConfig;
-	g_theInput = new InputSystem(inputConfig);
+    // Create All Engine Subsystems
+    InputSystemConfig inputConfig;
+    g_theInput = new InputSystem(inputConfig);
 
-	WindowConfig windowConfig;
-	windowConfig.m_aspectRatio = 2.f;
-	windowConfig.m_inputSystem = g_theInput;
-	windowConfig.m_windowTitle = "SD1-A4: Starship Gold";
-	g_theWindow                = new Window(windowConfig);
+    WindowConfig windowConfig;
+    windowConfig.m_aspectRatio = 2.f;
+    windowConfig.m_inputSystem = g_theInput;
+    windowConfig.m_windowTitle = "SD1-A4: Starship Gold";
+    g_theWindow                = new Window(windowConfig);
 
-	RenderConfig renderConfig;
-	renderConfig.m_window = g_theWindow;
-	g_theRenderer         = new Renderer(renderConfig); // Create render
+    RenderConfig renderConfig;
+    renderConfig.m_window = g_theWindow;
+    g_theRenderer         = new Renderer(renderConfig); // Create render
 
-	AudioSystemConfig audioConfig;
-	g_theAudio = new AudioSystem(audioConfig);
+    AudioSystemConfig audioConfig;
+    g_theAudio = new AudioSystem(audioConfig);
 
-	g_theInput->Startup();
-	g_theWindow->Startup();
-	g_theRenderer->Startup();
-	g_theAudio->Startup();
+    g_theInput->Startup();
+    g_theWindow->Startup();
+    g_theRenderer->Startup();
+    g_theAudio->Startup();
 
-	g_theRNG  = new RandomNumberGenerator();
-	m_theGame = new Game();
+    g_theRNG  = new RandomNumberGenerator();
+    m_theGame = new Game();
 
-	// SoundID InGameBgm = g_theAudio->CreateOrGetSound("Data/Audio/InGame_BGM.mp3");
-	// g_theAudio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
+    // TODO: move to game
+    SoundID InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM);
+    g_theAudio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -65,26 +66,26 @@ void App::Startup()
 //
 void App::Shutdown()
 {
-	delete m_theGame;
-	m_theGame = nullptr;
+    delete m_theGame;
+    m_theGame = nullptr;
 
-	g_theAudio->Shutdown();
-	g_theRenderer->Shutdown();
-	g_theWindow->Shutdown();
-	g_theInput->Shutdown();
+    g_theAudio->Shutdown();
+    g_theRenderer->Shutdown();
+    g_theWindow->Shutdown();
+    g_theInput->Shutdown();
 
-	// Destroy all Engine Subsystem
-	delete g_theAudio;
-	g_theAudio = nullptr;
+    // Destroy all Engine Subsystem
+    delete g_theAudio;
+    g_theAudio = nullptr;
 
-	delete g_theRenderer;
-	g_theRenderer = nullptr;
+    delete g_theRenderer;
+    g_theRenderer = nullptr;
 
-	delete g_theWindow;
-	g_theWindow = nullptr;
+    delete g_theWindow;
+    g_theWindow = nullptr;
 
-	delete g_theInput;
-	g_theInput = nullptr;
+    delete g_theInput;
+    g_theInput = nullptr;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -92,32 +93,32 @@ void App::Shutdown()
 //
 void App::RunFrame()
 {
-	const float timeNow      = static_cast<float>(GetCurrentTimeSeconds());
-	const float deltaSeconds = timeNow - m_timeLastFrameStart;
-	m_timeLastFrameStart     = timeNow;
+    float const timeNow      = static_cast<float>(GetCurrentTimeSeconds());
+    float const deltaSeconds = timeNow - m_timeLastFrameStart;
+    m_timeLastFrameStart     = timeNow;
 
-	// DebuggerPrintf("TimeNow = %.06f\n", timeNow);
+    // DebuggerPrintf("TimeNow = %.06f\n", timeNow);
 
-	BeginFrame();         // Engine pre-frame stuff
-	Update(deltaSeconds); // Game updates / moves / spawns / hurts / kills stuff
-	Render();             // Game draws current state of things
-	EndFrame();           // Engine post-frame stuff
+    BeginFrame();         // Engine pre-frame stuff
+    Update(deltaSeconds); // Game updates / moves / spawns / hurts / kills stuff
+    Render();             // Game draws current state of things
+    EndFrame();           // Engine post-frame stuff
 }
 
 //-----------------------------------------------------------------------------------------------
 bool App::IsQuitting() const
 {
-	return m_isQuitting;
+    return m_isQuitting;
 }
 
 void App::RunMainLoop()
 {
-	// Program main loop; keep running frames until it's time to quit
-	while (!IsQuitting())
-	{
-		// Sleep(16); // Temporary code to "slow down" our app to ~60Hz until we have proper frame timing in
-		RunFrame();
-	}
+    // Program main loop; keep running frames until it's time to quit
+    while (!IsQuitting())
+    {
+        // Sleep(16); // Temporary code to "slow down" our app to ~60Hz until we have proper frame timing in
+        RunFrame();
+    }
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -126,24 +127,24 @@ void App::RunMainLoop()
 //-----------------------------------------------------------------------------------------------
 void App::BeginFrame() const
 {
-	g_theInput->BeginFrame();
-	g_theWindow->BeginFrame();
-	g_theRenderer->BeginFrame();
-	g_theAudio->BeginFrame();
-	// g_theNetwork->BeginFrame();
-	// g_theWindow->BeginFrame();
-	// g_theDevConsole->BeginFrame();
-	// g_theEventSystem->BeginFrame();
-	// g_theNetwork->BeginFrame();
+    g_theInput->BeginFrame();
+    g_theWindow->BeginFrame();
+    g_theRenderer->BeginFrame();
+    g_theAudio->BeginFrame();
+    // g_theNetwork->BeginFrame();
+    // g_theWindow->BeginFrame();
+    // g_theDevConsole->BeginFrame();
+    // g_theEventSystem->BeginFrame();
+    // g_theNetwork->BeginFrame();
 }
 
 //-----------------------------------------------------------------------------------------------
 void App::Update(float deltaSeconds)
 {
-	HandleKeyPressed();
-	HandleKeyReleased();
-	AdjustForPauseAndTimeDistortion(deltaSeconds);
-	m_theGame->Update(deltaSeconds);
+    HandleKeyPressed();
+    HandleKeyReleased();
+    AdjustForPauseAndTimeDistortion(deltaSeconds);
+    m_theGame->Update(deltaSeconds);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -155,110 +156,110 @@ void App::Update(float deltaSeconds)
 //
 void App::Render() const
 {
-	m_theGame->Render();
+    m_theGame->Render();
 }
 
 //-----------------------------------------------------------------------------------------------
 void App::EndFrame() const
 {
-	g_theWindow->EndFrame();
-	g_theRenderer->EndFrame();
-	g_theInput->EndFrame();
-	g_theAudio->EndFrame();
+    g_theWindow->EndFrame();
+    g_theRenderer->EndFrame();
+    g_theInput->EndFrame();
+    g_theAudio->EndFrame();
 }
 
 //-----------------------------------------------------------------------------------------------
 void App::HandleKeyPressed()
 {
-	XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_theInput->GetController(0);
 
-	if (g_theInput->WasKeyJustPressed(KEYCODE_O))
-	{
-		m_isPaused = true;
-		m_theGame->Update(1.f / 60.f);
-	}
+    if (g_theInput->WasKeyJustPressed(KEYCODE_O))
+    {
+        m_isPaused = true;
+        m_theGame->Update(1.f / 60.f);
+    }
 
-	if (g_theInput->WasKeyJustPressed('T'))
-		m_isSlowMo = true;
+    if (g_theInput->WasKeyJustPressed('T'))
+        m_isSlowMo = true;
 
-	if (g_theInput->WasKeyJustPressed('P'))
-		m_isPaused = !m_isPaused;
+    if (g_theInput->WasKeyJustPressed('P'))
+        m_isPaused = !m_isPaused;
 
-	if (g_theInput->WasKeyJustPressed(KEYCODE_ESC) || controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
-	{
-		switch (m_theGame->IsAttractMode())
-		{
-		case true:
-			m_isQuitting = true;
+    if (g_theInput->WasKeyJustPressed(KEYCODE_ESC) || controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
+    {
+        switch (m_theGame->IsAttractMode())
+        {
+            case true:
+                m_isQuitting = true;
 
-			break;
+                break;
 
-		case false:
-			m_theGame->ResetData();
-			DeleteAndCreateNewGame();
-			m_theGame->SetAttractMode(true);
-			m_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
+            case false:
+                m_theGame->ResetData();
+                DeleteAndCreateNewGame();
+                m_theGame->SetAttractMode(true);
+                m_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
 
-			break;
-		}
-	}
+                break;
+        }
+    }
 
-	if (g_theInput->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
-	{
-		if (m_theGame)
-		{
-			m_theGame->MarkAllEntityAsDeadAndGarbage();
-		}
-	}
+    if (g_theInput->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
+    {
+        if (m_theGame)
+        {
+            m_theGame->MarkAllEntityAsDeadAndGarbage();
+        }
+    }
 
-	if (!m_theGame->IsAttractMode())
-	{
-		if (g_theInput->WasKeyJustPressed(KEYCODE_F8))
-		{
-			DeleteAndCreateNewGame();
-			m_theGame->SetAttractMode(true);
-			m_theGame->SetPlayerShipIsReadyToSpawnBullet(!false);
-		}
-	}
+    if (!m_theGame->IsAttractMode())
+    {
+        if (g_theInput->WasKeyJustPressed(KEYCODE_F8))
+        {
+            DeleteAndCreateNewGame();
+            m_theGame->SetAttractMode(true);
+            m_theGame->SetPlayerShipIsReadyToSpawnBullet(!false);
+        }
+    }
 
-	if (m_theGame->IsPlayerNameInputMode() &&
-		g_theInput->WasKeyJustPressed(KEYCODE_ENTER))
-	{
-		m_isPaused = false;
-	}
+    if (m_theGame->IsPlayerNameInputMode() &&
+        g_theInput->WasKeyJustPressed(KEYCODE_ENTER))
+    {
+        m_isPaused = false;
+    }
 }
 
 //-----------------------------------------------------------------------------------------------
 void App::HandleKeyReleased()
 {
-	XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_theInput->GetController(0);
 
-	if (g_theInput->WasKeyJustReleased('T') || controller.WasButtonJustReleased(XBOX_BUTTON_DPAD_UP))
-		m_isSlowMo = false;
+    if (g_theInput->WasKeyJustReleased('T') || controller.WasButtonJustReleased(XBOX_BUTTON_DPAD_UP))
+        m_isSlowMo = false;
 }
 
 //-----------------------------------------------------------------------------------------------
 void App::HandleQuitRequested()
 {
-	m_isQuitting = true;
+    m_isQuitting = true;
 }
 
 void App::AdjustForPauseAndTimeDistortion(float& deltaSeconds) const
 {
-	if (!m_theGame->IsAttractMode())
-	{
-		if (m_isPaused)
-			deltaSeconds = 0.f;
+    if (!m_theGame->IsAttractMode())
+    {
+        if (m_isPaused)
+            deltaSeconds = 0.f;
 
-		if (m_isSlowMo)
-			deltaSeconds *= 1 / 10.f;
-	}
+        if (m_isSlowMo)
+            deltaSeconds *= 1 / 10.f;
+    }
 }
 
 void App::DeleteAndCreateNewGame()
 {
-	delete m_theGame;
-	m_theGame = nullptr;
+    delete m_theGame;
+    m_theGame = nullptr;
 
-	m_theGame = new Game();
+    m_theGame = new Game();
 }

@@ -1,16 +1,20 @@
-#pragma once
-#include <string>
+//----------------------------------------------------------------------------------------------------
+// PlayerShip.hpp
+//----------------------------------------------------------------------------------------------------
 
-#include "Game/GameCommon.hpp"
+//----------------------------------------------------------------------------------------------------
+#pragma once
+
 #include "Game/Entity.hpp"
+#include "Game/GameCommon.hpp"
 
 struct PlayerScore;
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 class PlayerShip : public Entity
 {
 public:
-    PlayerShip(Game* game, const Vec2& position, float orientationDegrees, int health, bool isReadyToSpawnBullet);
+    PlayerShip(Game* game, Vec2 const& position, float orientationDegrees, int health, bool isReadyToSpawnBullet);
 
     void Update(float deltaSeconds) override;
     void Render() const override;

@@ -1,20 +1,24 @@
-#pragma once
-#include "Game/GameCommon.hpp"
-#include "Game/Entity.hpp"
+//----------------------------------------------------------------------------------------------------
+// Bullet.hpp
+//----------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+#pragma once
+#include "Game/Entity.hpp"
+#include "Game/GameCommon.hpp"
+
+//----------------------------------------------------------------------------------------------------
 class Bullet : public Entity
 {
 public:
-	Bullet(Game* game, const Vec2& position, float orientationDegrees);
-	~Bullet() override;
+    Bullet(Game* game, Vec2 const& position, float orientationDegrees);
 
-	void Update(float deltaSeconds) override;
-	void Render() const override;
-	void DebugRender() const override;
+    void Update(float deltaSeconds) override;
+    void Render() const override;
+    void DebugRender() const override;
 
 private:
-	void InitializeLocalVerts() override;
+    void InitializeLocalVerts() override;
 
-	Vertex_PCU m_localVerts[BULLET_VERTS_NUM];
+    Vertex_PCU m_localVerts[BULLET_VERTS_NUM];
 };
