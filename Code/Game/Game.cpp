@@ -195,7 +195,7 @@ void Game::Render()
 
     if (m_isAttractMode)
     {
-        Rgba8 const clearColor = Rgba8(0, 0, 0);
+        Rgba8 const clearColor = Rgba8::BLACK;
 
         Vec2 const bottomLeft = Vec2::ZERO;
         Vec2 const topRight   = Vec2(1600.f, 800.f);
