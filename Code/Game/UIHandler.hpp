@@ -17,7 +17,6 @@ class UIHandler
 {
 public:
 	explicit UIHandler(Game* game);
-	~UIHandler();
 
 	void Update(float deltaSeconds);
 	void ConfirmPlayerName() const;

@@ -4,14 +4,15 @@
 
 //-----------------------------------------------------------------------------------------------
 #include "Game/Debris.hpp"
-#include "Game/Game.hpp"
+
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Game/Game.hpp"
 
 //-----------------------------------------------------------------------------------------------
-Debris::Debris(Game* game, Vec2 const& position, Vec2 const& velocity, float radius, Rgba8 color)
+Debris::Debris(Game* game, Vec2 const& position, Vec2 const& velocity, float const radius, Rgba8 const color)
     : Entity(game, position, g_theRNG->RollRandomFloatInRange(0.f, 360.f), color),
       m_lifetime(2.f),
       m_initialLifetime(2.f)
@@ -72,7 +73,7 @@ void Debris::DebugRender() const
     if (m_isDead)
         return;
 
-    Vec2 playerShipPos = m_game->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = m_game->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,
@@ -115,19 +116,19 @@ void Debris::InitializeLocalVerts()
 
     for (int sideIndex = 0; sideIndex < DEBRIS_TRI_NUM; ++sideIndex)
     {
-        const int currentRadiusIndex = sideIndex;
-        const int nextRadiusIndex    = (sideIndex + 1) % DEBRIS_TRI_NUM;
+        int const currentRadiusIndex = sideIndex;
+        int const nextRadiusIndex    = (sideIndex + 1) % DEBRIS_TRI_NUM;
 
-        const int firstVertIndex  = sideIndex * 3 + 0;
-        const int secondVertIndex = sideIndex * 3 + 1;
-        const int thirdVertIndex  = sideIndex * 3 + 2;
+        int const firstVertIndex  = sideIndex * 3 + 0;
+        int const secondVertIndex = sideIndex * 3 + 1;
+        int const thirdVertIndex  = sideIndex * 3 + 2;
 
-        const Vec2 secondVert = localVertPositions[currentRadiusIndex];
-        const Vec2 thirdVert  = localVertPositions[nextRadiusIndex];
+        Vec2 const secondVert = localVertPositions[currentRadiusIndex];
+        Vec2 const thirdVert  = localVertPositions[nextRadiusIndex];
 
-        m_localVerts[firstVertIndex].m_position  = Vec3(0.f, 0.f, 0.f);                   // ???
-        m_localVerts[secondVertIndex].m_position = Vec3(secondVert.x, secondVert.y, 0.f); // ?????
-        m_localVerts[thirdVertIndex].m_position  = Vec3(thirdVert.x, thirdVert.y, 0.f);   // ?????
+        m_localVerts[firstVertIndex].m_position  = Vec3(0.f, 0.f, 0.f);
+        m_localVerts[secondVertIndex].m_position = Vec3(secondVert.x, secondVert.y, 0.f);
+        m_localVerts[thirdVertIndex].m_position  = Vec3(thirdVert.x, thirdVert.y, 0.f);
     }
 
     for (Vertex_PCU& m_localVert : m_localVerts)

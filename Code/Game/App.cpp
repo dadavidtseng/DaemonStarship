@@ -1,9 +1,9 @@
-//-----------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
 // App.cpp
-//
+//----------------------------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------------------------
-#include "Game/App.hpp"
+ #include "Game/App.hpp"
 
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
@@ -21,12 +21,6 @@ InputSystem*           g_theInput    = nullptr;
 Renderer*              g_theRenderer = nullptr; // Created and owned by the App
 RandomNumberGenerator* g_theRNG      = nullptr; // Created and owned by the App
 Window*                g_theWindow   = nullptr;
-
-//-----------------------------------------------------------------------------------------------
-App::App() = default;
-
-//-----------------------------------------------------------------------------------------------
-App::~App() = default;
 
 //-----------------------------------------------------------------------------------------------
 void App::Startup()
@@ -55,10 +49,6 @@ void App::Startup()
 
     g_theRNG  = new RandomNumberGenerator();
     m_theGame = new Game();
-
-    // TODO: move to game
-    SoundID InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM);
-    g_theAudio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
 }
 
 //-----------------------------------------------------------------------------------------------

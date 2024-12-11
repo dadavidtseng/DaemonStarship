@@ -13,8 +13,6 @@ class Game;
 class App
 {
 public:
-	App();
-	~App();
 	void Startup();
 	void Shutdown();
 	void RunFrame();

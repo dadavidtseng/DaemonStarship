@@ -35,6 +35,10 @@ Game::Game()
 
     m_worldCamera->SetOrthoView(bottomLeft, worldTopRight);
     m_screenCamera->SetOrthoView(bottomLeft, screenTopRight);
+
+
+    SoundID const InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM);
+    g_theAudio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -1158,7 +1162,6 @@ void Game::HandleEntityIsOffScreen() const
 //-----------------------------------------------------------------------------------------------
 Vec2 Game::GetOffScreenPosition(float entityCosmeticRadius) const
 {
-    float initialX = 0;
     float initialY = 0;
 
     // switch (g_theRNG->RollRandomIntInRange(1, 4))
@@ -1184,7 +1187,7 @@ Vec2 Game::GetOffScreenPosition(float entityCosmeticRadius) const
     // 	break;
     // }
 
-    initialX = g_theRNG->RollRandomFloatInRange(WORLD_SIZE_X, WORLD_SIZE_X + entityCosmeticRadius);
+    float initialX = g_theRNG->RollRandomFloatInRange(WORLD_SIZE_X, WORLD_SIZE_X + entityCosmeticRadius);
     // 	initialY = g_theRNG->RollRandomFloatInRange(0.f, WORLD_SIZE_Y);
 
     return Vec2(initialX, initialY);
