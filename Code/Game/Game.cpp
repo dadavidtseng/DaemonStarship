@@ -215,9 +215,9 @@ void Game::Render()
 
     if (g_theInput->WasKeyJustPressed('U'))
     {
-        PlayerScore       scoreboard[MAX_PLAYERS];
-        int               currentSize = 0;
-        const std::string filename    = R"(C:\p4\Personal\SD\Starship\Run\Data\Score\Scoreboard.txt)";
+        PlayerScore  scoreboard[MAX_PLAYERS];
+        int          currentSize = 0;
+        String const filename    = "Data/Score/Scoreboard.txt";
 
         m_theScoreBoardHandler->LoadScoreboardFromFile(scoreboard, currentSize, filename);
 
