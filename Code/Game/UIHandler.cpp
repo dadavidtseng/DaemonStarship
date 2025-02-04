@@ -55,7 +55,7 @@ void UIHandler::HandleKeyboardInput()
             m_playerShipName += c;
         }
     }
-    
+
     for (char n = '0'; n <= '9'; ++n)
     {
         if (g_theInput->WasKeyJustReleased(n))
