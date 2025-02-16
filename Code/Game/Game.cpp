@@ -7,6 +7,8 @@
 #include "Game/Game.hpp"
 
 #include "Engine/Audio/AudioSystem.hpp"
+#include "Engine/Core/DevConsole.hpp"
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
 #include "Engine/Input/InputSystem.hpp"
@@ -172,9 +174,9 @@ void Game::Render()
 {
     if (!m_isAttractMode)
     {
-        Rgba8 const clearColor = Rgba8(0, 0, 0);
-
-        g_theRenderer->ClearScreen(clearColor);
+        // Rgba8 const clearColor = Rgba8(0, 0, 0);
+        //
+        // g_theRenderer->ClearScreen(clearColor);
 
         g_theRenderer->BeginCamera(*m_worldCamera);
 
@@ -189,19 +191,20 @@ void Game::Render()
         g_theRenderer->BeginCamera(*m_screenCamera);
 
         m_theUIHandler->DrawInGameUI(m_playerShip->GetHealth() - 1);
+        // RenderDevConsole();
 
         g_theRenderer->EndCamera(*m_screenCamera);
     }
 
     if (m_isAttractMode)
     {
-        Rgba8 const clearColor = Rgba8::BLACK;
+        // Rgba8 const clearColor = Rgba8::BLACK;
 
-        Vec2 const bottomLeft = Vec2::ZERO;
-        Vec2 const topRight   = Vec2(1600.f, 800.f);
+        // Vec2 const bottomLeft = Vec2::ZERO;
+        // Vec2 const topRight   = Vec2(1600.f, 800.f);
 
-        m_screenCamera->SetOrthoView(bottomLeft, topRight);
-        g_theRenderer->ClearScreen(clearColor);
+        // m_screenCamera->SetOrthoView(bottomLeft, topRight);
+        // g_theRenderer->ClearScreen(clearColor);
         g_theRenderer->BeginCamera(*m_screenCamera);
 
         m_theUIHandler->DrawAttractModeUI();
@@ -675,6 +678,14 @@ void Game::RenderEntities() const
 
         m_boxes[boxIndex]->Render();
     }
+}
+
+void Game::RenderDevConsole() const
+{
+    AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 100.f));
+
+    g_theDevConsole->Render(box);
+
 }
 
 //----------------------------------------------------------------------------------------------------

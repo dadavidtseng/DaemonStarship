@@ -63,6 +63,7 @@ private:
 	void UpdateFromKeyBoard();
 	void UpdateFromController();
 	void RenderEntities() const;
+	void RenderDevConsole() const;
 	void DebugRenderEntities() const;
 
 	// entity-vs-entity interactions (e.g. physics, damage)
