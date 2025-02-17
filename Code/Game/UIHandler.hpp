@@ -18,7 +18,7 @@ class UIHandler
 public:
 	explicit UIHandler(Game* game);
 
-	void Update(float deltaSeconds);
+	void Update(double deltaSeconds);
 	void ConfirmPlayerName() const;
 	void HandleKeyboardInput();
 	void UpdateButtonSelection();

@@ -27,19 +27,17 @@ public:
 
 private:
     void BeginFrame() const;
-    void Update(float deltaSeconds);
+    void Update();
     void Render() const;
     void EndFrame() const;
 
     void HandleKeyPressed();
     void HandleKeyReleased();
     void HandleQuitRequested();
-    void AdjustForPauseAndTimeDistortion(float& deltaSeconds) const;
+    void AdjustForPauseAndTimeDistortion() const;
     void DeleteAndCreateNewGame();
 
-    bool    m_isPaused           = true;
     bool    m_isSlowMo           = false;
     float   m_timeLastFrameStart = 0.f;
-    Game*   m_theGame            = nullptr;
     Camera* m_devConsoleCamera   = nullptr;
 };

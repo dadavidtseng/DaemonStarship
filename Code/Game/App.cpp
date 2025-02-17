@@ -21,6 +21,7 @@
 App*                   g_theApp        = nullptr;   // Created and owned by Main_Windows.cpp
 AudioSystem*           g_theAudio      = nullptr;   // Created and owned by the App
 BitmapFont*            g_theBitmapFont = nullptr;   // Created and owned by the App
+Game*                  g_theGame       = nullptr;   // Created and owned by the App
 Renderer*              g_theRenderer   = nullptr;   // Created and owned by the App
 RandomNumberGenerator* g_theRNG        = nullptr;   // Created and owned by the App
 Window*                g_theWindow     = nullptr;   // Created and owned by the App
@@ -76,8 +77,8 @@ void App::Startup()
     g_theAudio->Startup();
 
     g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
-    g_theRNG  = new RandomNumberGenerator();
-    m_theGame = new Game();
+    g_theRNG        = new RandomNumberGenerator();
+    g_theGame       = new Game();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -85,8 +86,8 @@ void App::Startup()
 //
 void App::Shutdown()
 {
-    delete m_theGame;
-    m_theGame = nullptr;
+    delete g_theGame;
+    g_theGame = nullptr;
 
     delete g_theRNG;
     g_theRNG = nullptr;
@@ -124,16 +125,10 @@ void App::Shutdown()
 //
 void App::RunFrame()
 {
-    float const timeNow      = static_cast<float>(GetCurrentTimeSeconds());
-    float const deltaSeconds = timeNow - m_timeLastFrameStart;
-    m_timeLastFrameStart     = timeNow;
-
-    // DebuggerPrintf("TimeNow = %.06f\n", timeNow);
-
-    BeginFrame();         // Engine pre-frame stuff
-    Update(deltaSeconds); // Game updates / moves / spawns / hurts / kills stuff
-    Render();             // Game draws current state of things
-    EndFrame();           // Engine post-frame stuff
+    BeginFrame();       // Engine pre-frame stuff
+    Update();           // Game updates / moves / spawns / hurts / kills stuff
+    Render();           // Game draws current state of things
+    EndFrame();         // Engine post-frame stuff
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -158,6 +153,33 @@ bool App::OnWindowClose(EventArgs& arg)
 
 bool App::Event_KeyPressed(EventArgs& args)
 {
+    if (g_theDevConsole->IsOpen() == true)
+    {
+        return false;
+    }
+
+    int const           value   = args.GetValue("WM_KEYDOWN", -1);
+    unsigned char const keyCode = static_cast<unsigned char>(value);
+
+    if (keyCode == KEYCODE_ESC)
+    {
+        switch (g_theGame->IsAttractMode())
+        {
+        case true:
+            RequestQuit();
+
+            break;
+
+        case false:
+            g_theGame->ResetData();
+            g_theApp->DeleteAndCreateNewGame();
+            g_theGame->SetAttractMode(true);
+            g_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
+
+            break;
+        }
+    }
+
     return false;
 }
 
@@ -180,14 +202,14 @@ void App::BeginFrame() const
 }
 
 //----------------------------------------------------------------------------------------------------
-void App::Update(float deltaSeconds)
+void App::Update()
 {
     Clock::TickSystemClock();
 
     HandleKeyPressed();
     HandleKeyReleased();
-    AdjustForPauseAndTimeDistortion(deltaSeconds);
-    m_theGame->Update(deltaSeconds);
+    AdjustForPauseAndTimeDistortion();
+    g_theGame->Update();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -202,12 +224,8 @@ void App::Render() const
     Rgba8 const clearColor = Rgba8::BLACK;
 
     g_theRenderer->ClearScreen(clearColor);
-    // g_theRenderer->BeginCamera(*m_devConsoleCamera);
-    //
-    // DebugDrawRing(Vec2(800.f, 400.f), 300.f, 10.f, Rgba8(255, 127, 0));
-    //
-    m_theGame->Render();
-    // g_theRenderer->EndCamera(*m_devConsoleCamera);
+    g_theGame->Render();
+
     AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
 
     g_theDevConsole->Render(box);
@@ -227,61 +245,40 @@ void App::EndFrame() const
 //----------------------------------------------------------------------------------------------------
 void App::HandleKeyPressed()
 {
+    if (g_theDevConsole->IsOpen() == true)
+    {
+        return;
+    }
+
     XboxController const& controller = g_theInput->GetController(0);
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_O))
     {
-        m_isPaused = true;
-        m_theGame->Update(1.f / 60.f);
+        Clock::GetSystemClock().StepSingleFrame();
     }
 
     if (g_theInput->WasKeyJustPressed('T'))
         m_isSlowMo = true;
 
     if (g_theInput->WasKeyJustPressed('P'))
-        m_isPaused = !m_isPaused;
-
-    if (g_theInput->WasKeyJustPressed(KEYCODE_ESC) || controller.WasButtonJustPressed(XBOX_BUTTON_BACK))
-    {
-        switch (m_theGame->IsAttractMode())
-        {
-        case true:
-            m_isQuitting = true;
-
-            break;
-
-        case false:
-            m_theGame->ResetData();
-            DeleteAndCreateNewGame();
-            m_theGame->SetAttractMode(true);
-            m_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
-
-            break;
-        }
-    }
+        Clock::GetSystemClock().TogglePause();
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
     {
-        if (m_theGame)
+        if (g_theGame)
         {
-            m_theGame->MarkAllEntityAsDeadAndGarbage();
+            g_theGame->MarkAllEntityAsDeadAndGarbage();
         }
     }
 
-    if (!m_theGame->IsAttractMode())
+    if (!g_theGame->IsAttractMode())
     {
         if (g_theInput->WasKeyJustPressed(KEYCODE_F8))
         {
             DeleteAndCreateNewGame();
-            m_theGame->SetAttractMode(true);
-            m_theGame->SetPlayerShipIsReadyToSpawnBullet(!false);
+            g_theGame->SetAttractMode(true);
+            g_theGame->SetPlayerShipIsReadyToSpawnBullet(!false);
         }
-    }
-
-    if (m_theGame->IsPlayerNameInputMode() &&
-        g_theInput->WasKeyJustPressed(KEYCODE_ENTER))
-    {
-        m_isPaused = false;
     }
 }
 
@@ -301,23 +298,28 @@ void App::HandleQuitRequested()
 }
 
 //----------------------------------------------------------------------------------------------------
-void App::AdjustForPauseAndTimeDistortion(float& deltaSeconds) const
+void App::AdjustForPauseAndTimeDistortion() const
 {
-    if (!m_theGame->IsAttractMode())
+    if (!g_theGame->IsAttractMode())
     {
-        if (m_isPaused)
-            deltaSeconds = 0.f;
+        if (m_isSlowMo == true)
+        {
+            Clock::GetSystemClock().SetTimeScale(0.1f);
+        }
 
-        if (m_isSlowMo)
-            deltaSeconds *= 1 / 10.f;
+        if (
+            m_isSlowMo == false)
+        {
+            Clock::GetSystemClock().SetTimeScale(1.f);
+        }
     }
 }
 
 //----------------------------------------------------------------------------------------------------
 void App::DeleteAndCreateNewGame()
 {
-    delete m_theGame;
-    m_theGame = nullptr;
+    delete g_theGame;
+    g_theGame = nullptr;
 
-    m_theGame = new Game();
+    g_theGame = new Game();
 }

@@ -55,6 +55,7 @@ void Asteroid::Render() const
 
     TransformVertexArrayXY3D(ASTEROID_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
+    g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(ASTEROID_VERTS_NUM, tempWorldVerts);
 }
 

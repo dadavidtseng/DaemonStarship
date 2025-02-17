@@ -19,13 +19,21 @@
 #include "Game/ScoreBoardHandler.hpp"
 #include "Game/UIHandler.hpp"
 
+#if defined ERROR
+#undef ERROR
+#endif
+
 //----------------------------------------------------------------------------------------------------
 Game::Game()
 {
+    g_theEventSystem->SubscribeEventCallbackFunction("setscale", Command_SetTimeScale);
+    g_theEventSystem->FireEvent("help");
+
     m_worldCamera          = new Camera();
     m_screenCamera         = new Camera();
     m_theUIHandler         = new UIHandler(this);
     m_theScoreBoardHandler = new ScoreBoardHandler();
+    m_gameClock            = new Clock(Clock::GetSystemClock());
 
     SpawnPlayerShip();
     SpawnBoxCluster();
@@ -111,8 +119,15 @@ Game::~Game()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::Update(const float deltaSeconds)
+void Game::Update()
 {
+    if (g_theDevConsole->IsOpen() == true)
+    {
+        return;
+    }
+
+    double const deltaSeconds = m_gameClock->GetDeltaSeconds();
+
     if (m_isAttractMode)
     {
         m_theUIHandler->Update(deltaSeconds);
@@ -133,7 +148,7 @@ void Game::Update(const float deltaSeconds)
 
         if (m_currentWave >= static_cast<int>(sizeof(LEVEL_DATA) / sizeof(LevelData)))
         {
-            m_timeSinceDeath += deltaSeconds;
+            m_timeSinceDeath += (float)deltaSeconds;
 
             // #TODO: should finish debris animation before going back to attract mode
             if (m_timeSinceDeath >= 3.f)
@@ -147,7 +162,7 @@ void Game::Update(const float deltaSeconds)
 
     if (m_playerShip->GetHealth() == 0)
     {
-        m_timeSinceDeath += deltaSeconds;
+        m_timeSinceDeath += (float)deltaSeconds;
 
         if (m_timeSinceDeath >= 3.f)
         {
@@ -155,13 +170,13 @@ void Game::Update(const float deltaSeconds)
         }
     }
 
-    UpdateEntities(deltaSeconds);
+    UpdateEntities((float)deltaSeconds);
     DeleteGarbageEntities();
 
     // #TODO: add UpdateCamera(deltaSeconds);
     if (g_theInput->IsKeyDown('Y'))
     {
-        DoShakeCamera(deltaSeconds);
+        DoShakeCamera((float)deltaSeconds);
     }
     else if (g_theInput->WasKeyJustReleased('Y'))
     {
@@ -172,49 +187,31 @@ void Game::Update(const float deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Game::Render()
 {
+    g_theRenderer->BeginCamera(*m_worldCamera);
+
     if (!m_isAttractMode)
     {
-        // Rgba8 const clearColor = Rgba8(0, 0, 0);
-        //
-        // g_theRenderer->ClearScreen(clearColor);
-
-        g_theRenderer->BeginCamera(*m_worldCamera);
-
-        // #TODO: refactor
-
-        DebugRenderEntities();
-
         RenderEntities();
-
-        g_theRenderer->EndCamera(*m_worldCamera);
-
-        g_theRenderer->BeginCamera(*m_screenCamera);
-
-        m_theUIHandler->DrawInGameUI(m_playerShip->GetHealth() - 1);
-        // RenderDevConsole();
-
-        g_theRenderer->EndCamera(*m_screenCamera);
+        DebugRenderEntities();
     }
 
-    if (m_isAttractMode)
+    g_theRenderer->EndCamera(*m_worldCamera);
+
+    g_theRenderer->BeginCamera(*m_screenCamera);
+
+    if (!m_isAttractMode)
     {
-        // Rgba8 const clearColor = Rgba8::BLACK;
-
-        // Vec2 const bottomLeft = Vec2::ZERO;
-        // Vec2 const topRight   = Vec2(1600.f, 800.f);
-
-        // m_screenCamera->SetOrthoView(bottomLeft, topRight);
-        // g_theRenderer->ClearScreen(clearColor);
-        g_theRenderer->BeginCamera(*m_screenCamera);
-
+        m_theUIHandler->DrawInGameUI(m_playerShip->GetHealth() - 1);
+    }
+    else
+    {
         m_theUIHandler->DrawAttractModeUI();
 
         if (m_isPlayerNameInputMode)
             m_theUIHandler->DrawPlayerNameInput();
-
-        g_theRenderer->EndCamera(*m_screenCamera);
     }
 
+    g_theRenderer->EndCamera(*m_screenCamera);
 
     if (g_theInput->WasKeyJustPressed('U'))
     {
@@ -368,6 +365,22 @@ bool Game::IsPlayerNameInputMode() const
 int Game::GetHighScore() const
 {
     return m_highScore;
+}
+
+//----------------------------------------------------------------------------------------------------
+STATIC bool Game::Command_SetTimeScale(EventArgs& args)
+{
+    float const value = args.GetValue("scale", -1.f);
+
+    if (value == -1.f)
+    {
+        g_theDevConsole->AddLine(DevConsole::ERROR,"Your keyName is not valid, should be setscale scale=YourValue!");
+        return false;
+    }
+
+    g_theGame->m_gameClock->SetTimeScale(value);
+
+    return true;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -685,7 +698,6 @@ void Game::RenderDevConsole() const
     AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 100.f));
 
     g_theDevConsole->Render(box);
-
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -750,17 +762,17 @@ void Game::SpawnRandomEnemy(int boxIndex)
 {
     switch (g_theRNG->RollRandomIntInRange(0, 2))
     {
-        case 0:
-            SpawnAsteroid(m_boxes[boxIndex]->GetBoxCollider().GetCenter());
-            break;
+    case 0:
+        SpawnAsteroid(m_boxes[boxIndex]->GetBoxCollider().GetCenter());
+        break;
 
-        case 1:
-            SpawnBeetle(m_boxes[boxIndex]->GetBoxCollider().GetCenter());
-            break;
+    case 1:
+        SpawnBeetle(m_boxes[boxIndex]->GetBoxCollider().GetCenter());
+        break;
 
-        case 2:
-            SpawnWasp(m_boxes[boxIndex]->GetBoxCollider().GetCenter());
-            break;
+    case 2:
+        SpawnWasp(m_boxes[boxIndex]->GetBoxCollider().GetCenter());
+        break;
     }
 }
 

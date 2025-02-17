@@ -59,6 +59,7 @@ void Wasp::Render() const
 
     TransformVertexArrayXY3D(WASP_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
+    g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(WASP_VERTS_NUM, tempWorldVerts);
 }
 

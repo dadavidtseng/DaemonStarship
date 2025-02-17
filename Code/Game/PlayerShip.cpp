@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/PlayerShip.hpp"
 
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -70,6 +71,7 @@ void PlayerShip::Render() const
 
     // DebugDrawGlowCircle(m_position, 5.f, WASP_COLOR, 0.0001f);
 
+    g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
 }
 

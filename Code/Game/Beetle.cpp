@@ -53,6 +53,7 @@ void Beetle::Render() const
 
     TransformVertexArrayXY3D(BEETLE_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
+    g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(BEETLE_VERTS_NUM, tempWorldVerts);
 }
 

@@ -5,6 +5,9 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/UIHandler.hpp"
 #include <cmath>
+
+#include "Engine/Core/DevConsole.hpp"
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
 #include "Engine/Core/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
@@ -26,9 +29,14 @@ UIHandler::UIHandler(Game* game)
 }
 
 //----------------------------------------------------------------------------------------------------
-void UIHandler::Update(float const deltaSeconds)
+void UIHandler::Update(double const deltaSeconds)
 {
-    m_shiningTime += deltaSeconds;
+    if (g_theDevConsole->IsOpen() == true)
+    {
+        return;
+    }
+
+    m_shiningTime += (float)deltaSeconds;
 
     UpdateButtonSelection();
 

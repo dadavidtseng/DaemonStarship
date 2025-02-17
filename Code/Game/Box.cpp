@@ -67,6 +67,7 @@ void Box::Render() const
 
     TransformVertexArrayXY3D(BOX_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
+    g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(BOX_VERTS_NUM, tempWorldVerts);
 }
 
