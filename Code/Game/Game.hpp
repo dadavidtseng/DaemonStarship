@@ -21,13 +21,6 @@
 class Camera;
 class ScoreBoardHandler;
 class UIHandler;
-// class Asteroid;
-// class Beetle;
-// class Box;
-// class Bullet;
-// class Debris;
-// class PlayerShip;
-// class Wasp;
 
 //-----------------------------------------------------------------------------------------------
 class Game
