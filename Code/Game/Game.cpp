@@ -43,8 +43,8 @@ Game::Game()
     Vec2 const worldTopRight  = Vec2(WORLD_SIZE_X, WORLD_SIZE_Y);
     Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
 
-    m_worldCamera->SetOrthoView(bottomLeft, worldTopRight);
-    m_screenCamera->SetOrthoView(bottomLeft, screenTopRight);
+    m_worldCamera->SetOrthoGraphicView(bottomLeft, worldTopRight);
+    m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
 
 
     SoundID const InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM);
@@ -1340,7 +1340,7 @@ void Game::DoShakeCamera(float deltaSeconds)
         const Vec2  shakeOffset(shakeX * shakeX, shakeY * shakeY);
 
         // Reset camera to base position before applying shake
-        m_worldCamera->SetOrthoView(m_baseCameraPos, m_baseCameraPos + Vec2(WORLD_SIZE_X, WORLD_SIZE_Y));
+        m_worldCamera->SetOrthoGraphicView(m_baseCameraPos, m_baseCameraPos + Vec2(WORLD_SIZE_X, WORLD_SIZE_Y));
 
         // Apply the shake
         m_worldCamera->Translate2D(shakeOffset);
@@ -1354,5 +1354,5 @@ void Game::DoShakeCamera(float deltaSeconds)
 
 void Game::ResetCamera() const
 {
-    m_worldCamera->SetOrthoView(m_baseCameraPos, m_baseCameraPos + Vec2(200.f, 100.f));
+    m_worldCamera->SetOrthoGraphicView(m_baseCameraPos, m_baseCameraPos + Vec2(200.f, 100.f));
 }
