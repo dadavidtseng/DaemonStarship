@@ -792,7 +792,7 @@ void Game::HandleEntityCollision()
         if (m_playerShip->IsDead())
             continue;
 
-        if (DoDiscsOverlap(m_playerShip->GetPosition(),
+        if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
                            PLAYER_SHIP_PHYSICS_RADIUS,
                            m_asteroids[asteroidIndex]->GetPosition(),
                            ASTEROID_PHYSICS_RADIUS))
@@ -838,7 +838,7 @@ void Game::HandleEntityCollision()
             continue;
 
 
-        if (DoDiscsOverlap(m_playerShip->GetPosition(),
+        if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
                            PLAYER_SHIP_PHYSICS_RADIUS,
                            m_beetle[beetleIndex]->GetPosition(),
                            BEETLE_PHYSICS_RADIUS))
@@ -886,7 +886,7 @@ void Game::HandleEntityCollision()
             continue;
 
 
-        if (DoDiscsOverlap(m_playerShip->GetPosition(),
+        if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
                            PLAYER_SHIP_PHYSICS_RADIUS,
                            m_wasp[waspIndex]->GetPosition(),
                            WASP_PHYSICS_RADIUS))
@@ -933,7 +933,7 @@ void Game::HandleEntityCollision()
             if (!m_bullets[bulletIndex])
                 continue;
 
-            if (DoDiscsOverlap(m_bullets[bulletIndex]->GetPosition(),
+            if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
                                BULLET_PHYSICS_RADIUS,
                                m_asteroids[asteroidIndex]->GetPosition(),
                                ASTEROID_PHYSICS_RADIUS))
@@ -983,7 +983,7 @@ void Game::HandleEntityCollision()
             if (!m_beetle[beetleIndex])
                 continue;
 
-            if (DoDiscsOverlap(m_bullets[bulletIndex]->GetPosition(),
+            if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
                                BULLET_PHYSICS_RADIUS,
                                m_beetle[beetleIndex]->GetPosition(),
                                BEETLE_PHYSICS_RADIUS))
@@ -1031,7 +1031,7 @@ void Game::HandleEntityCollision()
             if (!m_wasp[waspIndex])
                 continue;
 
-            if (DoDiscsOverlap(m_bullets[bulletIndex]->GetPosition(),
+            if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
                                BULLET_PHYSICS_RADIUS,
                                m_wasp[waspIndex]->GetPosition(),
                                WASP_PHYSICS_RADIUS))
@@ -1131,7 +1131,7 @@ void Game::HandleCollisionBetweenPlayerShipAndBox()
         if (m_playerShip->IsDead())
             continue;
 
-        if (DoDiscsOverlap(m_playerShip->GetPosition(),
+        if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
                            PLAYER_SHIP_COSMETIC_RADIUS,
                            m_boxes[boxIndex]->GetBoxCollider().GetCenter(),
                            BOX_SIDE_LENGTH / 2.f))
