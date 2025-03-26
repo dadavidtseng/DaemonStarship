@@ -90,13 +90,13 @@ void Box::SetPosition(const Vec2& targetPosition)
 //-----------------------------------------------------------------------------------------------
 void Box::InitializeLocalVerts()
 {
-    m_localVerts[0].m_position = Vec3(0.f, 0.f, 0);
-    m_localVerts[1].m_position = Vec3(BOX_SIDE_LENGTH, 0.f, 0);
-    m_localVerts[2].m_position = Vec3(0.f, BOX_SIDE_LENGTH, 0);
+    m_localVerts[0].m_position = Vec3(0.f, 0.f, 0.f);
+    m_localVerts[1].m_position = Vec3(BOX_SIDE_LENGTH, 0.f, 0.f);
+    m_localVerts[2].m_position = Vec3(0.f, BOX_SIDE_LENGTH, 0.f);
 
-    m_localVerts[3].m_position = Vec3(0.f, BOX_SIDE_LENGTH, 0);
-    m_localVerts[4].m_position = Vec3(BOX_SIDE_LENGTH, 0.f, 0);
-    m_localVerts[5].m_position = Vec3(BOX_SIDE_LENGTH, BOX_SIDE_LENGTH, 0);
+    m_localVerts[3].m_position = Vec3(0.f, BOX_SIDE_LENGTH, 0.f);
+    m_localVerts[4].m_position = Vec3(BOX_SIDE_LENGTH, 0.f, 0.f);
+    m_localVerts[5].m_position = Vec3(BOX_SIDE_LENGTH, BOX_SIDE_LENGTH, 0.f);
 
     for (Vertex_PCU& m_localVert : m_localVerts)
     {
