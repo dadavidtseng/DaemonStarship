@@ -9,12 +9,11 @@
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/Time.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/BitmapFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Engine/Renderer/Window.hpp"
+#include "Engine/Platform/Window.hpp"
 #include "Game/Game.hpp"
 
 //----------------------------------------------------------------------------------------------------
@@ -33,40 +32,36 @@ STATIC bool App::m_isQuitting = false;
 void App::Startup()
 {
     // Create All Engine Subsystems
-    EventSystemConfig eventSystemConfig;
+    sEventSystemConfig eventSystemConfig;
     g_theEventSystem = new EventSystem(eventSystemConfig);
-    g_theEventSystem->SubscribeEventCallbackFunction("WM_CLOSE", OnWindowClose);
+    g_theEventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnWindowClose);
     g_theEventSystem->SubscribeEventCallbackFunction("WM_KEYDOWN", Event_KeyPressed);
     g_theEventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
 
-    InputSystemConfig inputConfig;
+    sInputSystemConfig inputConfig;
     g_theInput = new InputSystem(inputConfig);
 
-    WindowConfig windowConfig;
+    sWindowConfig windowConfig;
+    windowConfig.m_windowType = eWindowType::FULLSCREEN_CROP;
     windowConfig.m_aspectRatio = 2.f;
     windowConfig.m_inputSystem = g_theInput;
     windowConfig.m_windowTitle = "SD1-A4: Starship Gold";
     g_theWindow                = new Window(windowConfig);
 
-    RenderConfig renderConfig;
+    sRenderConfig renderConfig;
     renderConfig.m_window = g_theWindow;
     g_theRenderer         = new Renderer(renderConfig); // Create render
 
     // Initialize devConsoleCamera
     m_devConsoleCamera = new Camera();
 
-    Vec2 const bottomLeft     = Vec2::ZERO;
-    Vec2 const screenTopRight = Vec2(SCREEN_SIZE_X, SCREEN_SIZE_Y);
-
-    m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
-
-    DevConsoleConfig devConsoleConfig;
+    sDevConsoleConfig devConsoleConfig;
     devConsoleConfig.m_defaultRenderer = g_theRenderer;
     devConsoleConfig.m_defaultFontName = "SquirrelFixedFont";
     devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
     g_theDevConsole                    = new DevConsole(devConsoleConfig);
 
-    AudioSystemConfig audioConfig;
+    sAudioSystemConfig audioConfig;
     g_theAudio = new AudioSystem(audioConfig);
 
     g_theEventSystem->Startup();
@@ -227,7 +222,12 @@ void App::Render() const
     g_theGame->Render();
 
     AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
-
+    Vec2 const bottomLeft     = Vec2::ZERO;
+    Vec2 const screenTopRight = Vec2(1600.f, 800.f);
+    float      x              = (float)Window::s_mainWindow->GetClientDimensions().x;
+    float      y              = (float)Window::s_mainWindow->GetClientDimensions().y;
+    m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
+    m_devConsoleCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
     g_theDevConsole->Render(box);
 }
 

@@ -15,6 +15,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Platform/Window.hpp"
 #include "Game/LevelData.hpp"
 #include "Game/ScoreBoardHandler.hpp"
 #include "Game/UIHandler.hpp"
@@ -45,9 +46,12 @@ Game::Game()
 
     m_worldCamera->SetOrthoGraphicView(bottomLeft, worldTopRight);
     m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
+    float x = (float)Window::s_mainWindow->GetClientDimensions().x;
+    float y = (float)Window::s_mainWindow->GetClientDimensions().y;
+    m_worldCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
+    m_screenCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
 
-
-    SoundID const InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM);
+    SoundID const InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM,eAudioSystemSoundDimension::Sound2D);
     g_theAudio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
 }
 
@@ -802,7 +806,7 @@ void Game::HandleEntityCollision()
             m_playerShipHealth = m_playerShip->GetHealth();
             m_asteroids[asteroidIndex]->SetHealth(1);
 
-            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
@@ -848,7 +852,7 @@ void Game::HandleEntityCollision()
             m_playerShipHealth = m_playerShip->GetHealth();
             m_beetle[beetleIndex]->SetHealth(1);
 
-            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
@@ -891,7 +895,7 @@ void Game::HandleEntityCollision()
                            m_wasp[waspIndex]->GetPosition(),
                            WASP_PHYSICS_RADIUS))
         {
-            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             m_playerShip->SetHealth(1);
@@ -938,7 +942,7 @@ void Game::HandleEntityCollision()
                                m_asteroids[asteroidIndex]->GetPosition(),
                                ASTEROID_PHYSICS_RADIUS))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -988,7 +992,7 @@ void Game::HandleEntityCollision()
                                m_beetle[beetleIndex]->GetPosition(),
                                BEETLE_PHYSICS_RADIUS))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -1036,7 +1040,7 @@ void Game::HandleEntityCollision()
                                m_wasp[waspIndex]->GetPosition(),
                                WASP_PHYSICS_RADIUS))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -1081,7 +1085,7 @@ void Game::HandleEntityCollision()
 
             if (m_boxes[boxIndex]->GetBoxCollider().IsPointInside(m_bullets[bulletIndex]->GetPosition()))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3");
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),

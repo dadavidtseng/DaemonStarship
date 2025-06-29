@@ -198,7 +198,12 @@ void UIHandler::DrawAttractModeUI() const
                                    1.f,
                                    true,
                                    0.3f);
-
+        g_theRenderer->SetModelConstants();
+        g_theRenderer->SetBlendMode(eBlendMode::ALPHA);
+        g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_NONE);
+        g_theRenderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
+        g_theRenderer->SetDepthMode(eDepthMode::DISABLED);
+        g_theRenderer->BindTexture(nullptr);
         g_theRenderer->DrawVertexArray(static_cast<int>(titleVerts.size()), titleVerts.data());
 
         for (int buttonIndex = 0; buttonIndex < 2; ++buttonIndex)

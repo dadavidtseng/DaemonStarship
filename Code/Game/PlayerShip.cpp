@@ -70,7 +70,7 @@ void PlayerShip::Render() const
     TransformVertexArrayXY3D(PLAYER_SHIP_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
     // DebugDrawGlowCircle(m_position, 5.f, WASP_COLOR, 0.0001f);
-
+g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_NONE);
     g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
 }
