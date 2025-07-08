@@ -30,8 +30,7 @@ void PlayerShip::Update(float const deltaSeconds)
     UpdateFromKeyBoard();
     UpdateFromController();
 
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     if (m_isThrusting)
     {
@@ -41,11 +40,9 @@ void PlayerShip::Update(float const deltaSeconds)
         m_velocity += acceleration * deltaSeconds;
     }
 
-    if (m_isTurningLeft)
-        m_orientationDegrees += PLAYER_SHIP_TURN_SPEED * deltaSeconds;
+    if (m_isTurningLeft) m_orientationDegrees += PLAYER_SHIP_TURN_SPEED * deltaSeconds;
 
-    if (m_isTurningRight)
-        m_orientationDegrees -= PLAYER_SHIP_TURN_SPEED * deltaSeconds;
+    if (m_isTurningRight) m_orientationDegrees -= PLAYER_SHIP_TURN_SPEED * deltaSeconds;
 
     m_position += m_velocity * deltaSeconds;
 
@@ -55,8 +52,7 @@ void PlayerShip::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void PlayerShip::Render() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
 
     Vertex_PCU tempWorldVerts[PLAYER_SHIP_VERTS_NUM];
@@ -70,7 +66,7 @@ void PlayerShip::Render() const
     TransformVertexArrayXY3D(PLAYER_SHIP_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
     // DebugDrawGlowCircle(m_position, 5.f, WASP_COLOR, 0.0001f);
-g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_NONE);
+    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
     g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
 }
@@ -169,8 +165,8 @@ void PlayerShip::SetPlayerScore(int delta)
 void PlayerShip::InitializeLocalVerts()
 {
     m_localVerts[0].m_position = Vec3(-2.f, 1.f, 0.f);
-    m_localVerts[1].m_position = Vec3(0.f, 2.f, 0.f);
-    m_localVerts[2].m_position = Vec3(2.f, 1.f, 0.f);
+    m_localVerts[1].m_position = Vec3(2.f, 1.f, 0.f);
+    m_localVerts[2].m_position = Vec3(0.f, 2.f, 0.f);
 
     m_localVerts[3].m_position = Vec3(0.f, 1.f, 0.f);
     m_localVerts[4].m_position = Vec3(-2.f, 1.f, 0.f);
