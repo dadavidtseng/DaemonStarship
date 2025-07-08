@@ -88,13 +88,3 @@ Rgba8 Entity::GetColor() const
 {
     return m_color;
 }
-
-int Entity::GetHealth() const
-{
-    return m_health;
-}
-
-void Entity::SetHealth(int const delta)
-{
-    m_health -= delta;
-}

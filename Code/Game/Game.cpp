@@ -164,7 +164,7 @@ void Game::Update()
         SpawnEnemiesForCurrentWave();
     }
 
-    if (m_playerShip->GetHealth() == 0)
+    if (m_playerShip->m_health == 0)
     {
         m_timeSinceDeath += (float)deltaSeconds;
 
@@ -205,7 +205,7 @@ void Game::Render()
 
     if (!m_isAttractMode)
     {
-        m_theUIHandler->DrawInGameUI(m_playerShip->GetHealth() - 1);
+        m_theUIHandler->DrawInGameUI(m_playerShip->m_health - 1);
     }
     else
     {
@@ -801,10 +801,10 @@ void Game::HandleEntityCollision()
                            m_asteroids[asteroidIndex]->GetPosition(),
                            ASTEROID_PHYSICS_RADIUS))
         {
-            m_playerShip->SetHealth(1);
+            m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
-            m_playerShipHealth = m_playerShip->GetHealth();
-            m_asteroids[asteroidIndex]->SetHealth(1);
+            m_playerShipHealth = m_playerShip->m_health;
+            m_asteroids[asteroidIndex]->m_health--;
 
             const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
@@ -816,7 +816,7 @@ void Game::HandleEntityCollision()
                                m_playerShip->GetColor());
         }
 
-        if (m_asteroids[asteroidIndex]->GetHealth() == 0)
+        if (m_asteroids[asteroidIndex]->m_health == 0)
         {
             SpawnDebrisCluster(m_asteroids[asteroidIndex]->GetPosition(),
                                -m_asteroids[asteroidIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -847,10 +847,10 @@ void Game::HandleEntityCollision()
                            m_beetle[beetleIndex]->GetPosition(),
                            BEETLE_PHYSICS_RADIUS))
         {
-            m_playerShip->SetHealth(1);
+            m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
-            m_playerShipHealth = m_playerShip->GetHealth();
-            m_beetle[beetleIndex]->SetHealth(1);
+            m_playerShipHealth = m_playerShip->m_health;
+            m_beetle[beetleIndex]->m_health--;
 
             const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
@@ -864,7 +864,7 @@ void Game::HandleEntityCollision()
             continue;
         }
 
-        if (m_beetle[beetleIndex]->GetHealth() == 0)
+        if (m_beetle[beetleIndex]->m_health == 0)
         {
             SpawnDebrisCluster(m_beetle[beetleIndex]->GetPosition(),
                                m_beetle[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -898,10 +898,10 @@ void Game::HandleEntityCollision()
             const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
-            m_playerShip->SetHealth(1);
+            m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
-            m_playerShipHealth = m_playerShip->GetHealth();
-            m_wasp[waspIndex]->SetHealth(1);
+            m_playerShipHealth = m_playerShip->m_health;
+            m_wasp[waspIndex]->m_health--;
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
                                m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -911,7 +911,7 @@ void Game::HandleEntityCollision()
         }
 
 
-        if (m_wasp[waspIndex]->GetHealth() == 0)
+        if (m_wasp[waspIndex]->m_health == 0)
         {
             SpawnDebrisCluster(m_wasp[waspIndex]->GetPosition(),
                                -m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -955,10 +955,10 @@ void Game::HandleEntityCollision()
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
-                m_asteroids[asteroidIndex]->SetHealth(1);
+                m_asteroids[asteroidIndex]->m_health--;
             }
 
-            if (m_asteroids[asteroidIndex]->GetHealth() != 0)
+            if (m_asteroids[asteroidIndex]->m_health != 0)
                 continue;
 
             SpawnDebrisCluster(m_asteroids[asteroidIndex]->GetPosition(),
@@ -1005,10 +1005,10 @@ void Game::HandleEntityCollision()
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
-                m_beetle[beetleIndex]->SetHealth(1);
+                m_beetle[beetleIndex]->m_health--;
             }
 
-            if (m_beetle[beetleIndex]->GetHealth() != 0)
+            if (m_beetle[beetleIndex]->m_health != 0)
                 continue;
 
             SpawnDebrisCluster(m_beetle[beetleIndex]->GetPosition(),
@@ -1053,10 +1053,10 @@ void Game::HandleEntityCollision()
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
-                m_wasp[waspIndex]->SetHealth(1);
+                m_wasp[waspIndex]->m_health--;
             }
 
-            if (m_wasp[waspIndex]->GetHealth() != 0)
+            if (m_wasp[waspIndex]->m_health != 0)
                 continue;
 
             SpawnDebrisCluster(m_wasp[waspIndex]->GetPosition(),
@@ -1098,10 +1098,10 @@ void Game::HandleEntityCollision()
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
-                m_boxes[boxIndex]->SetHealth(1);
+                m_boxes[boxIndex]->m_health--;
             }
 
-            if (m_boxes[boxIndex]->GetHealth() != 0)
+            if (m_boxes[boxIndex]->m_health != 0)
                 continue;
 
             SpawnDebrisCluster(m_boxes[boxIndex]->GetPosition(),

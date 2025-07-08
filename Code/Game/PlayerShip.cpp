@@ -117,9 +117,9 @@ void PlayerShip::UpdateFromController()
         m_game->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
     }
 
-    if (g_theInput->IsKeyDown('E') || controller.GetLeftStick().GetMagnitude() > 0.f)
+    if (g_theInput->IsKeyDown(KEYCODE_W) || controller.GetLeftStick().GetMagnitude() > 0.f)
     {
-        if (g_theInput->IsKeyDown('E'))
+        if (g_theInput->IsKeyDown(KEYCODE_W))
         {
             m_isThrusting = true;
             m_thrustRate  = 1;
@@ -222,8 +222,8 @@ void PlayerShip::BounceOffWall()
 //-----------------------------------------------------------------------------------------------
 void PlayerShip::UpdateFromKeyBoard()
 {
-    m_isTurningLeft  = g_theInput->IsKeyDown('S');
-    m_isTurningRight = g_theInput->IsKeyDown('F');
+    m_isTurningLeft  = g_theInput->IsKeyDown(KEYCODE_A);
+    m_isTurningRight = g_theInput->IsKeyDown(KEYCODE_D);
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE) &&
         m_isReadyToSpawnBullet &&
