@@ -126,3 +126,14 @@ extern Rgba8 const DEBUG_RENDER_CYAN;
 extern Rgba8 const DEBUG_RENDER_YELLOW;
 
 extern char const* const IN_GAME_BGM;
+
+//----------------------------------------------------------------------------------------------------
+template <typename T>
+void GAME_SAFE_RELEASE(T*& pointer)
+{
+    if (pointer != nullptr)
+    {
+        delete pointer;
+        pointer = nullptr;
+    }
+}

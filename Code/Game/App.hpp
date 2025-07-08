@@ -21,7 +21,6 @@ public:
     void RunMainLoop();
 
     static bool OnWindowClose(EventArgs& arg);
-    static bool Event_KeyPressed(EventArgs& args);
     static void RequestQuit();
     static bool m_isQuitting;
 

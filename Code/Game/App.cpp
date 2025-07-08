@@ -29,30 +29,47 @@ Window*                g_theWindow     = nullptr;   // Created and owned by the 
 STATIC bool App::m_isQuitting = false;
 
 //----------------------------------------------------------------------------------------------------
+/// @brief
+/// Create all engine subsystems in a specific order.
 void App::Startup()
 {
-    // Create All Engine Subsystems
-    sEventSystemConfig eventSystemConfig;
+    //-Start-of-EventSystem---------------------------------------------------------------------------
+
+    sEventSystemConfig constexpr eventSystemConfig;
     g_theEventSystem = new EventSystem(eventSystemConfig);
     g_theEventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnWindowClose);
-    g_theEventSystem->SubscribeEventCallbackFunction("WM_KEYDOWN", Event_KeyPressed);
     g_theEventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
 
-    sInputSystemConfig inputConfig;
+    //-End-of-EventSystem-----------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-InputSystem---------------------------------------------------------------------------
+
+    sInputSystemConfig constexpr inputConfig;
     g_theInput = new InputSystem(inputConfig);
 
+    //-End-of-InputSystem-----------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-Window--------------------------------------------------------------------------------
+
     sWindowConfig windowConfig;
-    windowConfig.m_windowType = eWindowType::FULLSCREEN_CROP;
+    windowConfig.m_windowType  = eWindowType::FULLSCREEN_CROP;
     windowConfig.m_aspectRatio = 2.f;
     windowConfig.m_inputSystem = g_theInput;
     windowConfig.m_windowTitle = "SD1-A4: Starship Gold";
     g_theWindow                = new Window(windowConfig);
 
+    //-End-of-Window----------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-Renderer------------------------------------------------------------------------------
+
     sRenderConfig renderConfig;
     renderConfig.m_window = g_theWindow;
-    g_theRenderer         = new Renderer(renderConfig); // Create render
+    g_theRenderer         = new Renderer(renderConfig);
 
-    // Initialize devConsoleCamera
+    //-End-of-Renderer--------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-DevConsole----------------------------------------------------------------------------
+
     m_devConsoleCamera = new Camera();
 
     sDevConsoleConfig devConsoleConfig;
@@ -61,8 +78,14 @@ void App::Startup()
     devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
     g_theDevConsole                    = new DevConsole(devConsoleConfig);
 
-    sAudioSystemConfig audioConfig;
+    //-End-of-DevConsole------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------
+    //-Start-of-AudioSystem---------------------------------------------------------------------------
+
+    sAudioSystemConfig constexpr audioConfig;
     g_theAudio = new AudioSystem(audioConfig);
+
+    //-End-of-AudioSystem-----------------------------------------------------------------------------
 
     g_theEventSystem->Startup();
     g_theWindow->Startup();
@@ -81,20 +104,14 @@ void App::Startup()
 //
 void App::Shutdown()
 {
-    delete g_theGame;
-    g_theGame = nullptr;
-
-    delete g_theRNG;
-    g_theRNG = nullptr;
-
-    delete g_theBitmapFont;
-    g_theBitmapFont = nullptr;
+    GAME_SAFE_RELEASE(g_theGame);
+    GAME_SAFE_RELEASE(g_theRNG);
+    GAME_SAFE_RELEASE(g_theBitmapFont);
 
     g_theAudio->Shutdown();
     g_theDevConsole->Shutdown();
 
-    delete m_devConsoleCamera;
-    m_devConsoleCamera = nullptr;
+    GAME_SAFE_RELEASE(m_devConsoleCamera);
 
     g_theRenderer->Shutdown();
     g_theWindow->Shutdown();
@@ -102,17 +119,10 @@ void App::Shutdown()
     g_theEventSystem->Shutdown();
 
     // Destroy all Engine Subsystem
-    delete g_theAudio;
-    g_theAudio = nullptr;
-
-    delete g_theRenderer;
-    g_theRenderer = nullptr;
-
-    delete g_theWindow;
-    g_theWindow = nullptr;
-
-    delete g_theInput;
-    g_theInput = nullptr;
+    GAME_SAFE_RELEASE(g_theAudio);
+    GAME_SAFE_RELEASE(g_theRenderer);
+    GAME_SAFE_RELEASE(g_theWindow);
+    GAME_SAFE_RELEASE(g_theInput);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -146,38 +156,6 @@ bool App::OnWindowClose(EventArgs& arg)
     return true;
 }
 
-bool App::Event_KeyPressed(EventArgs& args)
-{
-    if (g_theDevConsole->IsOpen() == true)
-    {
-        return false;
-    }
-
-    int const           value   = args.GetValue("WM_KEYDOWN", -1);
-    unsigned char const keyCode = static_cast<unsigned char>(value);
-
-    if (keyCode == KEYCODE_ESC)
-    {
-        switch (g_theGame->IsAttractMode())
-        {
-        case true:
-            RequestQuit();
-
-            break;
-
-        case false:
-            g_theGame->ResetData();
-            g_theApp->DeleteAndCreateNewGame();
-            g_theGame->SetAttractMode(true);
-            g_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
-
-            break;
-        }
-    }
-
-    return false;
-}
-
 //----------------------------------------------------------------------------------------------------
 void App::RequestQuit()
 {
@@ -188,12 +166,11 @@ void App::RequestQuit()
 void App::BeginFrame() const
 {
     g_theEventSystem->BeginFrame();
-    g_theInput->BeginFrame();
     g_theWindow->BeginFrame();
     g_theRenderer->BeginFrame();
     g_theDevConsole->BeginFrame();
+    g_theInput->BeginFrame();
     g_theAudio->BeginFrame();
-    // g_theNetwork->BeginFrame();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -221,11 +198,9 @@ void App::Render() const
     g_theRenderer->ClearScreen(clearColor);
     g_theGame->Render();
 
-    AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
-    Vec2 const bottomLeft     = Vec2::ZERO;
-    Vec2 const screenTopRight = Vec2(1600.f, 800.f);
-    float      x              = (float)Window::s_mainWindow->GetClientDimensions().x;
-    float      y              = (float)Window::s_mainWindow->GetClientDimensions().y;
+    AABB2 const box            = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
+    Vec2 const  bottomLeft     = Vec2::ZERO;
+    Vec2 const  screenTopRight = Vec2(1600.f, 800.f);
     m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
     m_devConsoleCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
     g_theDevConsole->Render(box);
@@ -235,10 +210,10 @@ void App::Render() const
 void App::EndFrame() const
 {
     g_theEventSystem->EndFrame();
-    g_theInput->EndFrame();
     g_theWindow->EndFrame();
     g_theRenderer->EndFrame();
     g_theDevConsole->EndFrame();
+    g_theInput->EndFrame();
     g_theAudio->EndFrame();
 }
 
@@ -252,16 +227,33 @@ void App::HandleKeyPressed()
 
     XboxController const& controller = g_theInput->GetController(0);
 
+    if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
+    {
+        switch (g_theGame->IsAttractMode())
+        {
+        case true:
+            RequestQuit();
+
+            break;
+
+        case false:
+            g_theGame->ResetData();
+            g_theApp->DeleteAndCreateNewGame();
+            g_theGame->SetAttractMode(true);
+            g_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
+
+            break;
+        }
+    }
+
     if (g_theInput->WasKeyJustPressed(KEYCODE_O))
     {
         Clock::GetSystemClock().StepSingleFrame();
     }
 
-    if (g_theInput->WasKeyJustPressed('T'))
-        m_isSlowMo = true;
+    if (g_theInput->WasKeyJustPressed('T')) m_isSlowMo = true;
 
-    if (g_theInput->WasKeyJustPressed('P'))
-        Clock::GetSystemClock().TogglePause();
+    if (g_theInput->WasKeyJustPressed('P')) Clock::GetSystemClock().TogglePause();
 
     if (g_theInput->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
     {
@@ -287,8 +279,7 @@ void App::HandleKeyReleased()
 {
     XboxController const& controller = g_theInput->GetController(0);
 
-    if (g_theInput->WasKeyJustReleased('T') || controller.WasButtonJustReleased(XBOX_BUTTON_DPAD_UP))
-        m_isSlowMo = false;
+    if (g_theInput->WasKeyJustReleased('T') || controller.WasButtonJustReleased(XBOX_BUTTON_DPAD_UP)) m_isSlowMo = false;
 }
 
 //----------------------------------------------------------------------------------------------------
