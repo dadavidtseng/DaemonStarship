@@ -12,8 +12,8 @@
 #include "Game/Game.hpp"
 
 //-----------------------------------------------------------------------------------------------
-Debris::Debris(Game* game, Vec2 const& position, Vec2 const& velocity, float const radius, Rgba8 const color)
-    : Entity(game, position, g_theRNG->RollRandomFloatInRange(0.f, 360.f), color),
+Debris::Debris( Vec2 const& position, Vec2 const& velocity, float const radius, Rgba8 const color)
+    : Entity( position, g_theRNG->RollRandomFloatInRange(0.f, 360.f), color),
       m_lifetime(2.f),
       m_initialLifetime(2.f)
 {
@@ -74,7 +74,7 @@ void Debris::DebugRender() const
     if (m_isDead)
         return;
 
-    Vec2 const playerShipPos = m_game->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,

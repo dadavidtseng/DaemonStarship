@@ -10,8 +10,8 @@
 #include "Game/Game.hpp"
 
 //----------------------------------------------------------------------------------------------------
-Wasp::Wasp(Game* game, Vec2 const& position, float const orientationDegrees)
-    : Entity(game, position, orientationDegrees, WASP_COLOR)
+Wasp::Wasp(Vec2 const& position, float const orientationDegrees)
+    : Entity( position, orientationDegrees, WASP_COLOR)
 {
     m_health         = 3;
     m_physicsRadius  = WASP_PHYSICS_RADIUS;
@@ -26,10 +26,10 @@ void Wasp::Update(float const deltaSeconds)
     if (m_isDead)
         return;
 
-    if (m_game->GetPlayerShip() &&
-        !m_game->GetPlayerShip()->IsDead())
+    if (g_theGame->GetPlayerShip() &&
+        !g_theGame->GetPlayerShip()->IsDead())
     {
-        Vec2 const playerShipPos     = m_game->GetPlayerShip()->GetPosition();
+        Vec2 const playerShipPos     = g_theGame->GetPlayerShip()->GetPosition();
         Vec2 const directionToPlayer = (playerShipPos - m_position).GetNormalized();
 
         m_orientationDegrees = directionToPlayer.GetOrientationDegrees();
@@ -66,7 +66,7 @@ void Wasp::Render() const
 //----------------------------------------------------------------------------------------------------
 void Wasp::DebugRender() const
 {
-    Vec2 const playerShipPos = m_game->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,

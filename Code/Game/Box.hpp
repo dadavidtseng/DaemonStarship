@@ -9,10 +9,10 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class Box : public Entity
+class Box final : public Entity
 {
 public:
-    Box(Game* game, Vec2 const& position, float orientationDegrees);
+    explicit Box(Vec2 const& position, float orientationDegrees);
 
     void  Update(float deltaSeconds) override;
     void  Render() const override;

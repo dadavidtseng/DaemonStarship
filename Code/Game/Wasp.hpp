@@ -8,10 +8,10 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class Wasp : public Entity
+class Wasp final : public Entity
 {
 public:
-    Wasp(Game* game, Vec2 const& position, float orientationDegrees);
+    explicit Wasp(Vec2 const& position, float orientationDegrees);
 
     void Update(float deltaSeconds) override;
     void Render() const override;

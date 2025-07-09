@@ -8,10 +8,10 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class Bullet : public Entity
+class Bullet final : public Entity
 {
 public:
-    Bullet(Game* game, Vec2 const& position, float orientationDegrees);
+    Bullet(Vec2 const& position, float orientationDegrees);
 
     void Update(float deltaSeconds) override;
     void Render() const override;

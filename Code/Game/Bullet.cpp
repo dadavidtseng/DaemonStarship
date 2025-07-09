@@ -9,8 +9,8 @@
 #include "Game/Game.hpp"
 
 //----------------------------------------------------------------------------------------------------
-Bullet::Bullet(Game* game, Vec2 const& position, float const orientationDegrees)
-    : Entity(game, position, orientationDegrees, Rgba8(255, 255, 0, 255))
+Bullet::Bullet(Vec2 const& position, float const orientationDegrees)
+    : Entity(position, orientationDegrees, Rgba8(255, 255, 0, 255))
 {
     m_physicsRadius  = BULLET_PHYSICS_RADIUS;
     m_cosmeticRadius = BULLET_COSMETIC_RADIUS;
@@ -22,8 +22,7 @@ Bullet::Bullet(Game* game, Vec2 const& position, float const orientationDegrees)
 //----------------------------------------------------------------------------------------------------
 void Bullet::Update(float const deltaSeconds)
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     m_position += m_velocity * deltaSeconds;
 }
@@ -31,8 +30,7 @@ void Bullet::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Bullet::Render() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     Vertex_PCU tempWorldVerts[BULLET_VERTS_NUM];
 
@@ -50,7 +48,7 @@ void Bullet::Render() const
 //----------------------------------------------------------------------------------------------------
 void Bullet::DebugRender() const
 {
-    Vec2 const playerShipPos = m_game->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,

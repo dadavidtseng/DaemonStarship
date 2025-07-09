@@ -14,7 +14,7 @@ class Game;
 class Asteroid : public Entity
 {
 public:
-    Asteroid(Game* game, Vec2 const& position, float orientationDegrees);
+    Asteroid(Vec2 const& position, float orientationDegrees);
 
     void Update(float deltaSeconds) override;
     void Render() const override;

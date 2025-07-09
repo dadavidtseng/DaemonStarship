@@ -12,8 +12,8 @@
 #include "Game/Game.hpp"
 
 //----------------------------------------------------------------------------------------------------
-Asteroid::Asteroid(Game* game, Vec2 const& position, float const orientationDegrees)
-    : Entity(game, position, orientationDegrees, ASTEROID_COLOR)
+Asteroid::Asteroid( Vec2 const& position, float const orientationDegrees)
+    : Entity( position, orientationDegrees, ASTEROID_COLOR)
 {
     m_health          = 3;
     m_physicsRadius   = ASTEROID_PHYSICS_RADIUS;
@@ -62,7 +62,7 @@ void Asteroid::Render() const
 //----------------------------------------------------------------------------------------------------
 void Asteroid::DebugRender() const
 {
-    Vec2 const playerShipPos = m_game->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,

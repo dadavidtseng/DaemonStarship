@@ -12,8 +12,8 @@
 #include "Game/Game.hpp"
 
 //----------------------------------------------------------------------------------------------------
-PlayerShip::PlayerShip(Game* game, Vec2 const& position, float const orientationDegrees, int const health, bool const isReadyToSpawnBullet)
-    : Entity(game, position, orientationDegrees, PLAYER_SHIP_COLOR)
+PlayerShip::PlayerShip(Vec2 const& position, float const orientationDegrees, int const health, bool const isReadyToSpawnBullet)
+    : Entity(position, orientationDegrees, PLAYER_SHIP_COLOR)
 {
     m_health               = health;
     m_physicsRadius        = PLAYER_SHIP_PHYSICS_RADIUS;
@@ -110,7 +110,7 @@ void PlayerShip::UpdateFromController()
     // Shoot
     if (controller.WasButtonJustPressed(XBOX_BUTTON_A))
     {
-        m_game->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
+        g_theGame->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
     }
 
     if (g_theInput->IsKeyDown(KEYCODE_W) || controller.GetLeftStick().GetMagnitude() > 0.f)
@@ -224,5 +224,5 @@ void PlayerShip::UpdateFromKeyBoard()
     if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE) &&
         m_isReadyToSpawnBullet &&
         !m_isDead)
-        m_game->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
+        g_theGame->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
 }

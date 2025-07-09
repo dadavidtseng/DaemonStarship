@@ -11,8 +11,8 @@
 #include "Game/Game.hpp"
 
 //-----------------------------------------------------------------------------------------------
-Box::Box(Game* game, Vec2 const& position, float const orientationDegrees)
-    : Entity(game, position, orientationDegrees, Rgba8(255, 255, 255, 200)),
+Box::Box(Vec2 const& position, float const orientationDegrees)
+    : Entity(position, orientationDegrees, Rgba8(255, 255, 255, 200)),
       m_boxCollider(position, position + Vec2(BOX_SIDE_LENGTH, BOX_SIDE_LENGTH)),
       m_accumulatedTime(0.f),
       m_targetPosition(position - Vec2(BOX_SIDE_LENGTH * 1.1f, 0.0f))
@@ -25,8 +25,7 @@ Box::Box(Game* game, Vec2 const& position, float const orientationDegrees)
 //-----------------------------------------------------------------------------------------------
 void Box::Update(float const deltaSeconds)
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     m_accumulatedTime += deltaSeconds;
 
@@ -55,8 +54,7 @@ void Box::Update(float const deltaSeconds)
 //-----------------------------------------------------------------------------------------------
 void Box::Render() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     Vertex_PCU tempWorldVerts[BOX_VERTS_NUM];
 

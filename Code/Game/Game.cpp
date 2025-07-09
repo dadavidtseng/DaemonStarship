@@ -10,7 +10,6 @@
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
-#include "Engine/Core/SimpleTriangleFont.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
@@ -51,7 +50,7 @@ Game::Game()
     m_worldCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
     m_screenCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
 
-    SoundID const InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM,eAudioSystemSoundDimension::Sound2D);
+    SoundID const InGameBgm = g_theAudio->CreateOrGetSound(IN_GAME_BGM, eAudioSystemSoundDimension::Sound2D);
     g_theAudio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
 }
 
@@ -69,8 +68,7 @@ Game::~Game()
 
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (!m_beetle[beetleIndex])
-            continue;
+        if (!m_beetle[beetleIndex]) continue;
 
         delete m_beetle[beetleIndex];
         m_beetle[beetleIndex] = nullptr;
@@ -78,8 +76,7 @@ Game::~Game()
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (!m_wasp[waspIndex])
-            continue;
+        if (!m_wasp[waspIndex]) continue;
 
         delete m_wasp[waspIndex];
         m_wasp[waspIndex] = nullptr;
@@ -87,8 +84,7 @@ Game::~Game()
 
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
     {
-        if (!m_asteroids[asteroidIndex])
-            continue;
+        if (!m_asteroids[asteroidIndex]) continue;
 
         delete m_asteroids[asteroidIndex];
         m_asteroids[asteroidIndex] = nullptr;
@@ -96,8 +92,7 @@ Game::~Game()
 
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
     {
-        if (!m_bullets[bulletIndex])
-            continue;
+        if (!m_bullets[bulletIndex]) continue;
 
         delete m_bullets[bulletIndex];
         m_bullets[bulletIndex] = nullptr;
@@ -105,8 +100,7 @@ Game::~Game()
 
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; ++debrisIndex)
     {
-        if (!m_debris[debrisIndex])
-            continue;
+        if (!m_debris[debrisIndex]) continue;
 
         delete m_debris[debrisIndex];
         m_debris[debrisIndex] = nullptr;
@@ -114,8 +108,7 @@ Game::~Game()
 
     for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
     {
-        if (!m_boxes[boxIndex])
-            continue;
+        if (!m_boxes[boxIndex]) continue;
 
         delete m_boxes[boxIndex];
         m_boxes[boxIndex] = nullptr;
@@ -211,8 +204,7 @@ void Game::Render()
     {
         m_theUIHandler->DrawAttractModeUI();
 
-        if (m_isPlayerNameInputMode)
-            m_theUIHandler->DrawPlayerNameInput();
+        if (m_isPlayerNameInputMode) m_theUIHandler->DrawPlayerNameInput();
     }
 
     g_theRenderer->EndCamera(*m_screenCamera);
@@ -258,10 +250,9 @@ void Game::SpawnBullet(Vec2 const& position, const float orientationDegrees)
 {
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
     {
-        if (m_bullets[bulletIndex])
-            continue;
+        if (m_bullets[bulletIndex]) continue;
 
-        m_bullets[bulletIndex] = new Bullet(this, position, orientationDegrees);
+        m_bullets[bulletIndex] = new Bullet(position, orientationDegrees);
 
         return;
     }
@@ -378,7 +369,7 @@ STATIC bool Game::Command_SetTimeScale(EventArgs& args)
 
     if (value == -1.f)
     {
-        g_theDevConsole->AddLine(DevConsole::ERROR,"Your keyName is not valid, should be setscale scale=YourValue!");
+        g_theDevConsole->AddLine(DevConsole::ERROR, "Your keyName is not valid, should be setscale scale=YourValue!");
         return false;
     }
 
@@ -390,7 +381,7 @@ STATIC bool Game::Command_SetTimeScale(EventArgs& args)
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnPlayerShip()
 {
-    m_playerShip = new PlayerShip(this, Vec2(20.f, WORLD_CENTER_Y), 0.f, m_playerShipHealth, false);
+    m_playerShip = new PlayerShip(Vec2(20.f, WORLD_CENTER_Y), 0.f, m_playerShipHealth, false);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -398,12 +389,9 @@ void Game::SpawnBeetle(Vec2 const& position)
 {
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
     {
-        if (m_beetle[beetleIndex])
-            continue;
+        if (m_beetle[beetleIndex]) continue;
 
-        m_beetle[beetleIndex] = new Beetle(this,
-                                           position,
-                                           0.f);
+        m_beetle[beetleIndex] = new Beetle(position, 0.f);
 
         return;
     }
@@ -414,12 +402,9 @@ void Game::SpawnWasp(Vec2 const& position)
 {
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
     {
-        if (m_wasp[waspIndex])
-            continue;
+        if (m_wasp[waspIndex]) continue;
 
-        m_wasp[waspIndex] = new Wasp(this,
-                                     position,
-                                     0.f);
+        m_wasp[waspIndex] = new Wasp(position, 0.f);
 
         return;
     }
@@ -430,12 +415,9 @@ void Game::SpawnAsteroid(Vec2 const& position)
 {
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
     {
-        if (m_asteroids[asteroidIndex])
-            continue;
+        if (m_asteroids[asteroidIndex]) continue;
 
-        m_asteroids[asteroidIndex] = new Asteroid(this,
-                                                  position,
-                                                  0.f);
+        m_asteroids[asteroidIndex] = new Asteroid(position, 0.f);
 
         return;
     }
@@ -448,10 +430,9 @@ void Game::SpawnDebris(Vec2 const& position, Vec2 const& velocity, float radius,
 {
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
     {
-        if (m_debris[debrisIndex])
-            continue;
+        if (m_debris[debrisIndex]) continue;
 
-        m_debris[debrisIndex] = new Debris(this, position, velocity, radius, color);
+        m_debris[debrisIndex] = new Debris(position, velocity, radius, color);
 
         return;
     }
@@ -474,12 +455,9 @@ void Game::SpawnBox(Vec2 const& position)
 {
     for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; boxIndex++)
     {
-        if (m_boxes[boxIndex])
-            continue;
+        if (m_boxes[boxIndex]) continue;
 
-        m_boxes[boxIndex] = new Box(this,
-                                    position,
-                                    0.f);
+        m_boxes[boxIndex] = new Box(position, 0.f);
 
         return;
     }
@@ -510,56 +488,49 @@ void Game::SpawnBoxCluster()
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateEntities(float deltaSeconds)
 {
-    if (m_isAttractMode)
-        return;
+    if (m_isAttractMode) return;
 
     HandleEntityIsOffScreen();
     HandleEntityCollision();
 
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
     {
-        if (!m_asteroids[asteroidIndex])
-            continue;
+        if (!m_asteroids[asteroidIndex]) continue;
 
         m_asteroids[asteroidIndex]->Update(deltaSeconds);
     }
 
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
     {
-        if (!m_bullets[bulletIndex])
-            continue;
+        if (!m_bullets[bulletIndex]) continue;
 
         m_bullets[bulletIndex]->Update(deltaSeconds);
     }
 
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
     {
-        if (!m_debris[debrisIndex])
-            continue;
+        if (!m_debris[debrisIndex]) continue;
 
         m_debris[debrisIndex]->Update(deltaSeconds);
     }
 
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
     {
-        if (!m_beetle[beetleIndex])
-            continue;
+        if (!m_beetle[beetleIndex]) continue;
 
         m_beetle[beetleIndex]->Update(deltaSeconds);
     }
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
     {
-        if (!m_wasp[waspIndex])
-            continue;
+        if (!m_wasp[waspIndex]) continue;
 
         m_wasp[waspIndex]->Update(deltaSeconds);
     }
 
     for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; boxIndex++)
     {
-        if (!m_boxes[boxIndex])
-            continue;
+        if (!m_boxes[boxIndex]) continue;
 
         m_boxes[boxIndex]->Update(deltaSeconds);
     }
@@ -601,8 +572,7 @@ void Game::UpdateFromKeyBoard()
         g_theInput->IsKeyDown(KEYCODE_ENTER))
         m_playerShip->IsReadyToSpawnBullet(true);
 
-    if (g_theInput->WasKeyJustPressed('I'))
-        SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
+    if (g_theInput->WasKeyJustPressed('I')) SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
 
     if (g_theInput->WasKeyJustPressed('N') &&
         m_playerShip->IsDead() &&
@@ -632,8 +602,7 @@ void Game::UpdateFromController()
         controller.IsButtonDown(XBOX_BUTTON_START))
         m_playerShip->IsReadyToSpawnBullet(true);
 
-    if (controller.WasButtonJustPressed(XBOX_BUTTON_RTHUMB))
-        SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
+    if (controller.WasButtonJustPressed(XBOX_BUTTON_RTHUMB)) SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
 
     if (controller.WasButtonJustPressed(XBOX_BUTTON_START) &&
         m_playerShip->IsDead() &&
@@ -644,13 +613,11 @@ void Game::UpdateFromController()
 //----------------------------------------------------------------------------------------------------
 void Game::RenderEntities() const
 {
-    if (m_playerShip)
-        m_playerShip->Render();
+    if (m_playerShip) m_playerShip->Render();
 
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
     {
-        if (!m_bullets[bulletIndex])
-            continue;
+        if (!m_bullets[bulletIndex]) continue;
 
 
         m_bullets[bulletIndex]->Render();
@@ -658,40 +625,35 @@ void Game::RenderEntities() const
 
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
     {
-        if (!m_asteroids[asteroidIndex])
-            continue;
+        if (!m_asteroids[asteroidIndex]) continue;
 
         m_asteroids[asteroidIndex]->Render();
     }
 
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
     {
-        if (!m_beetle[beetleIndex])
-            continue;
+        if (!m_beetle[beetleIndex]) continue;
 
         m_beetle[beetleIndex]->Render();
     }
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
     {
-        if (!m_wasp[waspIndex])
-            continue;
+        if (!m_wasp[waspIndex]) continue;
 
         m_wasp[waspIndex]->Render();
     }
 
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
     {
-        if (!m_debris[debrisIndex])
-            continue;
+        if (!m_debris[debrisIndex]) continue;
 
 
         m_debris[debrisIndex]->Render();
     }
     for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; boxIndex++)
     {
-        if (!m_boxes[boxIndex])
-            continue;
+        if (!m_boxes[boxIndex]) continue;
 
         m_boxes[boxIndex]->Render();
     }
@@ -707,56 +669,48 @@ void Game::RenderDevConsole() const
 //----------------------------------------------------------------------------------------------------
 void Game::DebugRenderEntities() const
 {
-    if (!m_isDebugRendering)
-        return;
+    if (!m_isDebugRendering) return;
 
-    if (m_playerShip)
-        m_playerShip->DebugRender();
+    if (m_playerShip) m_playerShip->DebugRender();
 
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
     {
-        if (!m_bullets[bulletIndex])
-            continue;
+        if (!m_bullets[bulletIndex]) continue;
 
         m_bullets[bulletIndex]->DebugRender();
     }
 
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
     {
-        if (!m_asteroids[asteroidIndex])
-            continue;
+        if (!m_asteroids[asteroidIndex]) continue;
 
         m_asteroids[asteroidIndex]->DebugRender();
     }
 
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (!m_beetle[beetleIndex])
-            continue;
+        if (!m_beetle[beetleIndex]) continue;
 
         m_beetle[beetleIndex]->DebugRender();
     }
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (!m_wasp[waspIndex])
-            continue;
+        if (!m_wasp[waspIndex]) continue;
 
         m_wasp[waspIndex]->DebugRender();
     }
 
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; ++debrisIndex)
     {
-        if (!m_debris[debrisIndex])
-            continue;
+        if (!m_debris[debrisIndex]) continue;
 
         m_debris[debrisIndex]->DebugRender();
     }
 
     for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
     {
-        if (!m_boxes[boxIndex])
-            continue;
+        if (!m_boxes[boxIndex]) continue;
 
         m_boxes[boxIndex]->DebugRender();
     }
@@ -787,26 +741,23 @@ void Game::HandleEntityCollision()
     // PlayerShip vs. Asteroid
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
     {
-        if (!m_asteroids[asteroidIndex])
-            continue;
+        if (!m_asteroids[asteroidIndex]) continue;
 
-        if (!m_playerShip)
-            continue;
+        if (!m_playerShip) continue;
 
-        if (m_playerShip->IsDead())
-            continue;
+        if (m_playerShip->IsDead()) continue;
 
         if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
-                           PLAYER_SHIP_PHYSICS_RADIUS,
-                           m_asteroids[asteroidIndex]->GetPosition(),
-                           ASTEROID_PHYSICS_RADIUS))
+                             PLAYER_SHIP_PHYSICS_RADIUS,
+                             m_asteroids[asteroidIndex]->GetPosition(),
+                             ASTEROID_PHYSICS_RADIUS))
         {
             m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
             m_playerShipHealth = m_playerShip->m_health;
             m_asteroids[asteroidIndex]->m_health--;
 
-            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
@@ -832,27 +783,24 @@ void Game::HandleEntityCollision()
     // PlayerShip vs. Beetle
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (!m_beetle[beetleIndex])
-            continue;
+        if (!m_beetle[beetleIndex]) continue;
 
-        if (!m_playerShip)
-            continue;
+        if (!m_playerShip) continue;
 
-        if (m_playerShip->IsDead())
-            continue;
+        if (m_playerShip->IsDead()) continue;
 
 
         if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
-                           PLAYER_SHIP_PHYSICS_RADIUS,
-                           m_beetle[beetleIndex]->GetPosition(),
-                           BEETLE_PHYSICS_RADIUS))
+                             PLAYER_SHIP_PHYSICS_RADIUS,
+                             m_beetle[beetleIndex]->GetPosition(),
+                             BEETLE_PHYSICS_RADIUS))
         {
             m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
             m_playerShipHealth = m_playerShip->m_health;
             m_beetle[beetleIndex]->m_health--;
 
-            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
@@ -880,22 +828,19 @@ void Game::HandleEntityCollision()
     // PlayerShip vs. Wasp
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (!m_wasp[waspIndex])
-            continue;
+        if (!m_wasp[waspIndex]) continue;
 
-        if (!m_playerShip)
-            continue;
+        if (!m_playerShip) continue;
 
-        if (m_playerShip->IsDead())
-            continue;
+        if (m_playerShip->IsDead()) continue;
 
 
         if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
-                           PLAYER_SHIP_PHYSICS_RADIUS,
-                           m_wasp[waspIndex]->GetPosition(),
-                           WASP_PHYSICS_RADIUS))
+                             PLAYER_SHIP_PHYSICS_RADIUS,
+                             m_wasp[waspIndex]->GetPosition(),
+                             WASP_PHYSICS_RADIUS))
         {
-            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+            const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
             g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             m_playerShip->m_health--;
@@ -930,19 +875,17 @@ void Game::HandleEntityCollision()
     {
         for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
         {
-            if (!m_asteroids[asteroidIndex])
-                continue;
+            if (!m_asteroids[asteroidIndex]) continue;
 
 
-            if (!m_bullets[bulletIndex])
-                continue;
+            if (!m_bullets[bulletIndex]) continue;
 
             if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
-                               BULLET_PHYSICS_RADIUS,
-                               m_asteroids[asteroidIndex]->GetPosition(),
-                               ASTEROID_PHYSICS_RADIUS))
+                                 BULLET_PHYSICS_RADIUS,
+                                 m_asteroids[asteroidIndex]->GetPosition(),
+                                 ASTEROID_PHYSICS_RADIUS))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -958,8 +901,7 @@ void Game::HandleEntityCollision()
                 m_asteroids[asteroidIndex]->m_health--;
             }
 
-            if (m_asteroids[asteroidIndex]->m_health != 0)
-                continue;
+            if (m_asteroids[asteroidIndex]->m_health != 0) continue;
 
             SpawnDebrisCluster(m_asteroids[asteroidIndex]->GetPosition(),
                                -m_asteroids[asteroidIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -980,19 +922,17 @@ void Game::HandleEntityCollision()
     {
         for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
         {
-            if (!m_bullets[bulletIndex])
-                continue;
+            if (!m_bullets[bulletIndex]) continue;
 
 
-            if (!m_beetle[beetleIndex])
-                continue;
+            if (!m_beetle[beetleIndex]) continue;
 
             if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
-                               BULLET_PHYSICS_RADIUS,
-                               m_beetle[beetleIndex]->GetPosition(),
-                               BEETLE_PHYSICS_RADIUS))
+                                 BULLET_PHYSICS_RADIUS,
+                                 m_beetle[beetleIndex]->GetPosition(),
+                                 BEETLE_PHYSICS_RADIUS))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -1008,8 +948,7 @@ void Game::HandleEntityCollision()
                 m_beetle[beetleIndex]->m_health--;
             }
 
-            if (m_beetle[beetleIndex]->m_health != 0)
-                continue;
+            if (m_beetle[beetleIndex]->m_health != 0) continue;
 
             SpawnDebrisCluster(m_beetle[beetleIndex]->GetPosition(),
                                -m_beetle[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -1029,18 +968,16 @@ void Game::HandleEntityCollision()
     {
         for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
         {
-            if (!m_bullets[bulletIndex])
-                continue;
+            if (!m_bullets[bulletIndex]) continue;
 
-            if (!m_wasp[waspIndex])
-                continue;
+            if (!m_wasp[waspIndex]) continue;
 
             if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
-                               BULLET_PHYSICS_RADIUS,
-                               m_wasp[waspIndex]->GetPosition(),
-                               WASP_PHYSICS_RADIUS))
+                                 BULLET_PHYSICS_RADIUS,
+                                 m_wasp[waspIndex]->GetPosition(),
+                                 WASP_PHYSICS_RADIUS))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -1056,8 +993,7 @@ void Game::HandleEntityCollision()
                 m_wasp[waspIndex]->m_health--;
             }
 
-            if (m_wasp[waspIndex]->m_health != 0)
-                continue;
+            if (m_wasp[waspIndex]->m_health != 0) continue;
 
             SpawnDebrisCluster(m_wasp[waspIndex]->GetPosition(),
                                -m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -1077,15 +1013,13 @@ void Game::HandleEntityCollision()
     {
         for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
         {
-            if (!m_bullets[bulletIndex])
-                continue;
+            if (!m_bullets[bulletIndex]) continue;
 
-            if (!m_boxes[boxIndex])
-                continue;
+            if (!m_boxes[boxIndex]) continue;
 
             if (m_boxes[boxIndex]->GetBoxCollider().IsPointInside(m_bullets[bulletIndex]->GetPosition()))
             {
-                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3",eAudioSystemSoundDimension::Sound2D);
+                const SoundID IN_GAME_ENTITY_HIT = g_theAudio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
                 g_theAudio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
@@ -1101,8 +1035,7 @@ void Game::HandleEntityCollision()
                 m_boxes[boxIndex]->m_health--;
             }
 
-            if (m_boxes[boxIndex]->m_health != 0)
-                continue;
+            if (m_boxes[boxIndex]->m_health != 0) continue;
 
             SpawnDebrisCluster(m_boxes[boxIndex]->GetPosition(),
                                m_bullets[bulletIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
@@ -1126,19 +1059,16 @@ void Game::HandleCollisionBetweenPlayerShipAndBox()
     // PlayerShip vs. Box
     for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
     {
-        if (!m_boxes[boxIndex])
-            continue;
+        if (!m_boxes[boxIndex]) continue;
 
-        if (!m_playerShip)
-            continue;
+        if (!m_playerShip) continue;
 
-        if (m_playerShip->IsDead())
-            continue;
+        if (m_playerShip->IsDead()) continue;
 
         if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
-                           PLAYER_SHIP_COSMETIC_RADIUS,
-                           m_boxes[boxIndex]->GetBoxCollider().GetCenter(),
-                           BOX_SIDE_LENGTH / 2.f))
+                             PLAYER_SHIP_COSMETIC_RADIUS,
+                             m_boxes[boxIndex]->GetBoxCollider().GetCenter(),
+                             BOX_SIDE_LENGTH / 2.f))
         {
             PushDiscOutOfAABB2D(m_playerShip->GetPositionAndSet(), PLAYER_SHIP_PHYSICS_RADIUS,
                                 m_boxes[boxIndex]->GetBoxCollider());
@@ -1163,11 +1093,9 @@ void Game::HandleEntityIsOffScreen() const
 {
     for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; ++debrisIndex)
     {
-        if (!m_debris[debrisIndex])
-            continue;
+        if (!m_debris[debrisIndex]) continue;
 
-        if (!m_debris[debrisIndex]->IsOffScreen())
-            continue;
+        if (!m_debris[debrisIndex]->IsOffScreen()) continue;
 
         m_debris[debrisIndex]->MarkAsDead();
         m_debris[debrisIndex]->MarkAsGarbage();
@@ -1175,11 +1103,9 @@ void Game::HandleEntityIsOffScreen() const
 
     for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
     {
-        if (!m_bullets[bulletIndex])
-            continue;
+        if (!m_bullets[bulletIndex]) continue;
 
-        if (!m_bullets[bulletIndex]->IsOffScreen())
-            continue;
+        if (!m_bullets[bulletIndex]->IsOffScreen()) continue;
 
         m_bullets[bulletIndex]->MarkAsDead();
         m_bullets[bulletIndex]->MarkAsGarbage();
@@ -1310,20 +1236,17 @@ bool Game::AreAllEnemiesDead() const
 {
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (m_beetle[beetleIndex] && !m_beetle[beetleIndex]->IsDead())
-            return false;
+        if (m_beetle[beetleIndex] && !m_beetle[beetleIndex]->IsDead()) return false;
     }
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (m_wasp[waspIndex] && !m_wasp[waspIndex]->IsDead())
-            return false;
+        if (m_wasp[waspIndex] && !m_wasp[waspIndex]->IsDead()) return false;
     }
 
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
     {
-        if (m_asteroids[asteroidIndex] && !m_asteroids[asteroidIndex]->IsDead())
-            return false;
+        if (m_asteroids[asteroidIndex] && !m_asteroids[asteroidIndex]->IsDead()) return false;
     }
 
     return true;

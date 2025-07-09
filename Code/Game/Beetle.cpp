@@ -10,8 +10,8 @@
 #include "Game/Game.hpp"
 
 //----------------------------------------------------------------------------------------------------
-Beetle::Beetle(Game* game, Vec2 const& position, float const orientationDegrees)
-    : Entity(game, position, orientationDegrees, BEETLE_COLOR)
+Beetle::Beetle( Vec2 const& position, float const orientationDegrees)
+    : Entity( position, orientationDegrees, BEETLE_COLOR)
 {
     m_health         = 3;
     m_physicsRadius  = BEETLE_PHYSICS_RADIUS;
@@ -25,10 +25,10 @@ void Beetle::Update(float const deltaSeconds)
     if (m_isDead)
         return;
 
-    if (m_game->GetPlayerShip() &&
-        !m_game->GetPlayerShip()->IsDead())
+    if (g_theGame->GetPlayerShip() &&
+        !g_theGame->GetPlayerShip()->IsDead())
     {
-        Vec2 playerShipPos     = m_game->GetPlayerShip()->GetPosition();
+        Vec2 playerShipPos     = g_theGame->GetPlayerShip()->GetPosition();
         Vec2 directionToPlayer = (playerShipPos - m_position).GetNormalized();
         m_orientationDegrees   = directionToPlayer.GetOrientationDegrees();
     }
@@ -60,7 +60,7 @@ void Beetle::Render() const
 //----------------------------------------------------------------------------------------------------
 void Beetle::DebugRender() const
 {
-    Vec2 const playerShipPos = m_game->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
     Vec2 const offset        = Vec2(-0.5f, 0.f);
 
     DebugDrawLine(playerShipPos,

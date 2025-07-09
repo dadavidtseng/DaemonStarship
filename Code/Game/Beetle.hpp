@@ -8,10 +8,10 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class Beetle : public Entity
+class Beetle final : public Entity
 {
 public:
-    Beetle(Game* game, Vec2 const& position, float orientationDegrees);
+    Beetle(Vec2 const& position, float orientationDegrees);
 
     void Update(float deltaSeconds) override;
     void Render() const override;

@@ -8,10 +8,10 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class Debris : public Entity
+class Debris final : public Entity
 {
 public:
-    Debris(Game* game, Vec2 const& position, Vec2 const& velocity, float radius, Rgba8 color);
+    Debris(Vec2 const& position, Vec2 const& velocity, float radius, Rgba8 color);
 
     void Update(float deltaSeconds) override;
     void Render() const override;
