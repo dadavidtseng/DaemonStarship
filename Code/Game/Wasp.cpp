@@ -11,7 +11,7 @@
 
 //----------------------------------------------------------------------------------------------------
 Wasp::Wasp(Vec2 const& position, float const orientationDegrees)
-    : Entity( position, orientationDegrees, WASP_COLOR)
+    : Entity(position, orientationDegrees, WASP_COLOR)
 {
     m_health         = 3;
     m_physicsRadius  = WASP_PHYSICS_RADIUS;
@@ -23,8 +23,7 @@ Wasp::Wasp(Vec2 const& position, float const orientationDegrees)
 //----------------------------------------------------------------------------------------------------
 void Wasp::Update(float const deltaSeconds)
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     if (g_theGame->GetPlayerShip() &&
         !g_theGame->GetPlayerShip()->IsDead())
@@ -46,8 +45,7 @@ void Wasp::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Wasp::Render() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     Vertex_PCU tempWorldVerts[WASP_VERTS_NUM];
 
@@ -58,7 +56,7 @@ void Wasp::Render() const
     }
 
     TransformVertexArrayXY3D(WASP_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
-
+    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
     g_theRenderer->BindTexture(nullptr);
     g_theRenderer->DrawVertexArray(WASP_VERTS_NUM, tempWorldVerts);
 }

@@ -55,7 +55,7 @@ void App::Startup()
     windowConfig.m_windowType  = eWindowType::WINDOWED;
     windowConfig.m_aspectRatio = 2.f;
     windowConfig.m_inputSystem = g_theInput;
-    windowConfig.m_windowTitle = "SD1-A4: Starship Gold";
+    windowConfig.m_windowTitle = "Starship";
     g_theWindow                = new Window(windowConfig);
 
     //-End-of-Window----------------------------------------------------------------------------------
