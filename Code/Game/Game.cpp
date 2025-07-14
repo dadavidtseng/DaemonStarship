@@ -221,7 +221,7 @@ void Game::Render()
 
 
         m_theScoreBoardHandler->AddScore(scoreboard, currentSize, m_theUIHandler->GetPlayerShipName(),
-                                         m_playerShip->GetPlayerScore());
+                                         m_playerShip->m_score);
 
         m_theScoreBoardHandler->SortScoreboard(scoreboard, currentSize);
         printf("Current size: %d\n", currentSize);
@@ -894,7 +894,7 @@ void Game::HandleEntityCollision()
                                    ENTITY_HIT_DEBRIS_RADIUS,
                                    m_asteroids[asteroidIndex]->GetColor());
 
-                m_playerShip->SetPlayerScore(10);
+                m_playerShip->m_score += 10;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
@@ -909,7 +909,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_asteroids[asteroidIndex]->GetColor());
 
-            m_playerShip->SetPlayerScore(100);
+            m_playerShip->m_score += 100;
 
             m_asteroids[asteroidIndex]->MarkAsDead();
             m_asteroids[asteroidIndex]->MarkAsGarbage();
@@ -941,7 +941,7 @@ void Game::HandleEntityCollision()
                                    ENTITY_HIT_DEBRIS_RADIUS,
                                    m_beetle[beetleIndex]->GetColor());
 
-                m_playerShip->SetPlayerScore(20);
+                m_playerShip->m_score += 20;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
@@ -956,7 +956,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_beetle[beetleIndex]->GetColor());
 
-            m_playerShip->SetPlayerScore(200);
+            m_playerShip->m_score+=200;
 
             m_beetle[beetleIndex]->MarkAsDead();
             m_beetle[beetleIndex]->MarkAsGarbage();
@@ -986,7 +986,7 @@ void Game::HandleEntityCollision()
                                    ENTITY_HIT_DEBRIS_RADIUS,
                                    m_wasp[waspIndex]->GetColor());
 
-                m_playerShip->SetPlayerScore(50);
+                m_playerShip->m_score+=50;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
@@ -1001,7 +1001,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_wasp[waspIndex]->GetColor());
 
-            m_playerShip->SetPlayerScore(500);
+            m_playerShip->m_score+=500;
 
             m_wasp[waspIndex]->MarkAsDead();
             m_wasp[waspIndex]->MarkAsGarbage();
@@ -1028,7 +1028,7 @@ void Game::HandleEntityCollision()
                                    ENTITY_HIT_DEBRIS_RADIUS,
                                    m_boxes[boxIndex]->GetColor());
 
-                m_playerShip->SetPlayerScore(1);
+                m_playerShip->m_score+=1;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
@@ -1043,7 +1043,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_boxes[boxIndex]->GetColor());
 
-            m_playerShip->SetPlayerScore(1);
+            m_playerShip->m_score+=1;
 
             m_boxes[boxIndex]->MarkAsDead();
             m_boxes[boxIndex]->MarkAsGarbage();

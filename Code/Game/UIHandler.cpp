@@ -256,7 +256,7 @@ void UIHandler::DrawInGameUI(int currentPlayerShipHealth) const
 
     std::vector<Vertex_PCU> titleVerts;
     AddVertsForTextTriangles2D(titleVerts,
-                               m_playerShipName + "/SCORE:" + std::to_string(m_game->GetPlayerShip()->GetPlayerScore()) +
+                               m_playerShipName + "/SCORE:" + std::to_string(m_game->GetPlayerShip()->m_score) +
                                "/HI:" + std::to_string(m_game->GetHighScore()),
                                Vec2(50.f, 0.f),
                                50.f,

@@ -25,13 +25,12 @@ public:
     Vec2& GetPositionAndSet();
     Vec2& GetVelocityAndSet();
     void  SetPosition(Vec2 const& targetPosition);
-    int   GetPlayerScore() const;
-    void  SetPlayerScore(int delta);
-
+    // int   GetPlayerScore() const;
+    // void  SetPlayerScore(int delta);
+    int   m_score          = 0;
 private:
     void BounceOffWall();
     void InitializeLocalVerts() override;
-    // #TODO: static void InitializeLocalVerts(Vertex_PCU* vertsToFillIn, Rgba8 const& color)
     void UpdateFromKeyBoard();
 
 
@@ -42,5 +41,5 @@ private:
     bool  m_isThrusting          = false;
     bool  m_isReadyToSpawnBullet = false;
     float m_thrustRate           = 0.f;
-    int   m_playerScore          = 0;
+
 };
