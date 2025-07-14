@@ -8,8 +8,6 @@
 #include "Game/Entity.hpp"
 #include "Game/GameCommon.hpp"
 
-struct PlayerScore;
-
 //----------------------------------------------------------------------------------------------------
 class PlayerShip : public Entity
 {
@@ -25,14 +23,12 @@ public:
     Vec2& GetPositionAndSet();
     Vec2& GetVelocityAndSet();
     void  SetPosition(Vec2 const& targetPosition);
-    // int   GetPlayerScore() const;
-    // void  SetPlayerScore(int delta);
-    int   m_score          = 0;
+    int   m_score = 0;
+
 private:
     void BounceOffWall();
     void InitializeLocalVerts() override;
     void UpdateFromKeyBoard();
-
 
     Vertex_PCU m_localVerts[PLAYER_SHIP_VERTS_NUM];
 
@@ -41,5 +37,4 @@ private:
     bool  m_isThrusting          = false;
     bool  m_isReadyToSpawnBullet = false;
     float m_thrustRate           = 0.f;
-
 };

@@ -31,11 +31,6 @@ UIHandler::UIHandler(Game* game)
 //----------------------------------------------------------------------------------------------------
 void UIHandler::Update(double const deltaSeconds)
 {
-    if (g_theDevConsole->IsOpen() == true)
-    {
-        return;
-    }
-
     m_shiningTime += (float)deltaSeconds;
 
     UpdateButtonSelection();

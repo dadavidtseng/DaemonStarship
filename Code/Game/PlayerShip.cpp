@@ -150,17 +150,6 @@ void PlayerShip::SetPosition(const Vec2& targetPosition)
     m_position = targetPosition;
 }
 
-// int PlayerShip::GetPlayerScore() const
-// {
-//     return m_playerScore;
-// }
-//
-// void PlayerShip::SetPlayerScore(int delta)
-// {
-//     m_playerScore += delta;
-// }
-
-
 //-----------------------------------------------------------------------------------------------
 void PlayerShip::InitializeLocalVerts()
 {
