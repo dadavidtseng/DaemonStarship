@@ -205,6 +205,7 @@ void Game::Render()
         m_theUIHandler->DrawAttractModeUI();
 
         if (m_isPlayerNameInputMode) m_theUIHandler->DrawPlayerNameInput();
+
     }
 
     g_theRenderer->EndCamera(*m_screenCamera);
