@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------------------------------
 Game::Game()
 {
-    g_theEventSystem->SubscribeEventCallbackFunction("setscale", Command_SetTimeScale);
-    g_theEventSystem->FireEvent("help");
+    g_eventSystem->SubscribeEventCallbackFunction("setscale", Command_SetTimeScale);
+    g_eventSystem->FireEvent("help");
 
     m_worldCamera          = new Camera();
     m_screenCamera         = new Camera();
@@ -118,7 +118,7 @@ Game::~Game()
 //----------------------------------------------------------------------------------------------------
 void Game::Update()
 {
-    if (g_theDevConsole->IsOpen() == true)
+    if (g_devConsole->IsOpen() == true)
     {
         return;
     }
@@ -128,7 +128,7 @@ void Game::Update()
     if (m_isAttractMode)
     {
         m_theUIHandler->Update(deltaSeconds);
-        if (m_theUIHandler->IsFirstButtonSelected() && g_theInput->WasKeyJustReleased(KEYCODE_SPACE))
+        if (m_theUIHandler->IsFirstButtonSelected() && g_input->WasKeyJustReleased(KEYCODE_SPACE))
         {
             SetPlayerNameInputMode(true);
         }
@@ -171,11 +171,11 @@ void Game::Update()
     DeleteGarbageEntities();
 
     // #TODO: add UpdateCamera(deltaSeconds);
-    if (g_theInput->IsKeyDown('Y'))
+    if (g_input->IsKeyDown('Y'))
     {
         DoShakeCamera((float)deltaSeconds);
     }
-    else if (g_theInput->WasKeyJustReleased('Y'))
+    else if (g_input->WasKeyJustReleased('Y'))
     {
         ResetCamera();
     }
@@ -210,7 +210,7 @@ void Game::Render()
 
     g_theRenderer->EndCamera(*m_screenCamera);
 
-    if (g_theInput->WasKeyJustPressed('U'))
+    if (g_input->WasKeyJustPressed('U'))
     {
         PlayerScore  scoreboard[MAX_PLAYERS];
         int          currentSize = 0;
@@ -370,7 +370,7 @@ STATIC bool Game::Command_SetTimeScale(EventArgs& args)
 
     if (value == -1.f)
     {
-        g_theDevConsole->AddLine(DevConsole::ERROR, "Your keyName is not valid, should be setscale scale=YourValue!");
+        g_devConsole->AddLine(DevConsole::ERROR, "Your keyName is not valid, should be setscale scale=YourValue!");
         return false;
     }
 
@@ -555,11 +555,11 @@ void Game::UpdateEntities(float deltaSeconds)
 void Game::UpdateFromKeyBoard()
 {
     if (!m_isAttractMode &&
-        g_theInput->WasKeyJustPressed(KEYCODE_F1))
+        g_input->WasKeyJustPressed(KEYCODE_F1))
         m_isDebugRendering = !m_isDebugRendering;
 
     if (m_theUIHandler->IsFirstButtonSelected() &&
-        g_theInput->WasKeyJustPressed(KEYCODE_ENTER))
+        g_input->WasKeyJustPressed(KEYCODE_ENTER))
     {
         if (m_isPlayerNameInputMode)
         {
@@ -569,13 +569,13 @@ void Game::UpdateFromKeyBoard()
         }
     }
 
-    if (!g_theInput->WasKeyJustPressed(KEYCODE_ENTER) &&
-        g_theInput->IsKeyDown(KEYCODE_ENTER))
+    if (!g_input->WasKeyJustPressed(KEYCODE_ENTER) &&
+        g_input->IsKeyDown(KEYCODE_ENTER))
         m_playerShip->IsReadyToSpawnBullet(true);
 
-    if (g_theInput->WasKeyJustPressed('I')) SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
+    if (g_input->WasKeyJustPressed('I')) SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
 
-    if (g_theInput->WasKeyJustPressed('N') &&
+    if (g_input->WasKeyJustPressed('N') &&
         m_playerShip->IsDead() &&
         m_playerShipHealth != 0)
     {
@@ -587,7 +587,7 @@ void Game::UpdateFromKeyBoard()
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromController()
 {
-    XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_input->GetController(0);
 
     if (controller.WasButtonJustPressed(XBOX_BUTTON_START))
     {
@@ -664,7 +664,7 @@ void Game::RenderDevConsole() const
 {
     AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 100.f));
 
-    g_theDevConsole->Render(box);
+    g_devConsole->Render(box);
 }
 
 //----------------------------------------------------------------------------------------------------

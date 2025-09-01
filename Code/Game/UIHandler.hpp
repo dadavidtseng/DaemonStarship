@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #pragma once
 #include <string>
-#include "Engine/Core/Vertex_PCU.hpp"
+#include "Engine/Renderer/Vertex_PCU.hpp"
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------

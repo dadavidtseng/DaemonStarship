@@ -9,7 +9,7 @@
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
-#include "Engine/Core/VertexUtils.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -53,7 +53,7 @@ void UIHandler::HandleKeyboardInput()
 {
     for (char c = 'A'; c <= 'Z'; ++c)
     {
-        if (g_theInput->WasKeyJustReleased(c))
+        if (g_input->WasKeyJustReleased(c))
         {
             m_playerShipName += c;
         }
@@ -61,19 +61,19 @@ void UIHandler::HandleKeyboardInput()
 
     for (char n = '0'; n <= '9'; ++n)
     {
-        if (g_theInput->WasKeyJustReleased(n))
+        if (g_input->WasKeyJustReleased(n))
         {
             m_playerShipName += n;
         }
     }
 
-    if (g_theInput->WasKeyJustReleased(KEYCODE_BACKSPACE) && !m_playerShipName.empty())
+    if (g_input->WasKeyJustReleased(KEYCODE_BACKSPACE) && !m_playerShipName.empty())
     {
         m_playerShipName.pop_back();
     }
 
 
-    if (g_theInput->WasKeyJustReleased(KEYCODE_ENTER))
+    if (g_input->WasKeyJustReleased(KEYCODE_ENTER))
     {
         ConfirmPlayerName();
     }
@@ -81,7 +81,7 @@ void UIHandler::HandleKeyboardInput()
 
 void UIHandler::UpdateButtonSelection()
 {
-    if (g_theInput->WasKeyJustPressed(KEYCODE_UPARROW))
+    if (g_input->WasKeyJustPressed(KEYCODE_UPARROW))
     {
         m_selectedButtonIndex--;
         if (m_selectedButtonIndex < 0)
@@ -89,7 +89,7 @@ void UIHandler::UpdateButtonSelection()
             m_selectedButtonIndex = 1;
         }
     }
-    else if (g_theInput->WasKeyJustPressed(KEYCODE_DOWNARROW))
+    else if (g_input->WasKeyJustPressed(KEYCODE_DOWNARROW))
     {
         m_selectedButtonIndex++;
         if (m_selectedButtonIndex > 1)
@@ -98,7 +98,7 @@ void UIHandler::UpdateButtonSelection()
         }
     }
 
-    XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_input->GetController(0);
 
     if (controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_UP))
     {

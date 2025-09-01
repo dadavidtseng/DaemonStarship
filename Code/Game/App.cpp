@@ -36,16 +36,16 @@ void App::Startup()
     //-Start-of-EventSystem---------------------------------------------------------------------------
 
     sEventSystemConfig constexpr eventSystemConfig;
-    g_theEventSystem = new EventSystem(eventSystemConfig);
-    g_theEventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnWindowClose);
-    g_theEventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
+    g_eventSystem = new EventSystem(eventSystemConfig);
+    g_eventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnWindowClose);
+    g_eventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
 
     //-End-of-EventSystem-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
     //-Start-of-InputSystem---------------------------------------------------------------------------
 
     sInputSystemConfig constexpr inputConfig;
-    g_theInput = new InputSystem(inputConfig);
+    g_input = new InputSystem(inputConfig);
 
     //-End-of-InputSystem-----------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ void App::Startup()
     sWindowConfig windowConfig;
     windowConfig.m_windowType  = eWindowType::WINDOWED;
     windowConfig.m_aspectRatio = 2.f;
-    windowConfig.m_inputSystem = g_theInput;
+    windowConfig.m_inputSystem = g_input;
     windowConfig.m_windowTitle = "Starship";
     g_theWindow                = new Window(windowConfig);
 
@@ -76,7 +76,7 @@ void App::Startup()
     devConsoleConfig.m_defaultRenderer = g_theRenderer;
     devConsoleConfig.m_defaultFontName = "SquirrelFixedFont";
     devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
-    g_theDevConsole                    = new DevConsole(devConsoleConfig);
+    g_devConsole                    = new DevConsole(devConsoleConfig);
 
     //-End-of-DevConsole------------------------------------------------------------------------------
     //------------------------------------------------------------------------------------------------
@@ -87,11 +87,11 @@ void App::Startup()
 
     //-End-of-AudioSystem-----------------------------------------------------------------------------
 
-    g_theEventSystem->Startup();
+    g_eventSystem->Startup();
     g_theWindow->Startup();
     g_theRenderer->Startup();
-    g_theDevConsole->StartUp();
-    g_theInput->Startup();
+    g_devConsole->StartUp();
+    g_input->Startup();
     g_theAudio->Startup();
 
     g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
@@ -109,20 +109,20 @@ void App::Shutdown()
     GAME_SAFE_RELEASE(g_theBitmapFont);
 
     g_theAudio->Shutdown();
-    g_theDevConsole->Shutdown();
+    g_devConsole->Shutdown();
 
     GAME_SAFE_RELEASE(m_devConsoleCamera);
 
     g_theRenderer->Shutdown();
     g_theWindow->Shutdown();
-    g_theInput->Shutdown();
-    g_theEventSystem->Shutdown();
+    g_input->Shutdown();
+    g_eventSystem->Shutdown();
 
     // Destroy all Engine Subsystem
     GAME_SAFE_RELEASE(g_theAudio);
     GAME_SAFE_RELEASE(g_theRenderer);
     GAME_SAFE_RELEASE(g_theWindow);
-    GAME_SAFE_RELEASE(g_theInput);
+    GAME_SAFE_RELEASE(g_input);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -165,11 +165,11 @@ void App::RequestQuit()
 //----------------------------------------------------------------------------------------------------
 void App::BeginFrame() const
 {
-    g_theEventSystem->BeginFrame();
+    g_eventSystem->BeginFrame();
     g_theWindow->BeginFrame();
     g_theRenderer->BeginFrame();
-    g_theDevConsole->BeginFrame();
-    g_theInput->BeginFrame();
+    g_devConsole->BeginFrame();
+    g_input->BeginFrame();
     g_theAudio->BeginFrame();
 }
 
@@ -203,31 +203,31 @@ void App::Render() const
     Vec2 const  screenTopRight = Vec2(1600.f, 800.f);
     m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
     m_devConsoleCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
-    g_theDevConsole->Render(box);
+    g_devConsole->Render(box);
 }
 
 //----------------------------------------------------------------------------------------------------
 void App::EndFrame() const
 {
-    g_theEventSystem->EndFrame();
+    g_eventSystem->EndFrame();
     g_theWindow->EndFrame();
     g_theRenderer->EndFrame();
-    g_theDevConsole->EndFrame();
-    g_theInput->EndFrame();
+    g_devConsole->EndFrame();
+    g_input->EndFrame();
     g_theAudio->EndFrame();
 }
 
 //----------------------------------------------------------------------------------------------------
 void App::HandleKeyPressed()
 {
-    if (g_theDevConsole->IsOpen() == true)
+    if (g_devConsole->IsOpen() == true)
     {
         return;
     }
 
-    XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_input->GetController(0);
 
-    if (g_theInput->WasKeyJustPressed(KEYCODE_ESC))
+    if (g_input->WasKeyJustPressed(KEYCODE_ESC))
     {
         switch (g_theGame->IsAttractMode())
         {
@@ -246,16 +246,16 @@ void App::HandleKeyPressed()
         }
     }
 
-    if (g_theInput->WasKeyJustPressed(KEYCODE_O))
+    if (g_input->WasKeyJustPressed(KEYCODE_O))
     {
         Clock::GetSystemClock().StepSingleFrame();
     }
 
-    if (g_theInput->WasKeyJustPressed('T')) m_isSlowMo = true;
+    if (g_input->WasKeyJustPressed('T')) m_isSlowMo = true;
 
-    if (g_theInput->WasKeyJustPressed('P')) Clock::GetSystemClock().TogglePause();
+    if (g_input->WasKeyJustPressed('P')) Clock::GetSystemClock().TogglePause();
 
-    if (g_theInput->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
+    if (g_input->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
     {
         if (g_theGame)
         {
@@ -265,7 +265,7 @@ void App::HandleKeyPressed()
 
     if (!g_theGame->IsAttractMode())
     {
-        if (g_theInput->WasKeyJustPressed(KEYCODE_F8))
+        if (g_input->WasKeyJustPressed(KEYCODE_F8))
         {
             DeleteAndCreateNewGame();
             g_theGame->SetAttractMode(true);
@@ -277,9 +277,9 @@ void App::HandleKeyPressed()
 //----------------------------------------------------------------------------------------------------
 void App::HandleKeyReleased()
 {
-    XboxController const& controller = g_theInput->GetController(0);
+    XboxController const& controller = g_input->GetController(0);
 
-    if (g_theInput->WasKeyJustReleased('T') || controller.WasButtonJustReleased(XBOX_BUTTON_DPAD_UP)) m_isSlowMo = false;
+    if (g_input->WasKeyJustReleased('T') || controller.WasButtonJustReleased(XBOX_BUTTON_DPAD_UP)) m_isSlowMo = false;
 }
 
 //----------------------------------------------------------------------------------------------------

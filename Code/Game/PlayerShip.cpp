@@ -6,7 +6,7 @@
 #include "Game/PlayerShip.hpp"
 
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Core/VertexUtils.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/Game.hpp"
@@ -105,7 +105,7 @@ bool PlayerShip::IsReadyToSpawnBullet(bool const isReady)
 //----------------------------------------------------------------------------------------------------
 void PlayerShip::UpdateFromController()
 {
-    XboxController const& controller = g_theInput->GetController(0); // #TODO: support multiple players
+    XboxController const& controller = g_input->GetController(0); // #TODO: support multiple players
 
     // Shoot
     if (controller.WasButtonJustPressed(XBOX_BUTTON_A))
@@ -113,9 +113,9 @@ void PlayerShip::UpdateFromController()
         g_theGame->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
     }
 
-    if (g_theInput->IsKeyDown(KEYCODE_W) || controller.GetLeftStick().GetMagnitude() > 0.f)
+    if (g_input->IsKeyDown(KEYCODE_W) || controller.GetLeftStick().GetMagnitude() > 0.f)
     {
-        if (g_theInput->IsKeyDown(KEYCODE_W))
+        if (g_input->IsKeyDown(KEYCODE_W))
         {
             m_isThrusting = true;
             m_thrustRate  = 1;
@@ -207,10 +207,10 @@ void PlayerShip::BounceOffWall()
 //-----------------------------------------------------------------------------------------------
 void PlayerShip::UpdateFromKeyBoard()
 {
-    m_isTurningLeft  = g_theInput->IsKeyDown(KEYCODE_A);
-    m_isTurningRight = g_theInput->IsKeyDown(KEYCODE_D);
+    m_isTurningLeft  = g_input->IsKeyDown(KEYCODE_A);
+    m_isTurningRight = g_input->IsKeyDown(KEYCODE_D);
 
-    if (g_theInput->WasKeyJustPressed(KEYCODE_SPACE) &&
+    if (g_input->WasKeyJustPressed(KEYCODE_SPACE) &&
         m_isReadyToSpawnBullet &&
         !m_isDead)
         g_theGame->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
