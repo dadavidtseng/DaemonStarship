@@ -284,8 +284,8 @@ void UIHandler::DrawPlayerShip(Vec2 const& drawPosition, Rgba8 const& color, flo
 void UIHandler::InitializePlayerShipLocalVerts()
 {
     m_localVerts[0].m_position = Vec3(-2.f, 1.f, 0.f);
-    m_localVerts[1].m_position = Vec3(0.f, 2.f, 0.f);
-    m_localVerts[2].m_position = Vec3(2.f, 1.f, 0.f);
+    m_localVerts[1].m_position = Vec3(2.f, 1.f, 0.f);
+    m_localVerts[2].m_position = Vec3(0.f, 2.f, 0.f);
 
     m_localVerts[3].m_position = Vec3(0.f, 1.f, 0.f);
     m_localVerts[4].m_position = Vec3(-2.f, 1.f, 0.f);
