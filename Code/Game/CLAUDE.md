@@ -1,176 +1,148 @@
 # Game Module - DaemonStarship
 
-[Root Directory](../../CLAUDE.md) > [Code](../) > **Game**
+## Module Overview
 
-## Module Responsibilities
+The Game module contains all gameplay logic for DaemonStarship: entity management, player controls, enemy AI, collision detection, UI rendering, scoreboard persistence, and wave progression. It consists of 15 source file pairs (~4,000 LOC total) built as a C++20 project targeting DirectX 11 via the external Engine dependency.
 
-The Game module contains the complete implementation of the DaemonStarship space shooter game. It manages all gameplay mechanics, entity systems, user interface, scoring, and integration with the underlying game engine. This is the primary module containing all game-specific logic and rendering.
+## File Inventory
 
-## Entry and Startup
+| File | Purpose |
+|------|---------|
+| `Main_Windows.cpp` | WinMain entry point, creates and runs `App` |
+| `App.hpp/cpp` | Application lifecycle, frame loop, input handling, slow-motion |
+| `Game.hpp/cpp` | Core game loop, entity pool management, wave spawning, state machine |
+| `GameCommon.hpp/cpp` | All game constants, shared utilities, debug rendering helpers |
+| `Entity.hpp/cpp` | Abstract base class for all game objects |
+| `PlayerShip.hpp/cpp` | Player-controlled starship with thrust, rotation, shooting |
+| `Bullet.hpp/cpp` | Player projectiles with lifetime and speed (`final`) |
+| `Asteroid.hpp/cpp` | Asteroid enemies with random movement |
+| `Beetle.hpp/cpp` | Beetle enemies that chase the player (`final`) |
+| `Wasp.hpp/cpp` | Wasp enemies with acceleration-based pursuit (`final`) |
+| `Debris.hpp/cpp` | Particle effects on entity hit/death (`final`) |
+| `Box.hpp/cpp` | Box collectible entities (`final`) |
+| `LevelData.hpp/cpp` | Wave definitions: enemy counts per wave (5 waves) |
+| `UIHandler.hpp/cpp` | UI rendering: attract mode, HUD, name input, scoreboard |
+| `ScoreBoardHandler.hpp/cpp` | Score file I/O to `Run/Data/Score/Scoreboard.txt` |
+| `EngineBuildPreferences.hpp` | Engine feature toggles (debug render, audio, scripting) |
 
-### Main Entry Point
-- **File**: `Main_Windows.cpp`  
-- **Function**: `WinMain()` - Windows application entry point
-- **Flow**: Creates App instance → Startup → RunMainLoop → Shutdown → Cleanup
+## Class Hierarchy
 
-### Application Architecture  
-- **App Class** (`App.hpp/cpp`): Main application controller managing frame lifecycle
-- **Game Class** (`Game.hpp/cpp`): Core game state and logic management
-- **Initialization Sequence**: Window creation → Engine systems → Game initialization → Main loop
+```mermaid
+classDiagram
+    Entity <|-- PlayerShip
+    Entity <|-- Bullet
+    Entity <|-- Asteroid
+    Entity <|-- Beetle
+    Entity <|-- Wasp
+    Entity <|-- Debris
+    Entity <|-- Box
 
-## External Interfaces
+    class Entity {
+        <<abstract>>
+        +Vec2 m_position
+        +Vec2 m_velocity
+        +float m_orientationDegrees
+        +float m_angularVelocity
+        +float m_physicsRadius
+        +float m_cosmeticRadius
+        +int m_health
+        +bool m_isDead
+        +bool m_isGarbage
+        +Rgba8 m_color
+        +Update(float deltaSeconds)*
+        +Render()*
+        +DebugRender()*
+        +InitializeLocalVerts()*
+    }
 
-### Engine Dependencies
-- **Custom Engine**: Located at `../../../Engine/Code/Engine/`
-- **Core Systems**: Renderer, AudioSystem, EventSystem, Math utilities
-- **Input Handling**: Keyboard and controller input processing
-- **Graphics Pipeline**: DirectX 11 integration with custom rendering abstractions
-
-### File I/O Interfaces
-- **Scoreboard Persistence**: `Run/Data/Score/Scoreboard.txt` - Player score tracking
-- **Asset Loading**: Textures, audio files, fonts from `Run/Data/` directories
-- **Shader Compilation**: HLSL shader loading from `Run/Data/Shaders/Default.hlsl`
-
-### User Input Interfaces
-- **Keyboard Controls**: WASD movement, spacebar shooting, ESC menu navigation
-- **Controller Support**: Xbox controller input for movement and actions
-- **UI Navigation**: Button selection system for menus and name input
-
-## Key Dependencies and Configuration
-
-### Build Configuration
-- **Visual Studio Project**: `Game.vcxproj` - Configured for x86/x64 Debug/Release builds
-- **C++ Standard**: C++20 with Unicode character set
-- **Platform Target**: Windows 10/11 (Win32/x64)
-- **Output Directory**: `Temporary/DaemonStarship_{Platform}_{Configuration}/`
-
-### Engine Integration
-- **Include Paths**: `$(SolutionDir)Code/` and `$(SolutionDir)../Engine/Code/`
-- **Project Dependencies**: Engine.vcxproj with automatic build ordering
-- **Post-Build**: Executable copying to `$(SolutionDir)Run` directory
-
-### External Libraries
-- **FMOD**: Audio system integration (fmod.dll, fmod64.dll in Run directory)
-- **DirectX 11**: Graphics API for rendering pipeline
-- **Windows API**: Platform-specific window management and input
-
-## Data Models
-
-### Entity System Architecture
-```cpp
-// Base Entity class with virtual interface
-class Entity {
-    Vec2 m_position, m_velocity;
-    float m_orientationDegrees, m_angularVelocity;
-    float m_physicsRadius, m_cosmeticRadius;
-    bool m_isDead, m_isGarbage;
-    int m_health;
-};
+    class Game {
+        +PlayerShip* m_playerShip
+        +Bullet* m_bullets[100]
+        +Asteroid* m_asteroids[30]
+        +Beetle* m_beetle[20]
+        +Wasp* m_wasp[20]
+        +Debris* m_debris[200000]
+        +Box* m_boxes[10000]
+        +UIHandler* m_theUIHandler
+        +ScoreBoardHandler* m_theScoreBoardHandler
+        +int m_currentWave
+        +bool m_isAttractMode
+    }
 ```
 
-### Core Game Entities
-- **PlayerShip**: Player-controlled ship with score tracking and health system
-- **Bullet**: Projectile entities with lifetime management and collision detection  
-- **Asteroid**: Environmental hazard entities with procedural movement
-- **Beetle**: Enemy entity type with basic AI behavior
-- **Wasp**: Advanced enemy with acceleration-based movement
-- **Debris**: Particle effect entities for visual feedback
-- **Box**: Special collectible/interactive entities
+## Entity Pool Sizes
 
-### Game State Management
-```cpp
-// Fixed-size entity arrays for predictable memory usage
-PlayerShip* m_playerShip;
-Bullet* m_bullets[MAX_BULLETS_NUM];     // 100 bullets max
-Asteroid* m_asteroids[MAX_ASTEROIDS_NUM]; // 30 asteroids max  
-Beetle* m_beetle[MAX_BEETLE_NUM];       // 20 beetles max
-Wasp* m_wasp[MAX_WASP_NUM];            // 20 wasps max
-Debris* m_debris[MAX_DEBRIS_NUM];       // 200,000 debris max
-Box* m_boxes[MAX_BOX_NUM];             // 10,000 boxes max
+| Entity | Array Size | Constant |
+|--------|-----------|----------|
+| PlayerShip | 1 (single pointer) | — |
+| Bullet | 100 | `MAX_BULLETS_NUM` |
+| Asteroid | 30 | `MAX_ASTEROIDS_NUM` |
+| Beetle | 20 | `MAX_BEETLE_NUM` |
+| Wasp | 20 | `MAX_WASP_NUM` |
+| Debris | 200,000 | `MAX_DEBRIS_NUM` |
+| Box | 10,000 | `MAX_BOX_NUM` |
+
+## Game Flow State Machine
+
+```
+Attract Mode → Name Input → Gameplay (Waves 1-5) → High Score Display → Attract Mode
 ```
 
-### UI and Scoring System
-```cpp
-struct PlayerScore {
-    std::string name;
-    int score;
-    int rank;
-};
+1. **Attract Mode** (`m_isAttractMode = true`): Title screen, press start to begin
+2. **Name Input** (`m_isPlayerNameInputMode = true`): Player enters name for scoreboard
+3. **Gameplay**: 5 waves of increasing difficulty, player has 10 HP max
+4. **High Score Display**: Scoreboard shown after game over, persisted to file
 
-struct Button {
-    float width, height;
-    Vec2 center, textPosition;
-    Rgba8 color, textColor;
-    std::string text;
-    bool isSelected;
-};
-```
+## Wave Data (LevelData.cpp)
 
-## Testing and Quality
+| Wave | Beetles | Wasps | Asteroids |
+|------|---------|-------|-----------|
+| 1 | 2 | 1 | 3 |
+| 2 | 3 | 2 | 4 |
+| 3 | 5 | 3 | 5 |
+| 4 | 4 | 4 | 6 |
+| 5 | 6 | 5 | 7 |
 
-### Debug Systems
-- **Debug Rendering**: `DebugRender()` methods on all entities for collision visualization
-- **Debug Console Integration**: Command system for runtime parameter adjustment
-- **Hot Reload Support**: Dynamic code reloading during development sessions
+## Key Constants (GameCommon.hpp)
 
-### Quality Assurance Features
-- **Memory Management**: RAII-style cleanup with `GAME_SAFE_RELEASE` template
-- **Collision Detection**: Separate physics and cosmetic radius systems
-- **Performance Monitoring**: Fixed-array entity pools to prevent allocation spikes
-- **Error Handling**: Comprehensive bounds checking and null pointer validation
+### World
+- `WORLD_SIZE_X = 200.0f`, `WORLD_SIZE_Y = 100.0f`
+- `SCREEN_SIZE_X = 1600.0f`, `SCREEN_SIZE_Y = 800.0f`
 
-### Build Validation
-- **Multiple Configurations**: Debug/Release builds with different optimization levels
-- **Platform Coverage**: x86 and x64 architecture support
-- **Warning Level**: Level 4 warnings enabled with SDL security checks
-- **Static Analysis**: ConformanceMode enabled for standards compliance
+### PlayerShip
+- Acceleration: `30.0f`, Turn speed: `300.0f deg/s`
+- Physics radius: `1.75f`, Cosmetic radius: `2.25f`
+- Max health: `10`, Color: `Rgba8(102, 153, 204)` (light blue)
 
-## FAQ
+### Bullet
+- Speed: `50.0f`, Lifetime: `2.0s`
+- Physics radius: `0.5f`, Cosmetic radius: `2.0f`
 
-### Q: How does the entity system handle memory management?
-A: The game uses fixed-size arrays for all entity types, avoiding dynamic allocation during gameplay. Entities are marked as "garbage" and cleaned up at frame boundaries using the `DeleteGarbageEntities()` system.
+### Asteroid
+- Speed: `10.0f`, Starting count: `6`
+- Physics radius: `1.6f`, Cosmetic radius: `2.0f`
 
-### Q: What is the relationship between physics and cosmetic radius?
-A: Physics radius is used for collision detection (conservative, smaller), while cosmetic radius encompasses the visual representation (liberal, larger). This allows for more forgiving gameplay while maintaining visual accuracy.
+### Beetle
+- Physics radius: `1.5f`, Cosmetic radius: `2.25f`
+- Color: `Rgba8(100, 160, 60)` (green)
 
-### Q: How does the wave/level progression system work?
-A: The game uses `m_currentWave` to track progress and `SpawnEnemiesForCurrentWave()` to dynamically spawn appropriate enemy counts. The system checks `AreAllEnemiesDead()` to trigger wave advancement.
+### Wasp
+- Acceleration: `10.0f`
+- Physics radius: `1.73f`, Cosmetic radius: `2.0f`
+- Color: `Rgba8(255, 255, 60)` (yellow)
 
-### Q: Can the game be extended with new entity types?
-A: Yes, new entities can be added by deriving from the Entity base class and implementing the required virtual methods (`Update()`, `Render()`, `DebugRender()`, `InitializeLocalVerts()`). Add corresponding arrays to the Game class for management.
+## Architectural Patterns
 
-## Related File List
+- **Fixed-Array Pools**: All entity arrays are statically sized — no `new`/`delete` during gameplay
+- **Dual-Radius Collision**: `m_physicsRadius` for gameplay hits, `m_cosmeticRadius` for visual bounds
+- **Garbage Collection**: Entities set `m_isGarbage = true`, cleaned up at frame end
+- **Local Vertex Arrays**: Each entity pre-computes transformed vertices for rendering
+- **Camera Shake**: `m_shakeIntensity` / `m_shakeDuration` system on the world camera
+- **GAME_SAFE_RELEASE<T>**: Template for RAII-style entity cleanup (null-check, delete, nullify)
 
-### Core Architecture
-- `Main_Windows.cpp` - Application entry point
-- `App.hpp/cpp` - Application lifecycle management
-- `Game.hpp/cpp` - Core game logic and state
-- `GameCommon.hpp/cpp` - Shared constants and utilities
-- `Entity.hpp/cpp` - Base entity class definition
+## Engine Build Preferences
 
-### Entity Implementations  
-- `PlayerShip.hpp/cpp` - Player character implementation
-- `Bullet.hpp/cpp` - Projectile entity system
-- `Asteroid.hpp/cpp` - Environmental hazard entities
-- `Beetle.hpp/cpp` - Basic enemy AI entity
-- `Wasp.hpp/cpp` - Advanced enemy with acceleration
-- `Debris.hpp/cpp` - Particle effect system
-- `Box.hpp/cpp` - Interactive/collectible entities
-
-### Systems and UI
-- `UIHandler.hpp/cpp` - User interface management
-- `ScoreBoardHandler.hpp/cpp` - Score persistence system
-- `LevelData.hpp/cpp` - Level/wave configuration data
-- `EngineBuildPreferences.hpp` - Engine configuration settings
-
-### Build and Configuration
-- `Game.vcxproj` - Visual Studio project configuration  
-- `Game.vcxproj.filters` - Project file organization
-
-## Changelog
-
-### 2025-09-25 17:43:22
-- Initial module documentation created
-- Entity system architecture documented
-- Build configuration and dependencies catalogued
-- Core gameplay systems and data models identified
+Configured in `EngineBuildPreferences.hpp`:
+- `ENGINE_DEBUG_RENDER` — Enabled (debug visualization available)
+- `ENGINE_DISABLE_AUDIO` — Commented out (audio enabled)
+- `ENGINE_DISABLE_SCRIPT` — Not defined (V8 scripting enabled)

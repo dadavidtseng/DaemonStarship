@@ -2,6 +2,12 @@
 
 ## Changelog
 
+### 2026-02-14
+- Updated all CLAUDE.md files with accurate project structure and codebase analysis
+- Added V8 scripting engine and OpenSSL dependencies to documentation
+- Created comprehensive Game module CLAUDE.md with full class hierarchy and constants
+- Refined architecture overview, build configuration, and coding standards
+
 ### 2025-09-25 17:43:22
 - Initial AI context documentation created
 - Project structure analysis and module identification completed
@@ -9,37 +15,39 @@
 
 ## Project Vision
 
-DaemonStarship is a classic 2D space shooter game built in C++ using a custom game engine architecture. The game features a player-controlled starship defending against waves of enemies including asteroids, beetles, and wasps in an infinite space environment with scoreboard tracking and multiple game modes.
+DaemonStarship is a classic 2D space shooter game built in C++20 using a custom game engine architecture. The game features a player-controlled starship defending against 5 waves of enemies (asteroids, beetles, and wasps) in a wraparound 2D world with scoreboard tracking, attract mode, and player name input.
 
 ## Architecture Overview
 
 The project follows a traditional game engine architecture with clear separation of concerns:
-- **Application Layer**: Main entry point and application lifecycle management
-- **Game Layer**: Core game logic, entity management, and gameplay mechanics  
-- **Engine Integration**: Utilizes a custom C++ game engine (external dependency)
-- **Rendering Pipeline**: DirectX 11 HLSL shader-based rendering system
-- **Audio System**: FMOD-based audio playback for music and sound effects
-- **Data Management**: File-based scoreboard persistence and asset loading
+- **Application Layer**: WinMain entry point (`Main_Windows.cpp`) and application lifecycle (`App`)
+- **Game Layer**: Core game loop, fixed-size entity pools, wave management, and state machine (`Game`)
+- **Entity System**: Abstract `Entity` base with 6 derived types using dual-radius collision
+- **Engine Integration**: Custom C++20 game engine (external dependency at `../Engine/`)
+- **Rendering Pipeline**: DirectX 11 HLSL shader-based rendering with debug visualization
+- **Audio System**: FMOD-based audio playback for BGM and sound effects
+- **Scripting**: V8 JavaScript engine integration for runtime scripting
+- **UI System**: Bitmap font rendering, attract mode, name input, and scoreboard display
+- **Data Management**: File-based scoreboard persistence and JSON configuration
 
 ## Module Structure Diagram
 
 ```mermaid
 graph TD
-    A["(Root) DaemonStarship"] --> B["Code/Game"];
-    A --> C["Run"];
-    A --> D["Docs"];
-    A --> E["Temporary"];
+    A["(Root) DaemonStarship"] --> B["Code/Game"]
+    A --> C["Run"]
+    A --> D["Docs"]
+    A --> E["Temporary"]
 
-    B --> F["Game Module (C++)"];
-    C --> G["Runtime Assets"];
-    C --> H["Executables"];
-    D --> I["Documentation"];
-    E --> J["Build Artifacts"];
-
-    G --> K["Audio Files"];
-    G --> L["Shaders"];
-    G --> M["Fonts"];
-    G --> N["Score Data"];
+    B --> F["15 .hpp + 15 .cpp files"]
+    C --> G["Data/Audio - MP3 files"]
+    C --> H["Data/Shaders - HLSL"]
+    C --> I["Data/Fonts - PNG bitmaps"]
+    C --> J["Data/Config - JSON"]
+    C --> K["Data/Score - Scoreboard.txt"]
+    C --> L["Executables + DLLs"]
+    D --> M["README.md"]
+    E --> N["Build Artifacts"]
 
     click F "./Code/Game/CLAUDE.md" "View Game module documentation"
 ```
@@ -48,73 +56,96 @@ graph TD
 
 | Module | Path | Language | Description |
 |--------|------|----------|-------------|
-| **Game** | `Code/Game/` | C++ | Main game implementation containing all gameplay logic, entities, UI, and scoreboard management |
-| **Runtime** | `Run/` | Assets/Executables | Runtime directory containing game executables, asset files (audio, shaders, fonts), and persistent data |
-| **Documentation** | `Docs/` | Markdown | Project documentation (currently contains template README) |
+| **Game** | `Code/Game/` | C++20 | Main game implementation: 15 source files (~4,000 LOC) containing all gameplay logic, entities, UI, and scoreboard |
+| **Runtime** | `Run/` | Assets | Executables, DLLs (FMOD, V8, ICU, Abseil, zlib), audio, shaders, fonts, config, and score data |
+| **Documentation** | `Docs/` | Markdown | Project README with features, installation, controls, and game flow |
 
 ## Running and Development
 
 ### Prerequisites
-- Visual Studio 2019/2022 with C++ development tools
+- Visual Studio 2022 with C++ desktop development workload
 - Windows 10/11 (x64)
 - DirectX 11 compatible graphics card
-- External Engine dependency (located in `../Engine/`)
+- Windows 10.0 SDK
+- External Engine dependency (located at `../Engine/`)
 
 ### Building the Project
-1. Open `DaemonStarship.sln` in Visual Studio
-2. Ensure the Engine project dependency is available at `../Engine/Code/Engine/Engine.vcxproj`
-3. Build solution in Debug or Release configuration
-4. Executables are automatically copied to the `Run/` directory
+1. Open `DaemonStarship.sln` in Visual Studio 2022
+2. Ensure the Engine project is available at `../Engine/Code/Engine/Engine.vcxproj`
+3. Build in Debug|x64 or Release|x64 configuration
+4. Post-build events automatically copy the executable and required DLLs to `Run/`
 
 ### Running the Game
 - Execute `DaemonStarship_Debug_x64.exe` or `DaemonStarship_Release_x64.exe` from the `Run/` directory
-- Game data and assets are loaded from the `Run/Data/` subdirectories
+- Working directory must be `Run/` for asset loading to work
+- Game data is loaded from `Run/Data/` subdirectories (Audio, Config, Fonts, Score, Shaders)
+
+### Build Configuration Details
+- **Platform Toolset**: v143 (VS 2022)
+- **Language Standard**: C++20 (`/std:c++20`)
+- **Character Set**: Unicode
+- **Multi-Processor Compilation**: Enabled
+- **Output**: `Temporary/DaemonStarship_$(PlatformShortName)_$(Configuration)/`
+
+### External Dependencies
+| Library | Purpose | Files |
+|---------|---------|-------|
+| **Custom Engine** | Rendering, input, audio, events, camera, clock | `../Engine/` |
+| **FMOD** | Audio playback | `fmod64.dll` |
+| **V8** (v13.0.245.25) | JavaScript scripting | `v8.dll`, `v8_libbase.dll`, `v8_libplatform.dll` |
+| **OpenSSL** | Cryptography (KADI auth) | `libcrypto.lib`, `libssl.lib` |
+| **ICU** | Unicode support | `icuuc.dll`, `third_party_icu_icui18n.dll` |
+| **Abseil** | C++ utilities | `third_party_abseil-cpp_absl.dll` |
+| **zlib** | Compression | `third_party_zlib.dll` |
 
 ## Testing Strategy
 
 The project currently lacks formal unit tests but includes:
-- **Debug Rendering**: Comprehensive debug visualization system for entity physics and collision detection
-- **Developer Console**: In-game console for runtime debugging and parameter adjustment
-- **Hot Reload System**: Dynamic code reloading capabilities during development
-- **Multiple Build Configurations**: Debug and Release builds with different optimization levels
+- **Debug Rendering**: Toggle with in-game key; visualizes physics/cosmetic radii, velocity vectors, and collision bounds
+- **Developer Console**: Engine-provided runtime console for debugging and parameter adjustment
+- **Engine Build Preferences**: `EngineBuildPreferences.hpp` toggles for `ENGINE_DEBUG_RENDER`, audio, and scripting
+- **Multiple Build Configurations**: Debug (with assertions/diagnostics) and Release (optimized)
 
 ## Coding Standards
 
 ### Architecture Patterns
-- **Entity-Component Model**: Base Entity class with derived game objects (PlayerShip, Bullet, Asteroid, etc.)
-- **Fixed-Array Management**: Uses fixed-size arrays for entity pools to avoid dynamic allocation
-- **Resource Management**: RAII-style resource cleanup with custom GAME_SAFE_RELEASE template
-- **Event System**: Event-driven architecture for decoupled communication
+- **Entity Inheritance**: Abstract `Entity` base class with 6 derived game objects (`PlayerShip`, `Bullet`, `Asteroid`, `Beetle`, `Wasp`, `Debris`, `Box`)
+- **Fixed-Array Entity Pools**: Zero dynamic allocation during gameplay (e.g., `Bullet* m_bullets[100]`)
+- **Dual-Radius Collision**: `m_physicsRadius` (conservative, gameplay) and `m_cosmeticRadius` (liberal, visual bounds)
+- **Garbage Collection Pattern**: Entities marked `m_isGarbage`, deleted at frame end
+- **Resource Management**: RAII-style cleanup with `GAME_SAFE_RELEASE<T>` template
+- **Event System**: Engine-provided event-driven architecture for decoupled communication
 
 ### Naming Conventions
 - **Classes**: PascalCase (e.g., `PlayerShip`, `ScoreBoardHandler`)
-- **Member Variables**: m_ prefix with camelCase (e.g., `m_playerShip`, `m_isAttractMode`)
+- **Member Variables**: `m_` prefix with camelCase (e.g., `m_playerShip`, `m_isAttractMode`)
 - **Constants**: ALL_CAPS with underscores (e.g., `MAX_BULLETS_NUM`, `WORLD_SIZE_X`)
 - **Functions**: PascalCase for public methods, camelCase for private methods
+- **Files**: PascalCase matching class name (e.g., `PlayerShip.hpp`, `PlayerShip.cpp`)
 
 ### Code Quality
-- Uses modern C++20 features
-- Extensive use of const correctness
+- Modern C++20 features and conformance mode enabled
+- Extensive use of `const` correctness
+- `final` keyword on leaf entity classes (`Beetle`, `Wasp`, `Bullet`, `Debris`, `Box`)
 - Header-only templates for type safety
 - Comprehensive inline documentation
-- Platform-specific compilation with WIN32_LEAN_AND_MEAN
+- Platform-specific compilation with `WIN32_LEAN_AND_MEAN`
 
 ## AI Usage Guidelines
 
-### Code Analysis Assistance
-- **Entity Relationship Mapping**: AI can help visualize entity inheritance and interaction patterns
-- **Performance Optimization**: Analysis of fixed-array usage vs dynamic allocation trade-offs
-- **Memory Management**: Review of resource cleanup and potential memory leaks
-- **Architecture Evolution**: Suggestions for modularization and component system improvements
+### Code Modification Guidelines
+- Preserve the entity inheritance hierarchy and fixed-array memory model
+- Maintain compatibility with the external Engine dependency API
+- Follow established naming conventions and file organization (one class per .hpp/.cpp pair)
+- Ensure all changes maintain real-time performance for 60 FPS gameplay
+- Use `final` on new leaf entity classes
+- Add new entities to the appropriate fixed-size pool in `Game`
+- Update `GameCommon.hpp` for new constants
 
 ### Development Support
-- **Debug Feature Enhancement**: Expanding debug rendering and console command systems
-- **Gameplay Balancing**: Analysis of game constants and difficulty progression
-- **Code Refactoring**: Identifying opportunities for code organization improvements
+- **Entity Relationship Mapping**: Visualize inheritance and interaction patterns
+- **Performance Optimization**: Analyze fixed-array usage vs dynamic allocation trade-offs
+- **Memory Management**: Review resource cleanup and potential leaks via `GAME_SAFE_RELEASE`
+- **Gameplay Balancing**: Adjust wave data in `LevelData.cpp` and entity constants in `GameCommon.hpp`
+- **Debug Feature Enhancement**: Extend debug rendering and console commands
 - **Documentation Generation**: Automated API documentation from header files
-
-### Code Modification Guidelines
-- Preserve the existing entity architecture and fixed-array memory model
-- Maintain compatibility with the external Engine dependency
-- Follow established naming conventions and code organization patterns
-- Ensure all changes maintain the real-time performance characteristics required for 60 FPS gameplay
