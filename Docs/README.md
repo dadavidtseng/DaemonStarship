@@ -1,8 +1,11 @@
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
+![C++](https://img.shields.io/badge/C%2B%2B-20-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
+![DirectX](https://img.shields.io/badge/DirectX-11-107C10?style=for-the-badge&logo=xbox&logoColor=white)
+![FMOD](https://img.shields.io/badge/FMOD-000000?style=for-the-badge&logo=fmod&logoColor=white)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 [![Apache 2.0 License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT TITLE -->
 <div align="center">
@@ -15,33 +18,29 @@
   <img src="docs/images/demo.gif" alt="Daemon Starship Gameplay" width="720">
 </div> -->
 
-<!-- TECH STACK BADGES -->
-![C++](https://img.shields.io/badge/C%2B%2B-20-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)
-![DirectX](https://img.shields.io/badge/DirectX-11-107C10?style=for-the-badge&logo=xbox&logoColor=white)
-![FMOD](https://img.shields.io/badge/FMOD-000000?style=for-the-badge&logo=fmod&logoColor=white)
-![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+## Table of Contents
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#overview">Overview</a></li>
-    <li><a href="#how-to-install">How to Install</a></li>
-    <li><a href="#how-to-use">How to Use</a></li>
-    <li><a href="#project-structure">Project Structure</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
----
+- [Overview](#overview)
+- [Features](#features)
+- [How to Install](#how-to-install)
+- [How to Use](#how-to-use)
+- [Project Structure](#project-structure)
+- [License](#license)
+- [Contact](#contact)
 
 ## Overview
 
 Daemon Starship is a 2D space shooter where the player defends against waves of enemies — asteroids, beetles, and wasps — in an infinite wrapping space. The game features a wave progression system across 5 levels of increasing difficulty, persistent high-score tracking, and a dual-radius collision detection system.
 
 Built as a course project at SMU Guildhall, the game runs on a custom [Daemon Engine](https://github.com/dadavidtseng/Engine) providing DirectX 11 rendering, FMOD 3D audio, multithreaded job processing, and a developer console for runtime debugging.
+
+## Features
+
+- **Wave-based combat** — 5 levels with progressive enemy counts (beetles, wasps, asteroids)
+- **Fixed-size entity pools** — Zero dynamic allocation during gameplay for consistent frame times
+- **Dual-radius collision** — Conservative physics radius for gameplay, liberal cosmetic radius for visuals
+- **Persistent scoreboard** — Top 100 high scores saved to disk
+- **FMOD audio** — Background music and spatial sound effects
 
 ## How to Install
 
@@ -118,14 +117,6 @@ DaemonStarship/
 └── DaemonStarship.sln        # Visual Studio solution
 ```
 
-## Features
-
-- **Wave-based combat** — 5 levels with progressive enemy counts (beetles, wasps, asteroids)
-- **Fixed-size entity pools** — Zero dynamic allocation during gameplay for consistent frame times
-- **Dual-radius collision** — Conservative physics radius for gameplay, liberal cosmetic radius for visuals
-- **Persistent scoreboard** — Top 100 high scores saved to disk
-- **FMOD audio** — Background music and spatial sound effects
-
 ## License
 
 Copyright 2025 Yu-Wei Tseng
@@ -139,8 +130,6 @@ Licensed under the [Apache License, Version 2.0](../LICENSE).
 - GitHub: [@dadavidtseng](https://github.com/dadavidtseng)
 - LinkedIn: [dadavidtseng](https://www.linkedin.com/in/dadavidtseng/)
 - Email: dadavidtseng@gmail.com
-
-Project Link: [github.com/dadavidtseng/DaemonStarship](https://github.com/dadavidtseng/DaemonStarship)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
