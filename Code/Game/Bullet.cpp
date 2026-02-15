@@ -4,6 +4,8 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Bullet.hpp"
+
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/Game.hpp"
@@ -40,15 +42,15 @@ void Bullet::Render() const
     }
 
     TransformVertexArrayXY3D(BULLET_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(BULLET_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(BULLET_VERTS_NUM, tempWorldVerts);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Bullet::DebugRender() const
 {
-    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_game->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,

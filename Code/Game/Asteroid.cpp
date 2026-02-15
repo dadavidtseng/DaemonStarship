@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Asteroid.hpp"
 
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
@@ -18,9 +19,9 @@ Asteroid::Asteroid( Vec2 const& position, float const orientationDegrees)
     m_health          = 3;
     m_physicsRadius   = ASTEROID_PHYSICS_RADIUS;
     m_cosmeticRadius  = ASTEROID_COSMETIC_RADIUS;
-    m_angularVelocity = g_theRNG->RollRandomFloatInRange(-200.f, 200.f);
+    m_angularVelocity = g_rng->RollRandomFloatInRange(-200.f, 200.f);
 
-    float const rangeX = g_theRNG->RollRandomFloatInRange(-ASTEROID_SPEED, ASTEROID_SPEED);
+    float const rangeX = g_rng->RollRandomFloatInRange(-ASTEROID_SPEED, ASTEROID_SPEED);
     float const rangeY = ASTEROID_SPEED - rangeX;
 
     m_velocity = Vec2(rangeX, rangeY);
@@ -54,15 +55,15 @@ void Asteroid::Render() const
     }
 
     TransformVertexArrayXY3D(ASTEROID_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(ASTEROID_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(ASTEROID_VERTS_NUM, tempWorldVerts);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Asteroid::DebugRender() const
 {
-    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_game->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,
@@ -100,7 +101,7 @@ void Asteroid::InitializeLocalVerts()
     for (int sideIndex = 0; sideIndex < ASTEROID_TRIS_NUM; ++sideIndex)
     {
         // Pre-generate random radius for every triangle
-        radius[sideIndex] = g_theRNG->RollRandomFloatInRange(m_physicsRadius, m_cosmeticRadius);
+        radius[sideIndex] = g_rng->RollRandomFloatInRange(m_physicsRadius, m_cosmeticRadius);
 
         // Apply radius to vert positions
         const float degrees = degreesPerSide * static_cast<float>(sideIndex);

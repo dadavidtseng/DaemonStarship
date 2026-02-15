@@ -14,13 +14,15 @@ class Game;
 class App
 {
 public:
+    App();
+    ~App();
     void Startup();
     void Shutdown();
     void RunFrame();
 
     void RunMainLoop();
 
-    static bool OnWindowClose(EventArgs& arg);
+    static bool OnCloseButtonClicked(EventArgs& arg);
     static void RequestQuit();
     static bool m_isQuitting;
 
@@ -38,5 +40,5 @@ private:
 
     bool    m_isSlowMo           = false;
     float   m_timeLastFrameStart = 0.f;
-    Camera* m_devConsoleCamera   = nullptr;
+    // Camera* m_devConsoleCamera   = nullptr;
 };

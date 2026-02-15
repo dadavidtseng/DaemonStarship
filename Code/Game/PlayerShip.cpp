@@ -66,9 +66,9 @@ void PlayerShip::Render() const
     TransformVertexArrayXY3D(PLAYER_SHIP_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
     // DebugDrawGlowCircle(m_position, 5.f, WASP_COLOR, 0.0001f);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ void PlayerShip::UpdateFromController()
     // Shoot
     if (controller.WasButtonJustPressed(XBOX_BUTTON_A))
     {
-        g_theGame->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
+        g_game->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
     }
 
     if (g_input->IsKeyDown(KEYCODE_W) || controller.GetLeftStick().GetMagnitude() > 0.f)
@@ -213,5 +213,5 @@ void PlayerShip::UpdateFromKeyBoard()
     if (g_input->WasKeyJustPressed(KEYCODE_SPACE) &&
         m_isReadyToSpawnBullet &&
         !m_isDead)
-        g_theGame->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
+        g_game->SpawnBullet(m_position + GetForwardNormal(), m_orientationDegrees);
 }

@@ -1,5 +1,6 @@
 #include "ScoreBoardHandler.hpp"
 
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/GameCommon.hpp"
@@ -161,7 +162,7 @@ void ScoreBoardHandler::DisplayScoreboard(const PlayerScore scoreboard[], const 
 		                           1.f, true, 0.3f);
 	}
 
-	g_theRenderer->DrawVertexArray(static_cast<int>(textVerts.size()), textVerts.data());
+	g_renderer->DrawVertexArray(static_cast<int>(textVerts.size()), textVerts.data());
 
 	printf("Scoreboard (Top 10):\n");
 

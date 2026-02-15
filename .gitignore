@@ -4,6 +4,7 @@
 /[Tt]emporary/
 .claude/
 .spec-workflow/
+Run/Logs
 
 # Prerequisites
 *.d

@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Box.hpp"
 
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -64,9 +65,9 @@ void Box::Render() const
     }
 
     TransformVertexArrayXY3D(BOX_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(BOX_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(BOX_VERTS_NUM, tempWorldVerts);
 }
 
 //-----------------------------------------------------------------------------------------------

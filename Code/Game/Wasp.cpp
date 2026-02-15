@@ -5,6 +5,7 @@
 //----------------------------------------------------------------------------------------------------
 #include "Game/Wasp.hpp"
 
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Game/Game.hpp"
@@ -25,10 +26,10 @@ void Wasp::Update(float const deltaSeconds)
 {
     if (m_isDead) return;
 
-    if (g_theGame->GetPlayerShip() &&
-        !g_theGame->GetPlayerShip()->IsDead())
+    if (g_game->GetPlayerShip() &&
+        !g_game->GetPlayerShip()->IsDead())
     {
-        Vec2 const playerShipPos     = g_theGame->GetPlayerShip()->GetPosition();
+        Vec2 const playerShipPos     = g_game->GetPlayerShip()->GetPosition();
         Vec2 const directionToPlayer = (playerShipPos - m_position).GetNormalized();
 
         m_orientationDegrees = directionToPlayer.GetOrientationDegrees();
@@ -56,15 +57,15 @@ void Wasp::Render() const
     }
 
     TransformVertexArrayXY3D(WASP_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(WASP_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(WASP_VERTS_NUM, tempWorldVerts);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Wasp::DebugRender() const
 {
-    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_game->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,

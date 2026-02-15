@@ -174,7 +174,7 @@ void UIHandler::DrawAttractModeUI() const
                                    true,
                                    0.3f);
 
-        g_theRenderer->DrawVertexArray(static_cast<int>(titleShadowVerts.size()), titleShadowVerts.data());
+        g_renderer->DrawVertexArray(static_cast<int>(titleShadowVerts.size()), titleShadowVerts.data());
 
         std::vector<Vertex_PCU> titleVerts;
         AddVertsForTextTriangles2D(titleVerts,
@@ -193,13 +193,13 @@ void UIHandler::DrawAttractModeUI() const
                                    1.f,
                                    true,
                                    0.3f);
-        g_theRenderer->SetModelConstants();
-        g_theRenderer->SetBlendMode(eBlendMode::ALPHA);
-        g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_NONE);
-        g_theRenderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
-        g_theRenderer->SetDepthMode(eDepthMode::DISABLED);
-        g_theRenderer->BindTexture(nullptr);
-        g_theRenderer->DrawVertexArray(static_cast<int>(titleVerts.size()), titleVerts.data());
+        g_renderer->SetModelConstants();
+        g_renderer->SetBlendMode(eBlendMode::ALPHA);
+        g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_NONE);
+        g_renderer->SetSamplerMode(eSamplerMode::POINT_CLAMP);
+        g_renderer->SetDepthMode(eDepthMode::DISABLED);
+        g_renderer->BindTexture(nullptr);
+        g_renderer->DrawVertexArray(static_cast<int>(titleVerts.size()), titleVerts.data());
 
         for (int buttonIndex = 0; buttonIndex < 2; ++buttonIndex)
         {
@@ -229,7 +229,7 @@ void UIHandler::DrawAttractModeUI() const
                                        true,
                                        0.3f);
 
-            g_theRenderer->DrawVertexArray(static_cast<int>(buttonTextVerts.size()), buttonTextVerts.data());
+            g_renderer->DrawVertexArray(static_cast<int>(buttonTextVerts.size()), buttonTextVerts.data());
         }
     }
 }
@@ -260,7 +260,7 @@ void UIHandler::DrawInGameUI(int currentPlayerShipHealth) const
                                true,
                                0.3f);
 
-    g_theRenderer->DrawVertexArray(static_cast<int>(titleVerts.size()), titleVerts.data());
+    g_renderer->DrawVertexArray(static_cast<int>(titleVerts.size()), titleVerts.data());
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -277,7 +277,7 @@ void UIHandler::DrawPlayerShip(Vec2 const& drawPosition, Rgba8 const& color, flo
 
     TransformVertexArrayXY3D(PLAYER_SHIP_VERTS_NUM, tempWorldVerts, scale, 90.f, drawPosition);
 
-    g_theRenderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
+    g_renderer->DrawVertexArray(PLAYER_SHIP_VERTS_NUM, tempWorldVerts);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -344,7 +344,7 @@ void UIHandler::DrawPlayerNameInput() const
     std::vector<Vertex_PCU> textVerts;
     AddVertsForTextTriangles2D(textVerts, m_playerShipName, Vec2(150.f, 600.f), 100.f, WASP_COLOR, 1.f,
                                true, 0.3f);
-    g_theRenderer->DrawVertexArray(static_cast<int>(textVerts.size()), textVerts.data());
+    g_renderer->DrawVertexArray(static_cast<int>(textVerts.size()), textVerts.data());
 }
 
 bool UIHandler::IsFirstButtonSelected() const

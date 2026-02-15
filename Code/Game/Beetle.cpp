@@ -4,6 +4,8 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Beetle.hpp"
+
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
@@ -24,15 +26,15 @@ void Beetle::Update(float const deltaSeconds)
 {
     if (m_isDead) return;
 
-    if (g_theGame->GetPlayerShip() &&
-        !g_theGame->GetPlayerShip()->IsDead())
+    if (g_game->GetPlayerShip() &&
+        !g_game->GetPlayerShip()->IsDead())
     {
-        Vec2 playerShipPos     = g_theGame->GetPlayerShip()->GetPosition();
+        Vec2 playerShipPos     = g_game->GetPlayerShip()->GetPosition();
         Vec2 directionToPlayer = (playerShipPos - m_position).GetNormalized();
         m_orientationDegrees   = directionToPlayer.GetOrientationDegrees();
     }
 
-    float const beetleSpeed = g_theRNG->RollRandomFloatInRange(5.f, 12.f);
+    float const beetleSpeed = g_rng->RollRandomFloatInRange(5.f, 12.f);
     m_velocity              = Vec2::MakeFromPolarDegrees(m_orientationDegrees, beetleSpeed);
     m_position += m_velocity * deltaSeconds;
 }
@@ -51,15 +53,15 @@ void Beetle::Render() const
 
     TransformVertexArrayXY3D(BEETLE_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
 
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(BEETLE_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(BEETLE_VERTS_NUM, tempWorldVerts);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Beetle::DebugRender() const
 {
-    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_game->GetPlayerShip()->GetPosition();
     Vec2 const offset        = Vec2(-0.5f, 0.f);
 
     DebugDrawLine(playerShipPos,

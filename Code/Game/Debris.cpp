@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------------------------
 #include "Game/Debris.hpp"
 
+#include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
@@ -13,7 +14,7 @@
 
 //-----------------------------------------------------------------------------------------------
 Debris::Debris( Vec2 const& position, Vec2 const& velocity, float const radius, Rgba8 const color)
-    : Entity( position, g_theRNG->RollRandomFloatInRange(0.f, 360.f), color),
+    : Entity( position, g_rng->RollRandomFloatInRange(0.f, 360.f), color),
       m_lifetime(2.f),
       m_initialLifetime(2.f)
 {
@@ -21,7 +22,7 @@ Debris::Debris( Vec2 const& position, Vec2 const& velocity, float const radius, 
     m_cosmeticRadius = radius * 1.5f;
 
     m_velocity        = velocity;
-    m_angularVelocity = g_theRNG->RollRandomFloatInRange(-200.f, 200.f);
+    m_angularVelocity = g_rng->RollRandomFloatInRange(-200.f, 200.f);
 
     m_color.a = 127;
 
@@ -63,9 +64,9 @@ void Debris::Render() const
     }
 
     TransformVertexArrayXY3D(DEBRIS_VERTS_NUM, tempWorldVerts, 1.f, m_orientationDegrees, m_position);
-    g_theRenderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
-    g_theRenderer->BindTexture(nullptr);
-    g_theRenderer->DrawVertexArray(DEBRIS_VERTS_NUM, tempWorldVerts);
+    g_renderer->SetRasterizerMode(eRasterizerMode::SOLID_CULL_BACK);
+    g_renderer->BindTexture(nullptr);
+    g_renderer->DrawVertexArray(DEBRIS_VERTS_NUM, tempWorldVerts);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ void Debris::DebugRender() const
     if (m_isDead)
         return;
 
-    Vec2 const playerShipPos = g_theGame->GetPlayerShip()->GetPosition();
+    Vec2 const playerShipPos = g_game->GetPlayerShip()->GetPosition();
 
     DebugDrawLine(playerShipPos,
                   m_position,
@@ -107,7 +108,7 @@ void Debris::InitializeLocalVerts()
 
     for (int sideIndex = 0; sideIndex < DEBRIS_TRI_NUM; ++sideIndex)
     {
-        radius[sideIndex] = g_theRNG->RollRandomFloatInRange(m_physicsRadius * 0.5f, m_cosmeticRadius * 0.75f);
+        radius[sideIndex] = g_rng->RollRandomFloatInRange(m_physicsRadius * 0.5f, m_cosmeticRadius * 0.75f);
 
         const float degrees = degreesPerSide * static_cast<float>(sideIndex);
 

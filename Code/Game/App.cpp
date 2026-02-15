@@ -4,99 +4,49 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/App.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/Clock.hpp"
 #include "Engine/Core/DevConsole.hpp"
+#include "Engine/Core/Engine.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
-#include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Platform/Window.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/Renderer.hpp"
 
 //----------------------------------------------------------------------------------------------------
-App*                   g_theApp        = nullptr;   // Created and owned by Main_Windows.cpp
-AudioSystem*           g_theAudio      = nullptr;   // Created and owned by the App
-BitmapFont*            g_theBitmapFont = nullptr;   // Created and owned by the App
-Game*                  g_theGame       = nullptr;   // Created and owned by the App
-Renderer*              g_theRenderer   = nullptr;   // Created and owned by the App
-RandomNumberGenerator* g_theRNG        = nullptr;   // Created and owned by the App
-Window*                g_theWindow     = nullptr;   // Created and owned by the App
+App*  g_app  = nullptr;   // Created and owned by Main_Windows.cpp
+Game* g_game = nullptr;   // Created and owned by the App
 
 //----------------------------------------------------------------------------------------------------
 STATIC bool App::m_isQuitting = false;
+
+//----------------------------------------------------------------------------------------------------
+App::App()
+{
+    GEngine::Get().Construct();
+}
+
+//----------------------------------------------------------------------------------------------------
+App::~App()
+{
+    GEngine::Get().Destruct();
+}
 
 //----------------------------------------------------------------------------------------------------
 /// @brief
 /// Create all engine subsystems in a specific order.
 void App::Startup()
 {
-    //-Start-of-EventSystem---------------------------------------------------------------------------
+    GEngine::Get().Startup();
 
-    sEventSystemConfig constexpr eventSystemConfig;
-    g_eventSystem = new EventSystem(eventSystemConfig);
-    g_eventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnWindowClose);
-    g_eventSystem->SubscribeEventCallbackFunction("quit", OnWindowClose);
+    g_eventSystem->SubscribeEventCallbackFunction("OnCloseButtonClicked", OnCloseButtonClicked);
+    g_eventSystem->SubscribeEventCallbackFunction("quit", OnCloseButtonClicked);
 
-    //-End-of-EventSystem-----------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-InputSystem---------------------------------------------------------------------------
-
-    sInputSystemConfig constexpr inputConfig;
-    g_input = new InputSystem(inputConfig);
-
-    //-End-of-InputSystem-----------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-Window--------------------------------------------------------------------------------
-
-    sWindowConfig windowConfig;
-    windowConfig.m_windowType  = eWindowType::WINDOWED;
-    windowConfig.m_aspectRatio = 2.f;
-    windowConfig.m_inputSystem = g_input;
-    windowConfig.m_windowTitle = "Starship";
-    g_theWindow                = new Window(windowConfig);
-
-    //-End-of-Window----------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-Renderer------------------------------------------------------------------------------
-
-    sRendererConfig rendererConfig;
-    rendererConfig.m_window = g_theWindow;
-    g_theRenderer           = new Renderer(rendererConfig);
-
-    //-End-of-Renderer--------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-DevConsole----------------------------------------------------------------------------
-
-    m_devConsoleCamera = new Camera();
-
-    sDevConsoleConfig devConsoleConfig;
-    devConsoleConfig.m_defaultRenderer = g_theRenderer;
-    devConsoleConfig.m_defaultFontName = "SquirrelFixedFont";
-    devConsoleConfig.m_defaultCamera   = m_devConsoleCamera;
-    g_devConsole                    = new DevConsole(devConsoleConfig);
-
-    //-End-of-DevConsole------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------
-    //-Start-of-AudioSystem---------------------------------------------------------------------------
-
-    sAudioSystemConfig constexpr audioConfig;
-    g_theAudio = new AudioSystem(audioConfig);
-
-    //-End-of-AudioSystem-----------------------------------------------------------------------------
-
-    g_eventSystem->Startup();
-    g_theWindow->Startup();
-    g_theRenderer->Startup();
-    g_devConsole->StartUp();
-    g_input->Startup();
-    g_theAudio->Startup();
-
-    g_theBitmapFont = g_theRenderer->CreateOrGetBitmapFontFromFile("Data/Fonts/SquirrelFixedFont"); // DO NOT SPECIFY FILE .EXTENSION!!  (Important later on.)
-    g_theRNG        = new RandomNumberGenerator();
-    g_theGame       = new Game();
+    g_game = new Game();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -104,25 +54,12 @@ void App::Startup()
 //
 void App::Shutdown()
 {
-    GAME_SAFE_RELEASE(g_theGame);
-    GAME_SAFE_RELEASE(g_theRNG);
-    GAME_SAFE_RELEASE(g_theBitmapFont);
+    GAME_SAFE_RELEASE(g_game);
 
-    g_theAudio->Shutdown();
-    g_devConsole->Shutdown();
+    g_eventSystem->UnsubscribeEventCallbackFunction("quit", OnCloseButtonClicked);
+    g_eventSystem->UnsubscribeEventCallbackFunction("OnCloseButtonClicked", OnCloseButtonClicked);
 
-    GAME_SAFE_RELEASE(m_devConsoleCamera);
-
-    g_theRenderer->Shutdown();
-    g_theWindow->Shutdown();
-    g_input->Shutdown();
-    g_eventSystem->Shutdown();
-
-    // Destroy all Engine Subsystem
-    GAME_SAFE_RELEASE(g_theAudio);
-    GAME_SAFE_RELEASE(g_theRenderer);
-    GAME_SAFE_RELEASE(g_theWindow);
-    GAME_SAFE_RELEASE(g_input);
+    GEngine::Get().Shutdown();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -148,11 +85,12 @@ void App::RunMainLoop()
 }
 
 //----------------------------------------------------------------------------------------------------
-bool App::OnWindowClose(EventArgs& arg)
+bool App::OnCloseButtonClicked(EventArgs& arg)
 {
     UNUSED(arg)
 
     RequestQuit();
+
     return true;
 }
 
@@ -166,11 +104,11 @@ void App::RequestQuit()
 void App::BeginFrame() const
 {
     g_eventSystem->BeginFrame();
-    g_theWindow->BeginFrame();
-    g_theRenderer->BeginFrame();
+    g_window->BeginFrame();
+    g_renderer->BeginFrame();
     g_devConsole->BeginFrame();
     g_input->BeginFrame();
-    g_theAudio->BeginFrame();
+    g_audio->BeginFrame();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -181,7 +119,7 @@ void App::Update()
     HandleKeyPressed();
     HandleKeyReleased();
     AdjustForPauseAndTimeDistortion();
-    g_theGame->Update();
+    g_game->Update();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -195,14 +133,11 @@ void App::Render() const
 {
     Rgba8 const clearColor = Rgba8::BLACK;
 
-    g_theRenderer->ClearScreen(clearColor);
-    g_theGame->Render();
+    g_renderer->ClearScreen(clearColor);
+    g_game->Render();
 
     AABB2 const box            = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
-    Vec2 const  bottomLeft     = Vec2::ZERO;
-    Vec2 const  screenTopRight = Vec2(1600.f, 800.f);
-    m_devConsoleCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
-    m_devConsoleCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
+
     g_devConsole->Render(box);
 }
 
@@ -210,11 +145,11 @@ void App::Render() const
 void App::EndFrame() const
 {
     g_eventSystem->EndFrame();
-    g_theWindow->EndFrame();
-    g_theRenderer->EndFrame();
+    g_window->EndFrame();
+    g_renderer->EndFrame();
     g_devConsole->EndFrame();
     g_input->EndFrame();
-    g_theAudio->EndFrame();
+    g_audio->EndFrame();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -229,7 +164,7 @@ void App::HandleKeyPressed()
 
     if (g_input->WasKeyJustPressed(KEYCODE_ESC))
     {
-        switch (g_theGame->IsAttractMode())
+        switch (g_game->IsAttractMode())
         {
         case true:
             RequestQuit();
@@ -237,10 +172,10 @@ void App::HandleKeyPressed()
             break;
 
         case false:
-            g_theGame->ResetData();
-            g_theApp->DeleteAndCreateNewGame();
-            g_theGame->SetAttractMode(true);
-            g_theGame->SetPlayerShipIsReadyToSpawnBullet(false);
+            g_game->ResetData();
+            g_app->DeleteAndCreateNewGame();
+            g_game->SetAttractMode(true);
+            g_game->SetPlayerShipIsReadyToSpawnBullet(false);
 
             break;
         }
@@ -257,19 +192,19 @@ void App::HandleKeyPressed()
 
     if (g_input->WasKeyJustPressed(KEYCODE_F4) || controller.WasButtonJustPressed(XBOX_BUTTON_DPAD_DOWN))
     {
-        if (g_theGame)
+        if (g_game)
         {
-            g_theGame->MarkAllEntityAsDeadAndGarbage();
+            g_game->MarkAllEntityAsDeadAndGarbage();
         }
     }
 
-    if (!g_theGame->IsAttractMode())
+    if (!g_game->IsAttractMode())
     {
         if (g_input->WasKeyJustPressed(KEYCODE_F8))
         {
             DeleteAndCreateNewGame();
-            g_theGame->SetAttractMode(true);
-            g_theGame->SetPlayerShipIsReadyToSpawnBullet(!false);
+            g_game->SetAttractMode(true);
+            g_game->SetPlayerShipIsReadyToSpawnBullet(!false);
         }
     }
 }
@@ -291,7 +226,7 @@ void App::HandleQuitRequested()
 //----------------------------------------------------------------------------------------------------
 void App::AdjustForPauseAndTimeDistortion() const
 {
-    if (!g_theGame->IsAttractMode())
+    if (!g_game->IsAttractMode())
     {
         if (m_isSlowMo == true)
         {
@@ -309,8 +244,8 @@ void App::AdjustForPauseAndTimeDistortion() const
 //----------------------------------------------------------------------------------------------------
 void App::DeleteAndCreateNewGame()
 {
-    delete g_theGame;
-    g_theGame = nullptr;
+    delete g_game;
+    g_game = nullptr;
 
-    g_theGame = new Game();
+    g_game = new Game();
 }
