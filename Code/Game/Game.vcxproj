@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- Game.vcxproj - Application(.exe) Project Configuration -->
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup Label="ProjectConfigurations">
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Project Configurations -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -17,8 +23,11 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-  </ItemGroup>
-  <PropertyGroup Label="Globals">
+    </ItemGroup>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Global Project Properties-->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{1c6046c0-acfa-4ab7-b8d2-670ad463b3ef}</ProjectGuid>
@@ -100,9 +109,11 @@
     <Import Project="$(SolutionDir)../Engine/Code/ThirdParty/packages/v8.redist-v143-x64.13.0.245.25/build/native/v8.redist-v143-x64.props"/>
     <ImportGroup Label="ExtensionSettings">
     </ImportGroup>
+    <!-- Property Sheets Integration -->
+    <ImportGroup Label="ExtensionSettings">
+    </ImportGroup>
     <ImportGroup Label="Shared">
     </ImportGroup>
-    <!-- Property Sheets Integration -->
     <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <Import Project="$(UserRootDir)/Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)/Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
     </ImportGroup>
@@ -343,12 +354,6 @@
         </ProjectReference>
     </ItemGroup>
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <!-- Documentation -->
-    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <ItemGroup>
-        <None Include="../../Docs/README.md"/>
-    </ItemGroup>
-    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
     <!-- Source Files -->
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
   <ItemGroup>
@@ -388,6 +393,12 @@
     <ClInclude Include="UIHandler.hpp" />
     <ClInclude Include="Wasp.hpp" />
   </ItemGroup>
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- Documentation -->
+    <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <ItemGroup>
+        <None Include="../../Docs/README.md"/>
+    </ItemGroup>
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
     <!-- Build Target and Build Validation -->
     <!-- //////////////////////////////////////////////////////////////////////////////////////////////// -->
