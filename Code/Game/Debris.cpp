@@ -4,17 +4,18 @@
 
 //-----------------------------------------------------------------------------------------------
 #include "Game/Debris.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //-----------------------------------------------------------------------------------------------
-Debris::Debris( Vec2 const& position, Vec2 const& velocity, float const radius, Rgba8 const color)
-    : Entity( position, g_rng->RollRandomFloatInRange(0.f, 360.f), color),
+Debris::Debris(Vec2 const& position, Vec2 const& velocity, float const radius, Rgba8 const color)
+    : Entity(position, g_rng->RollRandomFloatInRange(0.f, 360.f), color),
       m_lifetime(2.f),
       m_initialLifetime(2.f)
 {
@@ -32,10 +33,9 @@ Debris::Debris( Vec2 const& position, Vec2 const& velocity, float const radius, 
 //-----------------------------------------------------------------------------------------------
 void Debris::Update(float const deltaSeconds)
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
-    m_position += m_velocity * deltaSeconds;
+    m_position           += m_velocity * deltaSeconds;
     m_orientationDegrees += m_angularVelocity * deltaSeconds;
 
     m_lifetime -= deltaSeconds;
@@ -50,8 +50,7 @@ void Debris::Update(float const deltaSeconds)
 //-----------------------------------------------------------------------------------------------
 void Debris::Render() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     Vertex_PCU tempWorldVerts[DEBRIS_VERTS_NUM];
 
@@ -72,8 +71,7 @@ void Debris::Render() const
 //-----------------------------------------------------------------------------------------------
 void Debris::DebugRender() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     Vec2 const playerShipPos = g_game->GetPlayerShip()->GetPosition();
 

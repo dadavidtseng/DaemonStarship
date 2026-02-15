@@ -4,16 +4,16 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/UIHandler.hpp"
-#include <cmath>
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //----------------------------------------------------------------------------------------------------
 UIHandler::UIHandler(Game* game)

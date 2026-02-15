@@ -4,12 +4,13 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Beetle.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Beetle::Beetle(Vec2 const& position, float const orientationDegrees)
@@ -36,7 +37,7 @@ void Beetle::Update(float const deltaSeconds)
 
     float const beetleSpeed = g_rng->RollRandomFloatInRange(5.f, 12.f);
     m_velocity              = Vec2::MakeFromPolarDegrees(m_orientationDegrees, beetleSpeed);
-    m_position += m_velocity * deltaSeconds;
+    m_position              += m_velocity * deltaSeconds;
 }
 
 //----------------------------------------------------------------------------------------------------

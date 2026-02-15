@@ -4,12 +4,13 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Box.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //-----------------------------------------------------------------------------------------------
 Box::Box(Vec2 const& position, float const orientationDegrees)

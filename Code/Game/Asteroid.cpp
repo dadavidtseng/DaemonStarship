@@ -4,17 +4,18 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Asteroid.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //----------------------------------------------------------------------------------------------------
-Asteroid::Asteroid( Vec2 const& position, float const orientationDegrees)
-    : Entity( position, orientationDegrees, ASTEROID_COLOR)
+Asteroid::Asteroid(Vec2 const& position, float const orientationDegrees)
+    : Entity(position, orientationDegrees, ASTEROID_COLOR)
 {
     m_health          = 3;
     m_physicsRadius   = ASTEROID_PHYSICS_RADIUS;
@@ -32,10 +33,9 @@ Asteroid::Asteroid( Vec2 const& position, float const orientationDegrees)
 //----------------------------------------------------------------------------------------------------
 void Asteroid::Update(float const deltaSeconds)
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
-    m_position += m_velocity * deltaSeconds;
+    m_position           += m_velocity * deltaSeconds;
     m_orientationDegrees += m_angularVelocity * deltaSeconds;
 
     WrapPosition();
@@ -44,8 +44,7 @@ void Asteroid::Update(float const deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Asteroid::Render() const
 {
-    if (m_isDead)
-        return;
+    if (m_isDead) return;
 
     Vertex_PCU tempWorldVerts[ASTEROID_VERTS_NUM];
 

@@ -5,7 +5,11 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/LevelData.hpp"
+#include "Game/ScoreBoardHandler.hpp"
+#include "Game/UIHandler.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Audio/AudioSystem.hpp"
 #include "Engine/Core/DevConsole.hpp"
 #include "Engine/Core/EngineCommon.hpp"
@@ -13,11 +17,8 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/RandomNumberGenerator.hpp"
-#include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Platform/Window.hpp"
-#include "Game/LevelData.hpp"
-#include "Game/ScoreBoardHandler.hpp"
-#include "Game/UIHandler.hpp"
+#include "Engine/Renderer/Renderer.hpp"
 
 #if defined ERROR
 #undef ERROR
@@ -45,8 +46,6 @@ Game::Game()
 
     m_worldCamera->SetOrthoGraphicView(bottomLeft, worldTopRight);
     m_screenCamera->SetOrthoGraphicView(bottomLeft, screenTopRight);
-    float x = (float)Window::s_mainWindow->GetClientDimensions().x;
-    float y = (float)Window::s_mainWindow->GetClientDimensions().y;
     m_worldCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
     m_screenCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
 
@@ -143,7 +142,7 @@ void Game::Update()
     {
         m_currentWave++;
 
-        if (m_currentWave >= static_cast<int>(sizeof(LEVEL_DATA) / sizeof(LevelData)))
+        if (m_currentWave >= static_cast<int>(sizeof(LEVEL_DATA) / sizeof(sLevelData)))
         {
             m_timeSinceDeath += (float)deltaSeconds;
 
@@ -205,7 +204,6 @@ void Game::Render()
         m_theUIHandler->DrawAttractModeUI();
 
         if (m_isPlayerNameInputMode) m_theUIHandler->DrawPlayerNameInput();
-
     }
 
     g_renderer->EndCamera(*m_screenCamera);
@@ -957,7 +955,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_beetle[beetleIndex]->GetColor());
 
-            m_playerShip->m_score+=200;
+            m_playerShip->m_score += 200;
 
             m_beetle[beetleIndex]->MarkAsDead();
             m_beetle[beetleIndex]->MarkAsGarbage();
@@ -987,7 +985,7 @@ void Game::HandleEntityCollision()
                                    ENTITY_HIT_DEBRIS_RADIUS,
                                    m_wasp[waspIndex]->GetColor());
 
-                m_playerShip->m_score+=50;
+                m_playerShip->m_score += 50;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
@@ -1002,7 +1000,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_wasp[waspIndex]->GetColor());
 
-            m_playerShip->m_score+=500;
+            m_playerShip->m_score += 500;
 
             m_wasp[waspIndex]->MarkAsDead();
             m_wasp[waspIndex]->MarkAsGarbage();
@@ -1029,7 +1027,7 @@ void Game::HandleEntityCollision()
                                    ENTITY_HIT_DEBRIS_RADIUS,
                                    m_boxes[boxIndex]->GetColor());
 
-                m_playerShip->m_score+=1;
+                m_playerShip->m_score += 1;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
@@ -1044,7 +1042,7 @@ void Game::HandleEntityCollision()
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_boxes[boxIndex]->GetColor());
 
-            m_playerShip->m_score+=1;
+            m_playerShip->m_score += 1;
 
             m_boxes[boxIndex]->MarkAsDead();
             m_boxes[boxIndex]->MarkAsGarbage();
@@ -1214,7 +1212,7 @@ void Game::DeleteGarbageEntities()
 //-----------------------------------------------------------------------------------------------
 void Game::SpawnEnemiesForCurrentWave()
 {
-    const LevelData& currentWaveData = LEVEL_DATA[m_currentWave];
+    const sLevelData& currentWaveData = LEVEL_DATA[m_currentWave];
 
     for (int i = 0; i < currentWaveData.beetleCount; ++i)
     {
@@ -1259,7 +1257,7 @@ void Game::DoShakeCamera(float deltaSeconds)
     if (m_shakeDuration > 0.f)
     {
         // Reduce shake duration and intensity over time
-        m_shakeDuration -= deltaSeconds;
+        m_shakeDuration  -= deltaSeconds;
         m_shakeIntensity *= 0.999f; // Decay the intensity
 
         // Generate random shake offsets

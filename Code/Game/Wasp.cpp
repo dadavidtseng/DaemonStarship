@@ -4,11 +4,12 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/Wasp.hpp"
-
-#include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
-#include "Engine/Renderer/Renderer.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
+#include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //----------------------------------------------------------------------------------------------------
 Wasp::Wasp(Vec2 const& position, float const orientationDegrees)

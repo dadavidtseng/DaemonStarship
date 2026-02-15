@@ -4,12 +4,12 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/GameCommon.hpp"
-
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
 #include "Engine/Core/Rgba8.hpp"
-#include "Engine/Renderer/Vertex_PCU.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Renderer/Vertex_PCU.hpp"
 
 //----------------------------------------------------------------------------------------------------
 // Entity color-related

@@ -1,8 +1,14 @@
+//----------------------------------------------------------------------------------------------------
+// Entity.cpp
+//----------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------------------------
 #include "Game/Entity.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Game/GameCommon.hpp"
 
 //-----------------------------------------------------------------------------------------------
-Entity::Entity( Vec2 const& position, float const orientationDegrees, Rgba8 const& color)
+Entity::Entity(Vec2 const& position, float const orientationDegrees, Rgba8 const& color)
     : m_position(position),
       m_orientationDegrees(orientationDegrees),
       m_color(color)

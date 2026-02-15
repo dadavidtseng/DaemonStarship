@@ -7,7 +7,10 @@
 #include "Game/GameCommon.hpp"
 
 //-----------------------------------------------------------------------------------------------
-int WINAPI WinMain(HINSTANCE const applicationInstanceHandle, HINSTANCE, LPSTR const commandLineString, int)
+int WINAPI WinMain(HINSTANCE const applicationInstanceHandle,
+                   HINSTANCE,
+                   LPSTR const commandLineString,
+                   int)
 {
     UNUSED(applicationInstanceHandle)
     UNUSED(commandLineString)
@@ -17,8 +20,7 @@ int WINAPI WinMain(HINSTANCE const applicationInstanceHandle, HINSTANCE, LPSTR c
     g_app->RunMainLoop();
     g_app->Shutdown();
 
-    delete g_app;
-    g_app = nullptr;
+    GAME_SAFE_RELEASE(g_app);
 
     return 0;
 }

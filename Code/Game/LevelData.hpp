@@ -4,7 +4,9 @@
 
 //----------------------------------------------------------------------------------------------------
 #pragma once
-struct LevelData
+
+//----------------------------------------------------------------------------------------------------
+struct sLevelData
 {
 	int beetleCount;
 	int waspCount;
@@ -12,4 +14,4 @@ struct LevelData
 };
 
 constexpr int MAX_LEVEL_NUM = 5;
-extern LevelData const LEVEL_DATA[MAX_LEVEL_NUM];
+extern sLevelData const LEVEL_DATA[MAX_LEVEL_NUM];

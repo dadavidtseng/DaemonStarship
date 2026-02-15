@@ -4,12 +4,13 @@
 
 //----------------------------------------------------------------------------------------------------
 #include "Game/PlayerShip.hpp"
-
+//----------------------------------------------------------------------------------------------------
+#include "Game/Game.hpp"
+//----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
-#include "Engine/Renderer/VertexUtils.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Renderer/Renderer.hpp"
-#include "Game/Game.hpp"
+#include "Engine/Renderer/VertexUtils.hpp"
 
 //----------------------------------------------------------------------------------------------------
 PlayerShip::PlayerShip(Vec2 const& position, float const orientationDegrees, int const health, bool const isReadyToSpawnBullet)
