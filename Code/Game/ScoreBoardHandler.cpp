@@ -8,8 +8,11 @@
 #include "Game/GameCommon.hpp"
 //----------------------------------------------------------------------------------------------------
 #include "Engine/Core/EngineCommon.hpp"
+#include "Engine/Core/FileUtils.hpp"
 #include "Engine/Core/SimpleTriangleFont.hpp"
 #include "Engine/Renderer/Renderer.hpp"
+//----------------------------------------------------------------------------------------------------
+#include <sstream>
 
 //----------------------------------------------------------------------------------------------------
 ScoreBoardHandler::ScoreBoardHandler() = default;
@@ -20,17 +23,18 @@ ScoreBoardHandler::~ScoreBoardHandler() = default;
 // #TODO: refactor
 void ScoreBoardHandler::SaveScoreboardToFile(const PlayerScore scoreboard[], const int size, const std::string& filename)
 {
-	FILE*         file;
-	const errno_t err = fopen_s(&file, filename.c_str(), "w");
+	String content;
 
-	if (err == 0 && file != nullptr)
+	for (int i = 0; i < size; ++i)
 	{
-		for (int i = 0; i < size; ++i)
-		{
-			fprintf(file, "%d. %s - %d\n", scoreboard[i].rank, scoreboard[i].name.c_str(), scoreboard[i].score);
-		}
-		fclose(file);
+		content += std::to_string(scoreboard[i].rank) + ". " + scoreboard[i].name + " - " +
+			std::to_string(scoreboard[i].score) + "\n";
+	}
 
+	std::vector<uint8_t> const buffer(content.begin(), content.end());
+
+	if (FileWriteFromBuffer(buffer, filename))
+	{
 		printf("Scoreboard saved to file.\n");
 	}
 	else
@@ -41,30 +45,17 @@ void ScoreBoardHandler::SaveScoreboardToFile(const PlayerScore scoreboard[], con
 
 bool ScoreBoardHandler::FileExists(const std::string& filename)
 {
-	FILE*         file;
-	const errno_t err = fopen_s(&file, filename.c_str(), "r");
-
-	if (err == 0 && file != nullptr)
-	{
-		fclose(file);
-
-		return true; // file exist
-	}
-	return false; // file doesn't exist
+	String content;
+	return FileReadToString(content, filename);
 }
 
 void ScoreBoardHandler::CreateEmptyScoreboardFile(const std::string& filename)
 {
-	FILE*         file;
-	const errno_t err = fopen_s(&file, filename.c_str(), "w");
+	String const                content = "No scores yet\n";
+	std::vector<uint8_t> const buffer(content.begin(), content.end());
 
-	if (err == 0 && file)
+	if (FileWriteFromBuffer(buffer, filename))
 	{
-		// create an empty scoreboard if there isn't one
-		fprintf(file, "No scores yet\n");
-
-		fclose(file);
-
 		printf("Scoreboard file created: %s\n", filename.c_str());
 	}
 	else
@@ -75,35 +66,39 @@ void ScoreBoardHandler::CreateEmptyScoreboardFile(const std::string& filename)
 
 void ScoreBoardHandler::LoadScoreboardFromFile(PlayerScore scoreboard[], int& size, const std::string& filename)
 {
-	FILE* file = nullptr;
+	String content;
 
-	fopen_s(&file, filename.c_str(), "r");
-
-	if (file == nullptr)
+	if (!FileReadToString(content, filename))
 	{
 		size = 0;
 		return;
 	}
 
 	size = 0;
-	char nameBuffer[100];
-	int  score = 0;
-	int  rank  = 0;
 
-	while (fscanf_s(file, "%d. %99s - %d", &rank, nameBuffer, static_cast<unsigned>(_countof(nameBuffer)), &score) == 3)
+	// Parse line by line: "{rank}. {name} - {score}"
+	std::istringstream stream(content);
+	String             line;
+
+	while (std::getline(stream, line))
 	{
-		scoreboard[size].name  = std::string(nameBuffer);
-		scoreboard[size].score = score;
-		scoreboard[size].rank  = rank;
-		++size;
+		int  rank  = 0;
+		int  score = 0;
+		char nameBuffer[100] = {};
 
-		printf("Loaded: %s - %d size: %d\n", scoreboard[size - 1].name.c_str(), scoreboard[size - 1].score, size);
+		if (sscanf_s(line.c_str(), "%d. %99s - %d", &rank, nameBuffer, static_cast<unsigned>(_countof(nameBuffer)), &score) == 3)
+		{
+			scoreboard[size].name  = String(nameBuffer);
+			scoreboard[size].score = score;
+			scoreboard[size].rank  = rank;
+			++size;
 
-		if (size >= MAX_PLAYERS)
-			break;
+			printf("Loaded: %s - %d size: %d\n", scoreboard[size - 1].name.c_str(), scoreboard[size - 1].score, size);
+
+			if (size >= MAX_PLAYERS)
+				break;
+		}
 	}
-
-	fclose(file);
 }
 
 void ScoreBoardHandler::AddScore(PlayerScore scoreboard[], int& currentSize, const std::string& playerName,
