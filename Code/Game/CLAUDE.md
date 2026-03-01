@@ -59,8 +59,8 @@ classDiagram
         +PlayerShip* m_playerShip
         +Bullet* m_bullets[100]
         +Asteroid* m_asteroids[30]
-        +Beetle* m_beetle[20]
-        +Wasp* m_wasp[20]
+        +Beetle* m_beetles[20]
+        +Wasp* m_wasps[20]
         +Debris* m_debris[200000]
         +Box* m_boxes[10000]
         +UIHandler* m_theUIHandler
