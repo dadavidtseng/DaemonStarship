@@ -9,7 +9,7 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class Asteroid : public Entity
+class Asteroid final : public Entity
 {
 public:
     Asteroid(Vec2 const& position, float orientationDegrees);

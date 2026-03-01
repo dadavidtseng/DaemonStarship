@@ -14,13 +14,12 @@
 class Box final : public Entity
 {
 public:
-    explicit Box(Vec2 const& position, float orientationDegrees);
+    Box(Vec2 const& position, float orientationDegrees);
 
     void  Update(float deltaSeconds) override;
     void  Render() const override;
     void  DebugRender() const override;
-    AABB2 GetBoxCollider();
-    void  SetPosition(const Vec2& targetPosition);
+    [[nodiscard]] AABB2 GetBoxCollider();
 
 private:
     void InitializeLocalVerts() override;

@@ -69,11 +69,11 @@ void Asteroid::DebugRender() const
                   0.2f,
                   DEBUG_RENDER_GREY);
     DebugDrawLine(m_position,
-                  m_position + GetForwardNormal() * BULLET_COSMETIC_RADIUS,
+                  m_position + GetForwardNormal() * ASTEROID_COSMETIC_RADIUS,
                   0.2f,
                   DEBUG_RENDER_RED);
     DebugDrawLine(m_position,
-                  m_position + GetForwardNormal().GetRotated90Degrees() * BULLET_COSMETIC_RADIUS,
+                  m_position + GetForwardNormal().GetRotated90Degrees() * ASTEROID_COSMETIC_RADIUS,
                   0.2f,
                   DEBUG_RENDER_GREEN);
     DebugDrawRing(m_position,
@@ -94,16 +94,16 @@ void Asteroid::DebugRender() const
 void Asteroid::InitializeLocalVerts()
 {
     float           radius[ASTEROID_TRIS_NUM]             = {};
-    constexpr float degreesPerSide                        = 360.0f / static_cast<float>(ASTEROID_TRIS_NUM);
+    float constexpr degreesPerSide                        = 360.f / static_cast<float>(ASTEROID_TRIS_NUM);
     Vec2            localVertPositions[ASTEROID_TRIS_NUM] = {};
 
-    for (int sideIndex = 0; sideIndex < ASTEROID_TRIS_NUM; ++sideIndex)
+    for (int sideIndex = 0; sideIndex < ASTEROID_TRIS_NUM; sideIndex++)
     {
         // Pre-generate random radius for every triangle
         radius[sideIndex] = g_rng->RollRandomFloatInRange(m_physicsRadius, m_cosmeticRadius);
 
         // Apply radius to vert positions
-        const float degrees = degreesPerSide * static_cast<float>(sideIndex);
+        float const degrees = degreesPerSide * static_cast<float>(sideIndex);
 
         localVertPositions[sideIndex].x = radius[sideIndex] * CosDegrees(degrees);
         localVertPositions[sideIndex].y = radius[sideIndex] * SinDegrees(degrees);
@@ -112,15 +112,15 @@ void Asteroid::InitializeLocalVerts()
     // Build triangles
     for (int sideIndex = 0; sideIndex < ASTEROID_TRIS_NUM; ++sideIndex)
     {
-        const int currentRadiusIndex = sideIndex;
-        const int nextRadiusIndex    = (sideIndex + 1) % ASTEROID_TRIS_NUM;
+        int const currentRadiusIndex = sideIndex;
+        int const nextRadiusIndex    = (sideIndex + 1) % ASTEROID_TRIS_NUM;
 
-        const int firstVertIndex  = sideIndex * 3 + 0;
-        const int secondVertIndex = sideIndex * 3 + 1;
-        const int thirdVertIndex  = sideIndex * 3 + 2;
+        int const firstVertIndex  = sideIndex * 3 + 0;
+        int const secondVertIndex = sideIndex * 3 + 1;
+        int const thirdVertIndex  = sideIndex * 3 + 2;
 
-        const Vec2 secondVert = localVertPositions[currentRadiusIndex];
-        const Vec2 thirdVert  = localVertPositions[nextRadiusIndex];
+        Vec2 const secondVert = localVertPositions[currentRadiusIndex];
+        Vec2 const thirdVert  = localVertPositions[nextRadiusIndex];
 
         m_localVerts[firstVertIndex].m_position  = Vec3(0.f, 0.f, 0.f);
         m_localVerts[secondVertIndex].m_position = Vec3(secondVert.x, secondVert.y, 0.f);

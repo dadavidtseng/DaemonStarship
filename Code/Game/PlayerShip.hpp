@@ -9,7 +9,7 @@
 #include "Game/GameCommon.hpp"
 
 //----------------------------------------------------------------------------------------------------
-class PlayerShip : public Entity
+class PlayerShip final : public Entity
 {
 public:
     PlayerShip(Vec2 const& position, float orientationDegrees, int health, bool isReadyToSpawnBullet);
@@ -18,7 +18,7 @@ public:
     void Render() const override;
     void DebugRender() const override;
 
-    bool  IsReadyToSpawnBullet(bool isReady);
+    bool  SetReadyToSpawnBullet(bool isReady);
     void  UpdateFromController();
     Vec2& GetPositionAndSet();
     Vec2& GetVelocityAndSet();

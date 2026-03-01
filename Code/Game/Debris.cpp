@@ -100,9 +100,9 @@ void Debris::DebugRender() const
 //-----------------------------------------------------------------------------------------------
 void Debris::InitializeLocalVerts()
 {
-    float* radius             = new float[DEBRIS_TRI_NUM];
-    float  degreesPerSide     = 360.0f / static_cast<float>(DEBRIS_TRI_NUM);
-    Vec2*  localVertPositions = new Vec2[DEBRIS_TRI_NUM];
+    float           radius[DEBRIS_TRI_NUM]            = {};
+    float constexpr degreesPerSide                    = 360.f / static_cast<float>(DEBRIS_TRI_NUM);
+    Vec2            localVertPositions[DEBRIS_TRI_NUM] = {};
 
     for (int sideIndex = 0; sideIndex < DEBRIS_TRI_NUM; ++sideIndex)
     {

@@ -49,8 +49,6 @@ void Box::Update(float const deltaSeconds)
 
         m_targetPosition = m_position - Vec2(BOX_SIDE_LENGTH * 1.1f, 0.0f);
     }
-
-    // WrapPosition();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -80,11 +78,6 @@ void Box::DebugRender() const
 AABB2 Box::GetBoxCollider()
 {
     return m_boxCollider;
-}
-
-void Box::SetPosition(const Vec2& targetPosition)
-{
-    m_position += targetPosition;
 }
 
 //-----------------------------------------------------------------------------------------------

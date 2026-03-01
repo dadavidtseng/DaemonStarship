@@ -12,7 +12,7 @@
 class Wasp final : public Entity
 {
 public:
-    explicit Wasp(Vec2 const& position, float orientationDegrees);
+    Wasp(Vec2 const& position, float orientationDegrees);
 
     void Update(float deltaSeconds) override;
     void Render() const override;

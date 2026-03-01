@@ -24,16 +24,16 @@ public:
     virtual void MarkAsDead();
     virtual void MarkAsGarbage();
 
-    virtual bool IsDead() const;
-    virtual bool IsGarbage() const;
-    virtual bool IsOffScreen() const;
+    [[nodiscard]] virtual bool IsDead() const;
+    [[nodiscard]] virtual bool IsGarbage() const;
+    [[nodiscard]] virtual bool IsOffScreen() const;
     virtual void InitializeLocalVerts() = 0;
 
-    virtual void  WrapPosition();
-    virtual Vec2  GetForwardNormal() const;
-    virtual Vec2  GetPosition() const;
-    virtual Vec2  GetVelocity() const;
-    virtual Rgba8 GetColor() const;
+    virtual void              WrapPosition();
+    [[nodiscard]] virtual Vec2  GetForwardNormal() const;
+    [[nodiscard]] virtual Vec2  GetPosition() const;
+    [[nodiscard]] virtual Vec2  GetVelocity() const;
+    [[nodiscard]] virtual Rgba8 GetColor() const;
     int           m_health = 1;             // (int) how many 'hits' the entity can sustain before dying
 protected:
     // universal data members used by most/all entities
@@ -42,7 +42,7 @@ protected:
     float m_orientationDegrees; // its forward angle, in degrees (counter-clockwise from +x/east)
     float m_angularVelocity = 0.f;    // the Entity's signed angular velocity (spin rate), in degrees per second
     float m_physicsRadius   = 5.f;      // the Entity's (inner, conservative) disc-radius for all physics purposes
-    float m_cosmeticRadius  = 10.0f;     // the Entity's (outer, liberal) disc-radius that encloses all of its vertexes
+    float m_cosmeticRadius  = 10.f;     // the Entity's (outer, liberal) disc-radius that encloses all of its vertexes
 
     bool  m_isDead    = false;             // whether the Entity is 'dead' in the game; affects entity and game logic
     bool  m_isGarbage = false;          // whether the Entity should be deleted at the end of Game::Update()

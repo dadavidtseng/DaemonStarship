@@ -12,8 +12,8 @@
 #include "Engine/Renderer/Vertex_PCU.hpp"
 
 //----------------------------------------------------------------------------------------------------
-// Entity color-related
-//
+/// Entity color-related
+//----------------------------------------------------------------------------------------------------
 Rgba8 const PLAYER_SHIP_COLOR      = Rgba8(102, 153, 204);
 Rgba8 const BULLET_YELLOW_OPAQUE   = Rgba8(255, 255, 0, 255);
 Rgba8 const BULLET_RED_OPAQUE      = Rgba8(255, 0, 0, 255);
@@ -33,6 +33,30 @@ Rgba8 const DEBUG_RENDER_CYAN    = Rgba8(0, 255, 255);
 Rgba8 const DEBUG_RENDER_YELLOW  = Rgba8(255, 255, 0);
 
 char const* const IN_GAME_BGM = "Data/Audio/InGame_BGM.mp3";
+
+//----------------------------------------------------------------------------------------------------
+void InitializePlayerShipVerts(Vertex_PCU verts[])
+{
+    verts[0].m_position = Vec3(-2.f, 1.f, 0.f);
+    verts[1].m_position = Vec3(2.f, 1.f, 0.f);
+    verts[2].m_position = Vec3(0.f, 2.f, 0.f);
+
+    verts[3].m_position = Vec3(0.f, 1.f, 0.f);
+    verts[4].m_position = Vec3(-2.f, 1.f, 0.f);
+    verts[5].m_position = Vec3(-2.f, -1.f, 0.f);
+
+    verts[6].m_position = Vec3(0.f, 1.f, 0.f);
+    verts[7].m_position = Vec3(-2.f, -1.f, 0.f);
+    verts[8].m_position = Vec3(0.f, -1.f, 0.f);
+
+    verts[9].m_position  = Vec3(1.f, 0.f, 0.f);
+    verts[10].m_position = Vec3(0.f, 1.f, 0.f);
+    verts[11].m_position = Vec3(0.f, -1.f, 0.f);
+
+    verts[12].m_position = Vec3(2.f, -1.f, 0.f);
+    verts[13].m_position = Vec3(-2.f, -1.f, 0.f);
+    verts[14].m_position = Vec3(0.f, -2.f, 0.f);
+}
 
 
 //----------------------------------------------------------------------------------------------------
