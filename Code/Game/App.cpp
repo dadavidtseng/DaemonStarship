@@ -135,7 +135,7 @@ void App::Render() const
     g_renderer->ClearScreen(clearColor);
     g_game->Render();
 
-    AABB2 const box            = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
+    AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 30.f));
 
     g_devConsole->Render(box);
 }
@@ -163,21 +163,18 @@ void App::HandleKeyPressed()
 
     if (g_input->WasKeyJustPressed(KEYCODE_ESC))
     {
-        switch (g_game->IsAttractMode())
+        if (g_game->IsAttractMode())
         {
-        case true:
             RequestQuit();
-
-            break;
-
-        case false:
+        }
+        else if (g_game->IsPlaying())
+        {
             g_game->ResetData();
             g_app->DeleteAndCreateNewGame();
-            g_game->SetAttractMode(true);
+            g_game->SetGameState(eGameState::AttractMode);
             g_game->SetPlayerShipIsReadyToSpawnBullet(false);
-
-            break;
         }
+        // ScoreboardDisplay and PlayerNameInput handle ESC in Game::Update()
     }
 
     if (g_input->WasKeyJustPressed(KEYCODE_O))
@@ -197,13 +194,13 @@ void App::HandleKeyPressed()
         }
     }
 
-    if (!g_game->IsAttractMode())
+    if (g_game->IsPlaying())
     {
         if (g_input->WasKeyJustPressed(KEYCODE_F8))
         {
             DeleteAndCreateNewGame();
-            g_game->SetAttractMode(true);
-            g_game->SetPlayerShipIsReadyToSpawnBullet(!false);
+            g_game->SetGameState(eGameState::AttractMode);
+            g_game->SetPlayerShipIsReadyToSpawnBullet(true);
         }
     }
 }
@@ -232,8 +229,7 @@ void App::AdjustForPauseAndTimeDistortion() const
             Clock::GetSystemClock().SetTimeScale(0.1f);
         }
 
-        if (
-            m_isSlowMo == false)
+        if (m_isSlowMo == false)
         {
             Clock::GetSystemClock().SetTimeScale(1.f);
         }
@@ -243,8 +239,7 @@ void App::AdjustForPauseAndTimeDistortion() const
 //----------------------------------------------------------------------------------------------------
 void App::DeleteAndCreateNewGame()
 {
-    delete g_game;
-    g_game = nullptr;
+    GAME_SAFE_RELEASE(g_game);
 
     g_game = new Game();
 }

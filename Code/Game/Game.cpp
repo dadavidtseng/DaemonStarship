@@ -50,68 +50,36 @@ Game::Game()
     m_screenCamera->SetNormalizedViewport(AABB2::ZERO_TO_ONE);
 
     SoundID const InGameBgm = g_audio->CreateOrGetSound(IN_GAME_BGM, eAudioSystemSoundDimension::Sound2D);
-    g_audio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
+    m_bgmPlaybackID         = g_audio->StartSound(InGameBgm, true, 1.f, 0.f, 1.f, false);
 }
 
 //----------------------------------------------------------------------------------------------------
 Game::~Game()
 {
+    if (m_bgmPlaybackID != MISSING_SOUND_ID)
+    {
+        g_audio->StopSound(m_bgmPlaybackID);
+        m_bgmPlaybackID = MISSING_SOUND_ID;
+    }
+
     delete m_theUIHandler;
     m_theUIHandler = nullptr;
 
     delete m_theScoreBoardHandler;
     m_theScoreBoardHandler = nullptr;
 
-    delete m_playerShip;
-    m_playerShip = nullptr;
 
-    for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
-    {
-        if (!m_beetle[beetleIndex]) continue;
+    GAME_SAFE_RELEASE(m_gameClock);
+    GAME_SAFE_RELEASE(m_screenCamera);
+    GAME_SAFE_RELEASE(m_worldCamera);
+    GAME_SAFE_RELEASE(m_playerShip);
 
-        delete m_beetle[beetleIndex];
-        m_beetle[beetleIndex] = nullptr;
-    }
-
-    for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
-    {
-        if (!m_wasp[waspIndex]) continue;
-
-        delete m_wasp[waspIndex];
-        m_wasp[waspIndex] = nullptr;
-    }
-
-    for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
-    {
-        if (!m_asteroids[asteroidIndex]) continue;
-
-        delete m_asteroids[asteroidIndex];
-        m_asteroids[asteroidIndex] = nullptr;
-    }
-
-    for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
-    {
-        if (!m_bullets[bulletIndex]) continue;
-
-        delete m_bullets[bulletIndex];
-        m_bullets[bulletIndex] = nullptr;
-    }
-
-    for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; ++debrisIndex)
-    {
-        if (!m_debris[debrisIndex]) continue;
-
-        delete m_debris[debrisIndex];
-        m_debris[debrisIndex] = nullptr;
-    }
-
-    for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
-    {
-        if (!m_boxes[boxIndex]) continue;
-
-        delete m_boxes[boxIndex];
-        m_boxes[boxIndex] = nullptr;
-    }
+    DeletePool(m_beetles);
+    DeletePool(m_wasps);
+    DeletePool(m_asteroids);
+    DeletePool(m_bullets);
+    DeletePool(m_debris);
+    DeletePool(m_boxes);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -124,12 +92,28 @@ void Game::Update()
 
     double const deltaSeconds = m_gameClock->GetDeltaSeconds();
 
-    if (m_isAttractMode)
+    if (m_gameState == eGameState::AttractMode || m_gameState == eGameState::PlayerNameInput)
     {
         m_theUIHandler->Update(deltaSeconds);
-        if (m_theUIHandler->IsFirstButtonSelected() && g_input->WasKeyJustReleased(KEYCODE_SPACE))
+        if (m_gameState == eGameState::AttractMode &&
+            m_theUIHandler->IsFirstButtonSelected() && g_input->WasKeyJustReleased(KEYCODE_SPACE))
         {
-            SetPlayerNameInputMode(true);
+            SetGameState(eGameState::PlayerNameInput);
+        }
+        if (m_gameState == eGameState::AttractMode &&
+            m_theUIHandler->IsSecondButtonSelected() &&
+            (g_input->WasKeyJustPressed(KEYCODE_SPACE) || g_input->WasKeyJustPressed(KEYCODE_ENTER)))
+        {
+            SetGameState(eGameState::ScoreboardDisplay);
+            return;
+        }
+    }
+
+    if (m_gameState == eGameState::ScoreboardDisplay)
+    {
+        if (g_input->WasKeyJustPressed(KEYCODE_ESC) || g_input->WasKeyJustPressed(KEYCODE_SPACE))
+        {
+            SetGameState(eGameState::AttractMode);
         }
     }
 
@@ -137,6 +121,25 @@ void Game::Update()
     UpdateFromKeyBoard();
 
     UpdateFromController();
+
+    if (g_input->WasKeyJustPressed('U'))
+    {
+        PlayerScore  scoreboard[MAX_PLAYERS];
+        int          currentSize = 0;
+        String const filename    = "Data/Score/Scoreboard.txt";
+
+        m_theScoreBoardHandler->LoadScoreboardFromFile(scoreboard, currentSize, filename);
+        m_theScoreBoardHandler->DisplayScoreboard(scoreboard, currentSize);
+
+        m_theScoreBoardHandler->AddScore(scoreboard, currentSize, m_theUIHandler->GetPlayerShipName(),
+                                         m_playerShip->m_score);
+
+        m_theScoreBoardHandler->SortScoreboard(scoreboard, currentSize);
+        printf("Current size: %d\n", currentSize);
+        m_theScoreBoardHandler->DisplayScoreboard(scoreboard, currentSize);
+        m_highScore = m_theScoreBoardHandler->GetHighScore(scoreboard, currentSize);
+        m_theScoreBoardHandler->SaveScoreboardToFile(scoreboard, currentSize, filename);
+    }
 
     if (AreAllEnemiesDead())
     {
@@ -185,7 +188,7 @@ void Game::Render()
 {
     g_renderer->BeginCamera(*m_worldCamera);
 
-    if (!m_isAttractMode)
+    if (m_gameState == eGameState::Playing)
     {
         RenderEntities();
         DebugRenderEntities();
@@ -195,39 +198,27 @@ void Game::Render()
 
     g_renderer->BeginCamera(*m_screenCamera);
 
-    if (!m_isAttractMode)
+    if (m_gameState == eGameState::Playing)
     {
         m_theUIHandler->DrawInGameUI(m_playerShip->m_health - 1);
     }
-    else
-    {
-        m_theUIHandler->DrawAttractModeUI();
-
-        if (m_isPlayerNameInputMode) m_theUIHandler->DrawPlayerNameInput();
-    }
-
-    g_renderer->EndCamera(*m_screenCamera);
-
-    if (g_input->WasKeyJustPressed('U'))
+    else if (m_gameState == eGameState::ScoreboardDisplay)
     {
         PlayerScore  scoreboard[MAX_PLAYERS];
         int          currentSize = 0;
         String const filename    = "Data/Score/Scoreboard.txt";
 
         m_theScoreBoardHandler->LoadScoreboardFromFile(scoreboard, currentSize, filename);
-
         m_theScoreBoardHandler->DisplayScoreboard(scoreboard, currentSize);
-
-
-        m_theScoreBoardHandler->AddScore(scoreboard, currentSize, m_theUIHandler->GetPlayerShipName(),
-                                         m_playerShip->m_score);
-
-        m_theScoreBoardHandler->SortScoreboard(scoreboard, currentSize);
-        printf("Current size: %d\n", currentSize);
-        m_theScoreBoardHandler->DisplayScoreboard(scoreboard, currentSize);
-        m_highScore = m_theScoreBoardHandler->GetHighScore(scoreboard, currentSize);
-        m_theScoreBoardHandler->SaveScoreboardToFile(scoreboard, currentSize, filename);
     }
+    else
+    {
+        m_theUIHandler->DrawAttractModeUI();
+
+        if (m_gameState == eGameState::PlayerNameInput) m_theUIHandler->DrawPlayerNameInput();
+    }
+
+    g_renderer->EndCamera(*m_screenCamera);
 }
 
 void Game::DebugRender() const
@@ -239,7 +230,7 @@ void Game::ResetData()
     m_playerShipHealth = MAX_PLAYER_SHIP_HEALTH;
     m_currentWave      = -1;
     m_timeSinceDeath   = 0.f;
-    m_isAttractMode    = true;
+    m_gameState        = eGameState::AttractMode;
     // #TODO: FIX
     SetPlayerShipIsReadyToSpawnBullet(true);
 }
@@ -247,16 +238,15 @@ void Game::ResetData()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnBullet(Vec2 const& position, const float orientationDegrees)
 {
-    for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
+    Bullet** slot = FindEmptySlot(m_bullets);
+
+    if (!slot)
     {
-        if (m_bullets[bulletIndex]) continue;
-
-        m_bullets[bulletIndex] = new Bullet(position, orientationDegrees);
-
+        ERROR_RECOVERABLE("Cannot spawn a new bullet; all slots are full")
         return;
     }
 
-    ERROR_RECOVERABLE("Cannot spawn a new asteroid; all slots are full")
+    *slot = new Bullet(position, orientationDegrees);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -270,31 +260,31 @@ void Game::MarkAllEntityAsDeadAndGarbage()
 {
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (m_beetle[beetleIndex] && !m_beetle[beetleIndex]->IsDead())
+        if (m_beetles[beetleIndex] && !m_beetles[beetleIndex]->IsDead())
         {
-            m_beetle[beetleIndex]->MarkAsDead();
-            m_beetle[beetleIndex]->MarkAsGarbage();
+            m_beetles[beetleIndex]->MarkAsDead();
+            m_beetles[beetleIndex]->MarkAsGarbage();
 
             // #TODO: FIX
-            SpawnDebrisCluster(m_beetle[beetleIndex]->GetPosition(),
+            SpawnDebrisCluster(m_beetles[beetleIndex]->GetPosition(),
                                Vec2(0.2f, 0.2f),
                                30,
                                ENTITY_DEAD_DEBRIS_RADIUS,
-                               m_beetle[beetleIndex]->GetColor());
+                               m_beetles[beetleIndex]->GetColor());
         }
     }
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (m_wasp[waspIndex] && !m_wasp[waspIndex]->IsDead())
+        if (m_wasps[waspIndex] && !m_wasps[waspIndex]->IsDead())
         {
-            m_wasp[waspIndex]->MarkAsDead();
-            m_wasp[waspIndex]->MarkAsGarbage();
-            SpawnDebrisCluster(m_wasp[waspIndex]->GetPosition(),
+            m_wasps[waspIndex]->MarkAsDead();
+            m_wasps[waspIndex]->MarkAsGarbage();
+            SpawnDebrisCluster(m_wasps[waspIndex]->GetPosition(),
                                Vec2(0.2f, 0.2f),
                                30,
                                ENTITY_DEAD_DEBRIS_RADIUS,
-                               m_wasp[waspIndex]->GetColor());
+                               m_wasps[waspIndex]->GetColor());
         }
     }
 
@@ -329,31 +319,30 @@ void Game::MarkAllEntityAsDeadAndGarbage()
 }
 
 //----------------------------------------------------------------------------------------------------
-void Game::SetAttractMode(const bool isAttractMode)
+void Game::SetGameState(eGameState const state)
 {
-    m_isAttractMode = isAttractMode;
-}
-
-void Game::SetPlayerNameInputMode(const bool isPlayerNameInputMode)
-{
-    m_isPlayerNameInputMode = isPlayerNameInputMode;
-    printf("SetPlayerNameInputMode: %hhd\n", isPlayerNameInputMode);
+    m_gameState = state;
 }
 
 void Game::SetPlayerShipIsReadyToSpawnBullet(const bool isReadyToSpawnBullet) const
 {
-    m_playerShip->IsReadyToSpawnBullet(isReadyToSpawnBullet);
+    m_playerShip->SetReadyToSpawnBullet(isReadyToSpawnBullet);
     printf("SetPlayerShipIsReadyToSpawnBullet: %hhd\n", isReadyToSpawnBullet);
 }
 
 bool Game::IsAttractMode() const
 {
-    return m_isAttractMode;
+    return m_gameState == eGameState::AttractMode;
 }
 
 bool Game::IsPlayerNameInputMode() const
 {
-    return m_isPlayerNameInputMode;
+    return m_gameState == eGameState::PlayerNameInput;
+}
+
+bool Game::IsPlaying() const
+{
+    return m_gameState == eGameState::Playing;
 }
 
 int Game::GetHighScore() const
@@ -386,55 +375,42 @@ void Game::SpawnPlayerShip()
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnBeetle(Vec2 const& position)
 {
-    for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
-    {
-        if (m_beetle[beetleIndex]) continue;
+    Beetle** slot = FindEmptySlot(m_beetles);
+    if (!slot) return;
 
-        m_beetle[beetleIndex] = new Beetle(position, 0.f);
-
-        return;
-    }
+    *slot = new Beetle(position, 0.f);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnWasp(Vec2 const& position)
 {
-    for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
-    {
-        if (m_wasp[waspIndex]) continue;
+    Wasp** slot = FindEmptySlot(m_wasps);
+    if (!slot) return;
 
-        m_wasp[waspIndex] = new Wasp(position, 0.f);
-
-        return;
-    }
+    *slot = new Wasp(position, 0.f);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnAsteroid(Vec2 const& position)
 {
-    for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
+    Asteroid** slot = FindEmptySlot(m_asteroids);
+
+    if (!slot)
     {
-        if (m_asteroids[asteroidIndex]) continue;
-
-        m_asteroids[asteroidIndex] = new Asteroid(position, 0.f);
-
+        ERROR_RECOVERABLE("Cannot spawn a new asteroid; all slots are full")
         return;
     }
 
-    ERROR_RECOVERABLE("Cannot spawn a new bullet; all slots are full")
+    *slot = new Asteroid(position, 0.f);
 }
 
 //----------------------------------------------------------------------------------------------------
 void Game::SpawnDebris(Vec2 const& position, Vec2 const& velocity, float radius, Rgba8 color)
 {
-    for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
-    {
-        if (m_debris[debrisIndex]) continue;
+    Debris** slot = FindEmptySlot(m_debris);
+    if (!slot) return;
 
-        m_debris[debrisIndex] = new Debris(position, velocity, radius, color);
-
-        return;
-    }
+    *slot = new Debris(position, velocity, radius, color);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -452,14 +428,10 @@ void Game::SpawnDebrisCluster(Vec2 const& position, Vec2 const& velocity, int nu
 
 void Game::SpawnBox(Vec2 const& position)
 {
-    for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; boxIndex++)
-    {
-        if (m_boxes[boxIndex]) continue;
+    Box** slot = FindEmptySlot(m_boxes);
+    if (!slot) return;
 
-        m_boxes[boxIndex] = new Box(position, 0.f);
-
-        return;
-    }
+    *slot = new Box(position, 0.f);
 }
 
 void Game::SpawnBoxCluster()
@@ -487,52 +459,19 @@ void Game::SpawnBoxCluster()
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateEntities(float deltaSeconds)
 {
-    if (m_isAttractMode) return;
+    if (m_gameState == eGameState::AttractMode) return;
 
     HandleEntityIsOffScreen();
     HandleEntityCollision();
 
-    for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
-    {
-        if (!m_asteroids[asteroidIndex]) continue;
+    auto update = [deltaSeconds](Entity* e) { e->Update(deltaSeconds); };
 
-        m_asteroids[asteroidIndex]->Update(deltaSeconds);
-    }
-
-    for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
-    {
-        if (!m_bullets[bulletIndex]) continue;
-
-        m_bullets[bulletIndex]->Update(deltaSeconds);
-    }
-
-    for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
-    {
-        if (!m_debris[debrisIndex]) continue;
-
-        m_debris[debrisIndex]->Update(deltaSeconds);
-    }
-
-    for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
-    {
-        if (!m_beetle[beetleIndex]) continue;
-
-        m_beetle[beetleIndex]->Update(deltaSeconds);
-    }
-
-    for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
-    {
-        if (!m_wasp[waspIndex]) continue;
-
-        m_wasp[waspIndex]->Update(deltaSeconds);
-    }
-
-    for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; boxIndex++)
-    {
-        if (!m_boxes[boxIndex]) continue;
-
-        m_boxes[boxIndex]->Update(deltaSeconds);
-    }
+    ForEachInPool(m_asteroids, update);
+    ForEachInPool(m_bullets,   update);
+    ForEachInPool(m_debris,    update);
+    ForEachInPool(m_beetles,    update);
+    ForEachInPool(m_wasps,      update);
+    ForEachInPool(m_boxes,     update);
 
     m_accumulatedTime += deltaSeconds;
 
@@ -552,24 +491,23 @@ void Game::UpdateEntities(float deltaSeconds)
 //----------------------------------------------------------------------------------------------------
 void Game::UpdateFromKeyBoard()
 {
-    if (!m_isAttractMode &&
+    if (m_gameState == eGameState::Playing &&
         g_input->WasKeyJustPressed(KEYCODE_F1))
         m_isDebugRendering = !m_isDebugRendering;
 
     if (m_theUIHandler->IsFirstButtonSelected() &&
         g_input->WasKeyJustPressed(KEYCODE_ENTER))
     {
-        if (m_isPlayerNameInputMode)
+        if (m_gameState == eGameState::PlayerNameInput)
         {
-            SetAttractMode(false);
-            SetPlayerNameInputMode(false);
+            SetGameState(eGameState::Playing);
             SetPlayerShipIsReadyToSpawnBullet(true);
         }
     }
 
     if (!g_input->WasKeyJustPressed(KEYCODE_ENTER) &&
         g_input->IsKeyDown(KEYCODE_ENTER))
-        m_playerShip->IsReadyToSpawnBullet(true);
+        m_playerShip->SetReadyToSpawnBullet(true);
 
     if (g_input->WasKeyJustPressed('I')) SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
 
@@ -589,17 +527,16 @@ void Game::UpdateFromController()
 
     if (controller.WasButtonJustPressed(XBOX_BUTTON_START))
     {
-        if (m_isPlayerNameInputMode)
+        if (m_gameState == eGameState::PlayerNameInput)
         {
-            SetAttractMode(false);
-            SetPlayerNameInputMode(false);
+            SetGameState(eGameState::Playing);
             SetPlayerShipIsReadyToSpawnBullet(true);
         }
     }
 
     if (!controller.WasButtonJustPressed(XBOX_BUTTON_START) &&
         controller.IsButtonDown(XBOX_BUTTON_START))
-        m_playerShip->IsReadyToSpawnBullet(true);
+        m_playerShip->SetReadyToSpawnBullet(true);
 
     if (controller.WasButtonJustPressed(XBOX_BUTTON_RTHUMB)) SpawnAsteroid(GetOffScreenPosition(ASTEROID_COSMETIC_RADIUS));
 
@@ -614,55 +551,14 @@ void Game::RenderEntities() const
 {
     if (m_playerShip) m_playerShip->Render();
 
-    for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; bulletIndex++)
-    {
-        if (!m_bullets[bulletIndex]) continue;
+    auto render = [](Entity const* e) { e->Render(); };
 
-
-        m_bullets[bulletIndex]->Render();
-    }
-
-    for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; asteroidIndex++)
-    {
-        if (!m_asteroids[asteroidIndex]) continue;
-
-        m_asteroids[asteroidIndex]->Render();
-    }
-
-    for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; beetleIndex++)
-    {
-        if (!m_beetle[beetleIndex]) continue;
-
-        m_beetle[beetleIndex]->Render();
-    }
-
-    for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; waspIndex++)
-    {
-        if (!m_wasp[waspIndex]) continue;
-
-        m_wasp[waspIndex]->Render();
-    }
-
-    for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; debrisIndex++)
-    {
-        if (!m_debris[debrisIndex]) continue;
-
-
-        m_debris[debrisIndex]->Render();
-    }
-    for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; boxIndex++)
-    {
-        if (!m_boxes[boxIndex]) continue;
-
-        m_boxes[boxIndex]->Render();
-    }
-}
-
-void Game::RenderDevConsole() const
-{
-    AABB2 const box = AABB2(Vec2::ZERO, Vec2(1600.f, 100.f));
-
-    g_devConsole->Render(box);
+    ForEachInPool(m_bullets,   render);
+    ForEachInPool(m_asteroids, render);
+    ForEachInPool(m_beetles,    render);
+    ForEachInPool(m_wasps,      render);
+    ForEachInPool(m_debris,    render);
+    ForEachInPool(m_boxes,     render);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -672,47 +568,14 @@ void Game::DebugRenderEntities() const
 
     if (m_playerShip) m_playerShip->DebugRender();
 
-    for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
-    {
-        if (!m_bullets[bulletIndex]) continue;
+    auto debugRender = [](Entity const* e) { e->DebugRender(); };
 
-        m_bullets[bulletIndex]->DebugRender();
-    }
-
-    for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
-    {
-        if (!m_asteroids[asteroidIndex]) continue;
-
-        m_asteroids[asteroidIndex]->DebugRender();
-    }
-
-    for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
-    {
-        if (!m_beetle[beetleIndex]) continue;
-
-        m_beetle[beetleIndex]->DebugRender();
-    }
-
-    for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
-    {
-        if (!m_wasp[waspIndex]) continue;
-
-        m_wasp[waspIndex]->DebugRender();
-    }
-
-    for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; ++debrisIndex)
-    {
-        if (!m_debris[debrisIndex]) continue;
-
-        m_debris[debrisIndex]->DebugRender();
-    }
-
-    for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
-    {
-        if (!m_boxes[boxIndex]) continue;
-
-        m_boxes[boxIndex]->DebugRender();
-    }
+    ForEachInPool(m_bullets,   debugRender);
+    ForEachInPool(m_asteroids, debugRender);
+    ForEachInPool(m_beetles,    debugRender);
+    ForEachInPool(m_wasps,      debugRender);
+    ForEachInPool(m_debris,    debugRender);
+    ForEachInPool(m_boxes,     debugRender);
 }
 
 void Game::SpawnRandomEnemy(int boxIndex)
@@ -782,7 +645,7 @@ void Game::HandleEntityCollision()
     // PlayerShip vs. Beetle
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (!m_beetle[beetleIndex]) continue;
+        if (!m_beetles[beetleIndex]) continue;
 
         if (!m_playerShip) continue;
 
@@ -791,19 +654,19 @@ void Game::HandleEntityCollision()
 
         if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
                              PLAYER_SHIP_PHYSICS_RADIUS,
-                             m_beetle[beetleIndex]->GetPosition(),
+                             m_beetles[beetleIndex]->GetPosition(),
                              BEETLE_PHYSICS_RADIUS))
         {
             m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
             m_playerShipHealth = m_playerShip->m_health;
-            m_beetle[beetleIndex]->m_health--;
+            m_beetles[beetleIndex]->m_health--;
 
             const SoundID IN_GAME_ENTITY_HIT = g_audio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
             g_audio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
-                               m_beetle[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+                               m_beetles[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                30,
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_playerShip->GetColor());
@@ -811,23 +674,23 @@ void Game::HandleEntityCollision()
             continue;
         }
 
-        if (m_beetle[beetleIndex]->m_health == 0)
+        if (m_beetles[beetleIndex]->m_health == 0)
         {
-            SpawnDebrisCluster(m_beetle[beetleIndex]->GetPosition(),
-                               m_beetle[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+            SpawnDebrisCluster(m_beetles[beetleIndex]->GetPosition(),
+                               m_beetles[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                12,
                                ENTITY_DEAD_DEBRIS_RADIUS,
-                               m_beetle[beetleIndex]->GetColor());
+                               m_beetles[beetleIndex]->GetColor());
 
-            m_beetle[beetleIndex]->MarkAsDead();
-            m_beetle[beetleIndex]->MarkAsGarbage();
+            m_beetles[beetleIndex]->MarkAsDead();
+            m_beetles[beetleIndex]->MarkAsGarbage();
         }
     }
 
     // PlayerShip vs. Wasp
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (!m_wasp[waspIndex]) continue;
+        if (!m_wasps[waspIndex]) continue;
 
         if (!m_playerShip) continue;
 
@@ -836,7 +699,7 @@ void Game::HandleEntityCollision()
 
         if (DoDiscsOverlap2D(m_playerShip->GetPosition(),
                              PLAYER_SHIP_PHYSICS_RADIUS,
-                             m_wasp[waspIndex]->GetPosition(),
+                             m_wasps[waspIndex]->GetPosition(),
                              WASP_PHYSICS_RADIUS))
         {
             const SoundID IN_GAME_ENTITY_HIT = g_audio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
@@ -845,26 +708,26 @@ void Game::HandleEntityCollision()
             m_playerShip->m_health--;
             m_playerShip->MarkAsDead();
             m_playerShipHealth = m_playerShip->m_health;
-            m_wasp[waspIndex]->m_health--;
+            m_wasps[waspIndex]->m_health--;
 
             SpawnDebrisCluster(m_playerShip->GetPosition(),
-                               m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+                               m_wasps[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                30,
                                ENTITY_DEAD_DEBRIS_RADIUS,
                                m_playerShip->GetColor());
         }
 
 
-        if (m_wasp[waspIndex]->m_health == 0)
+        if (m_wasps[waspIndex]->m_health == 0)
         {
-            SpawnDebrisCluster(m_wasp[waspIndex]->GetPosition(),
-                               -m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+            SpawnDebrisCluster(m_wasps[waspIndex]->GetPosition(),
+                               -m_wasps[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                12,
                                ENTITY_DEAD_DEBRIS_RADIUS,
-                               m_wasp[waspIndex]->GetColor());
+                               m_wasps[waspIndex]->GetColor());
 
-            m_wasp[waspIndex]->MarkAsDead();
-            m_wasp[waspIndex]->MarkAsGarbage();
+            m_wasps[waspIndex]->MarkAsDead();
+            m_wasps[waspIndex]->MarkAsGarbage();
         }
     }
 
@@ -924,41 +787,41 @@ void Game::HandleEntityCollision()
             if (!m_bullets[bulletIndex]) continue;
 
 
-            if (!m_beetle[beetleIndex]) continue;
+            if (!m_beetles[beetleIndex]) continue;
 
             if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
                                  BULLET_PHYSICS_RADIUS,
-                                 m_beetle[beetleIndex]->GetPosition(),
+                                 m_beetles[beetleIndex]->GetPosition(),
                                  BEETLE_PHYSICS_RADIUS))
             {
                 const SoundID IN_GAME_ENTITY_HIT = g_audio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
                 g_audio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
-                                   m_beetle[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+                                   m_beetles[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                    3,
                                    ENTITY_HIT_DEBRIS_RADIUS,
-                                   m_beetle[beetleIndex]->GetColor());
+                                   m_beetles[beetleIndex]->GetColor());
 
                 m_playerShip->m_score += 20;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
-                m_beetle[beetleIndex]->m_health--;
+                m_beetles[beetleIndex]->m_health--;
             }
 
-            if (m_beetle[beetleIndex]->m_health != 0) continue;
+            if (m_beetles[beetleIndex]->m_health != 0) continue;
 
-            SpawnDebrisCluster(m_beetle[beetleIndex]->GetPosition(),
-                               -m_beetle[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+            SpawnDebrisCluster(m_beetles[beetleIndex]->GetPosition(),
+                               -m_beetles[beetleIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                12,
                                ENTITY_DEAD_DEBRIS_RADIUS,
-                               m_beetle[beetleIndex]->GetColor());
+                               m_beetles[beetleIndex]->GetColor());
 
             m_playerShip->m_score += 200;
 
-            m_beetle[beetleIndex]->MarkAsDead();
-            m_beetle[beetleIndex]->MarkAsGarbage();
+            m_beetles[beetleIndex]->MarkAsDead();
+            m_beetles[beetleIndex]->MarkAsGarbage();
         }
     }
 
@@ -969,41 +832,41 @@ void Game::HandleEntityCollision()
         {
             if (!m_bullets[bulletIndex]) continue;
 
-            if (!m_wasp[waspIndex]) continue;
+            if (!m_wasps[waspIndex]) continue;
 
             if (DoDiscsOverlap2D(m_bullets[bulletIndex]->GetPosition(),
                                  BULLET_PHYSICS_RADIUS,
-                                 m_wasp[waspIndex]->GetPosition(),
+                                 m_wasps[waspIndex]->GetPosition(),
                                  WASP_PHYSICS_RADIUS))
             {
                 const SoundID IN_GAME_ENTITY_HIT = g_audio->CreateOrGetSound("Data/Audio/InGame_Entity_Hit.mp3", eAudioSystemSoundDimension::Sound2D);
                 g_audio->StartSound(IN_GAME_ENTITY_HIT, false, 1.f, 0.f, 1.f, false);
 
                 SpawnDebrisCluster(m_bullets[bulletIndex]->GetPosition(),
-                                   m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+                                   m_wasps[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                    3,
                                    ENTITY_HIT_DEBRIS_RADIUS,
-                                   m_wasp[waspIndex]->GetColor());
+                                   m_wasps[waspIndex]->GetColor());
 
                 m_playerShip->m_score += 50;
 
                 m_bullets[bulletIndex]->MarkAsDead();
                 m_bullets[bulletIndex]->MarkAsGarbage();
-                m_wasp[waspIndex]->m_health--;
+                m_wasps[waspIndex]->m_health--;
             }
 
-            if (m_wasp[waspIndex]->m_health != 0) continue;
+            if (m_wasps[waspIndex]->m_health != 0) continue;
 
-            SpawnDebrisCluster(m_wasp[waspIndex]->GetPosition(),
-                               -m_wasp[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
+            SpawnDebrisCluster(m_wasps[waspIndex]->GetPosition(),
+                               -m_wasps[waspIndex]->GetVelocity().GetNormalized() * m_debrisVelocityRate,
                                12,
                                ENTITY_DEAD_DEBRIS_RADIUS,
-                               m_wasp[waspIndex]->GetColor());
+                               m_wasps[waspIndex]->GetColor());
 
             m_playerShip->m_score += 500;
 
-            m_wasp[waspIndex]->MarkAsDead();
-            m_wasp[waspIndex]->MarkAsGarbage();
+            m_wasps[waspIndex]->MarkAsDead();
+            m_wasps[waspIndex]->MarkAsGarbage();
         }
     }
 
@@ -1116,31 +979,7 @@ Vec2 Game::GetOffScreenPosition(float entityCosmeticRadius) const
 {
     float initialY = 0;
 
-    // switch (g_theRNG->RollRandomIntInRange(1, 4))
-    // {
-    // case 1: // off right bound
-    // 	initialX = g_theRNG->RollRandomFloatInRange(WORLD_SIZE_X, WORLD_SIZE_X + entityCosmeticRadius);
-    // 	initialY = g_theRNG->RollRandomFloatInRange(0.f, WORLD_SIZE_Y);
-    // 	break;
-    //
-    // case 2: // off left bound
-    // 	initialX = g_theRNG->RollRandomFloatInRange(-entityCosmeticRadius, 0.f);
-    // 	initialY = g_theRNG->RollRandomFloatInRange(0.f, WORLD_SIZE_Y);
-    // 	break;
-    //
-    // case 3: // off top bound
-    // 	initialX = g_theRNG->RollRandomFloatInRange(0.f, WORLD_SIZE_X);
-    // 	initialY = g_theRNG->RollRandomFloatInRange(WORLD_SIZE_Y, WORLD_SIZE_Y + entityCosmeticRadius);
-    // 	break;
-    //
-    // case 4: // off bottom bound
-    // 	initialX = g_theRNG->RollRandomFloatInRange(0.f, WORLD_SIZE_X);
-    // 	initialY = g_theRNG->RollRandomFloatInRange(-entityCosmeticRadius, 0.f);
-    // 	break;
-    // }
-
     float initialX = g_rng->RollRandomFloatInRange(WORLD_SIZE_X, WORLD_SIZE_X + entityCosmeticRadius);
-    // 	initialY = g_theRNG->RollRandomFloatInRange(0.f, WORLD_SIZE_Y);
 
     return Vec2(initialX, initialY);
 }
@@ -1148,65 +987,12 @@ Vec2 Game::GetOffScreenPosition(float entityCosmeticRadius) const
 //-----------------------------------------------------------------------------------------------
 void Game::DeleteGarbageEntities()
 {
-    for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
-    {
-        if (m_asteroids[asteroidIndex] &&
-            m_asteroids[asteroidIndex]->IsGarbage())
-        {
-            delete m_asteroids[asteroidIndex];
-            m_asteroids[asteroidIndex] = nullptr;
-        }
-    }
-
-    for (int bulletIndex = 0; bulletIndex < MAX_BULLETS_NUM; ++bulletIndex)
-    {
-        if (m_bullets[bulletIndex] &&
-            m_bullets[bulletIndex]->IsGarbage())
-        {
-            delete m_bullets[bulletIndex];
-            m_bullets[bulletIndex] = nullptr;
-        }
-    }
-
-    for (int debrisIndex = 0; debrisIndex < MAX_DEBRIS_NUM; ++debrisIndex)
-    {
-        if (m_debris[debrisIndex] &&
-            m_debris[debrisIndex]->IsGarbage())
-        {
-            delete m_debris[debrisIndex];
-            m_debris[debrisIndex] = nullptr;
-        }
-    }
-
-    for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
-    {
-        if (m_beetle[beetleIndex] &&
-            m_beetle[beetleIndex]->IsGarbage())
-        {
-            delete m_beetle[beetleIndex];
-            m_beetle[beetleIndex] = nullptr;
-        }
-    }
-
-    for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
-    {
-        if (m_wasp[waspIndex] &&
-            m_wasp[waspIndex]->IsGarbage())
-        {
-            delete m_wasp[waspIndex];
-            m_wasp[waspIndex] = nullptr;
-        }
-    }
-
-    for (int boxIndex = 0; boxIndex < MAX_BOX_NUM; ++boxIndex)
-    {
-        if (m_boxes[boxIndex] &&
-            m_boxes[boxIndex]->IsGarbage())
-        {
-            delete m_boxes[boxIndex];
-            m_boxes[boxIndex] = nullptr;
-        }
-    }
+    DeleteGarbageInPool(m_asteroids);
+    DeleteGarbageInPool(m_bullets);
+    DeleteGarbageInPool(m_debris);
+    DeleteGarbageInPool(m_beetles);
+    DeleteGarbageInPool(m_wasps);
+    DeleteGarbageInPool(m_boxes);
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -1235,12 +1021,12 @@ bool Game::AreAllEnemiesDead() const
 {
     for (int beetleIndex = 0; beetleIndex < MAX_BEETLE_NUM; ++beetleIndex)
     {
-        if (m_beetle[beetleIndex] && !m_beetle[beetleIndex]->IsDead()) return false;
+        if (m_beetles[beetleIndex] && !m_beetles[beetleIndex]->IsDead()) return false;
     }
 
     for (int waspIndex = 0; waspIndex < MAX_WASP_NUM; ++waspIndex)
     {
-        if (m_wasp[waspIndex] && !m_wasp[waspIndex]->IsDead()) return false;
+        if (m_wasps[waspIndex] && !m_wasps[waspIndex]->IsDead()) return false;
     }
 
     for (int asteroidIndex = 0; asteroidIndex < MAX_ASTEROIDS_NUM; ++asteroidIndex)
