@@ -161,10 +161,10 @@ void ScoreBoardHandler::DisplayScoreboard(const PlayerScore scoreboard[], const 
 		                           scoreLine,
 		                           Vec2(0.f, startY - i * textSize),
 		                           textSize,
-		                           textColor,
-		                           1.f, true, 0.3f);
+		                           textColor);
 	}
 
+	g_renderer->BindTexture(nullptr);
 	g_renderer->DrawVertexArray(static_cast<int>(textVerts.size()), textVerts.data());
 
 	printf("Scoreboard (Top 10):\n");
