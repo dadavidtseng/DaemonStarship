@@ -28,7 +28,7 @@ public:
 private:
     void BounceOffWall();
     void InitializeLocalVerts() override;
-    void UpdateFromKeyBoard();
+    void UpdateFromKeyBoard(float deltaSeconds);
 
     Vertex_PCU m_localVerts[PLAYER_SHIP_VERTS_NUM];
 

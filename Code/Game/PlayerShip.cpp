@@ -28,7 +28,7 @@ PlayerShip::PlayerShip(Vec2 const& position, float const orientationDegrees, int
 //----------------------------------------------------------------------------------------------------
 void PlayerShip::Update(float const deltaSeconds)
 {
-    UpdateFromKeyBoard();
+    UpdateFromKeyBoard(deltaSeconds);
     UpdateFromController();
 
     if (m_isDead) return;
@@ -187,10 +187,34 @@ void PlayerShip::BounceOffWall()
 }
 
 //-----------------------------------------------------------------------------------------------
-void PlayerShip::UpdateFromKeyBoard()
+void PlayerShip::UpdateFromKeyBoard(float const deltaSeconds)
 {
     m_isTurningLeft  = g_input->IsKeyDown(KEYCODE_A);
     m_isTurningRight = g_input->IsKeyDown(KEYCODE_D);
+
+    if (g_input->IsKeyDown('S') && !m_isDead)
+    {
+        float const speed = m_velocity.GetLength();
+
+        if (speed > 0.1f)
+        {
+            Vec2 const  decelDir    = m_velocity.GetNormalized();
+            float const decelAmount = PLAYER_SHIP_DECELERATION * deltaSeconds;
+
+            if (decelAmount >= speed)
+            {
+                m_velocity = Vec2::ZERO;
+            }
+            else
+            {
+                m_velocity -= decelDir * decelAmount;
+            }
+        }
+        else
+        {
+            m_velocity = Vec2::ZERO;
+        }
+    }
 
     if (g_input->WasKeyJustPressed(KEYCODE_SPACE) &&
         m_isReadyToSpawnBullet &&

@@ -34,6 +34,7 @@ float constexpr WORLD_CENTER_Y = WORLD_SIZE_Y * 0.5f;
 //----------------------------------------------------------------------------------------------------
 int constexpr      PLAYER_SHIP_VERTS_NUM       = 15;
 float constexpr    PLAYER_SHIP_ACCELERATION    = 30.f;
+float constexpr    PLAYER_SHIP_DECELERATION    = 20.f;
 float constexpr    PLAYER_SHIP_TURN_SPEED      = 300.f;
 float constexpr    PLAYER_SHIP_PHYSICS_RADIUS  = 1.75f;
 float constexpr    PLAYER_SHIP_COSMETIC_RADIUS = 2.25f;
