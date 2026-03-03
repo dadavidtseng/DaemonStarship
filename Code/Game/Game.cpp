@@ -96,13 +96,14 @@ void Game::Update()
     {
         m_theUIHandler->Update(deltaSeconds);
         if (m_gameState == eGameState::AttractMode &&
-            m_theUIHandler->IsFirstButtonSelected() && g_input->WasKeyJustReleased(KEYCODE_SPACE))
+            m_theUIHandler->IsFirstButtonSelected() &&
+            (g_input->WasKeyJustReleased(KEYCODE_SPACE) || g_input->WasKeyJustPressed(KEYCODE_LEFT_MOUSE)))
         {
             SetGameState(eGameState::PlayerNameInput);
         }
         if (m_gameState == eGameState::AttractMode &&
             m_theUIHandler->IsSecondButtonSelected() &&
-            (g_input->WasKeyJustPressed(KEYCODE_SPACE) || g_input->WasKeyJustPressed(KEYCODE_ENTER)))
+            (g_input->WasKeyJustPressed(KEYCODE_SPACE) || g_input->WasKeyJustPressed(KEYCODE_ENTER) || g_input->WasKeyJustPressed(KEYCODE_LEFT_MOUSE)))
         {
             SetGameState(eGameState::ScoreboardDisplay);
             return;
@@ -111,7 +112,7 @@ void Game::Update()
 
     if (m_gameState == eGameState::ScoreboardDisplay)
     {
-        if (g_input->WasKeyJustPressed(KEYCODE_ESC) || g_input->WasKeyJustPressed(KEYCODE_SPACE))
+        if (g_input->WasKeyJustPressed(KEYCODE_ESC) || g_input->WasKeyJustPressed(KEYCODE_SPACE) || g_input->WasKeyJustPressed(KEYCODE_LEFT_MOUSE))
         {
             SetGameState(eGameState::AttractMode);
         }

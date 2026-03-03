@@ -121,6 +121,29 @@ void UIHandler::UpdateButtonSelection()
     {
         m_attractModeButtons[i]->isSelected = (i == m_selectedButtonIndex);
     }
+
+    // Mouse hover detection — map normalized cursor to screen space
+    Vec2 const cursorNorm   = g_input->GetCursorNormalizedPosition();
+    Vec2 const cursorScreen = Vec2(cursorNorm.x * SCREEN_SIZE_X, cursorNorm.y * SCREEN_SIZE_Y);
+
+    for (int i = 0; i < 2; ++i)
+    {
+        Button const* btn     = m_attractModeButtons[i];
+        float const   halfW   = btn->width * 0.5f;
+        float const   halfH   = btn->height * 0.5f;
+        bool const    hovered = cursorScreen.x >= btn->center.x - halfW &&
+                                cursorScreen.x <= btn->center.x + halfW &&
+                                cursorScreen.y >= btn->center.y - halfH &&
+                                cursorScreen.y <= btn->center.y + halfH;
+
+        if (hovered)
+        {
+            m_selectedButtonIndex = i;
+            m_attractModeButtons[0]->isSelected = (0 == i);
+            m_attractModeButtons[1]->isSelected = (1 == i);
+            break;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------------------------
